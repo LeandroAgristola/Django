@@ -1,0 +1,23 @@
+ <html>
+ <body>
+
+   {% include "navbar.html"%} {#incluimos la barra de tareas desde otro documento html#}
+    <h2>
+     Esta es un plantilla
+    </h2>
+    <h2>
+      <p> El nombre de la persona es: {{nombre_persona.upper}} {{apellido_persona.upper}}</p> {# Referenciamos las variables por medio {{}}#}
+      {# Referenciamos las variables de datetime por medio y referenciamos la lista inclida en el diccionario que esta dentro del contexto {{}} #}
+      <p> Estamos la fecha de hoy es {{momento_actual.day}}/{{momento_actual.month}}/{{momento_actual.year}}</p>
+      <h1>Temas:</h1> 
+       <ul> {# Creamos for dentro de una lista para recorrer y mostrar los valores de la lista #}
+         {# Estructuras repetitivas }
+         {% for elTema in tema %}   
+         <li>
+            {{elTema}}
+         </li>   
+         {% endfor %}
+      </ul>
+    </h2>
+    </body>
+ </html>

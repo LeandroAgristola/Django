@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title> 
+        
+        {% block title} {% endblock %}
+
+    </title>
+
+</head>
+
+<body>
+    
+    <h1>Mi pagina</h1>
+    <h3>Esta es mi pagina con django</h3>
+
+    {% include "navbar.html" %}
+
+    {% block content%}
+
+
+    {% endblock}
+
+    <p>contenido del pie de pagina</p>
+
+
+</body>
+</html>
