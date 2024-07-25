@@ -6,7 +6,7 @@ from django.db import models
 class Servicio(models.Model):
     titulo=models.CharField(max_length=50)
     contenido=models.CharField(max_length=50)
-    imagen=models.ImageField()
+    imagen=models.ImageField(upload_to='servicios') #agregamos estos parametros para que dentro de la carpeta media se cree una subcarpeta para la aplicacion Servicios 
     created=models.DateTimeField(auto_now_add=True) #se utiliza para filtrar por fecha de creacion 
     updated=models.DateTimeField(auto_now_add=True) #se utiliza para filtrar por fecha de actualizacion 
 
