@@ -10,10 +10,6 @@ def tienda(request):
 
     return render(request,"ProyectowebApp/tienda.html")
 
-def blog(request):
-
-    return render(request,"ProyectowebApp/blog.html")
-
 def contacto(request):
 
     return render(request,"ProyectowebApp/contacto.html")
