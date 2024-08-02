@@ -17,7 +17,6 @@
                 <span class="section-heading-lower">{{post.titulo}}</span>
                 <span class="section-heading-upper">{{post.contenido}}</span>
               </h2>
-
               <div style="text-align: left;">
                 <p>Autor: {{post.autor}}</p> 
               </div>
@@ -33,7 +32,8 @@
           <p>Categorias: <!--Creamos un for anidados para mostrar solo el nombre de la categoria, sino mostraria una query-->
             {%for post in posts%}
               {%for Categoria in post.categorias.all%}
-                {{Categoria.nombre}}
+                
+                <a href="{% url 'categoria' categoria.id %}" class="linksCategorias">{{Categoria.nombre}}</a> &nbsp;&nbsp;&nbsp;
               
               {%endfor%}
             {% endfor %}

@@ -37,16 +37,16 @@
           <li class="nav-item {% if request.path == '/' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
             <a class="nav-link text-uppercase text-expanded" href="{% url 'Home' %}">Inicio</a>
           </li>
-          <li class="nav-item {% if request.path == '/servicios' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
+          <li class="nav-item {% if request.path == '/servicios/' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
             <a class="nav-link text-uppercase text-expanded" href="{% url 'Servicios' %}">Servicios</a>
           </li>
-          <li class="nav-item {% if request.path == '/tienda' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
+          <li class="nav-item {% if request.path == '/tienda/' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
             <a class="nav-link text-uppercase text-expanded" href="{% url 'Tienda' %}">Tienda</a>
           </li>
-          <li class="nav-item {% if request.path == '/contacto' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
+          <li class="nav-item {% if request.path == '/contacto/' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
             <a class="nav-link text-uppercase text-expanded" href="{% url 'Contacto' %}">Contacto</a>
           </li>
-          <li class="nav-item {% if request.path == '/blog' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo  -->
+          <li class="nav-item {% if request.path|slice:':6' == '/blog/' %}active{% endif %} px-lg-4"> <!-- Este IF hace que el link se resalte si esta activo el slice aplica este este estilo a todo lo que  en sus primeros 6 caracteres sean iguales a la url  -->
             <a class="nav-link text-uppercase text-expanded" href="{% url 'Blog' %}">Blog</a>
           </li>
          
