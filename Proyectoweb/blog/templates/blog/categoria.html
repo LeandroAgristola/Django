@@ -28,13 +28,12 @@
     {% endfor %}
 
       <section>
-        <div style="width: 75%; background-color: aqua; margin: auto; text-align: center;">
+        <div style="width: 75%;  margin: auto; text-align: center;color: white;">
           <p>Categorias: <!--Creamos un for anidados para mostrar solo el nombre de la categoria, sino mostraria una query-->
             {%for post in posts%}
               {%for Categoria in post.categorias.all%}
                 
-                <a href="{% url 'categoria' categoria.id %}" class="linksCategorias">{{Categoria.nombre}}</a> &nbsp;&nbsp;&nbsp;
-              
+                <a href="{% url 'categoria' categoria.id %}" class="linksCategorias">{{Categoria.nombre}}</a> &nbsp;&nbsp;
               {%endfor%}
             {% endfor %}
           </p>
