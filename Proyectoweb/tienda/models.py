@@ -16,7 +16,7 @@ class CategoriaProd(models.Model):
         # Nombre amigable en singular para el modelo en el panel de administración.
         verbose_name = "CategoriaProb"
         # Nombre amigable en plural para el modelo en el panel de administración.
-        verbose_name_plural = "CategordiasProb"
+        verbose_name_plural = "CategoriasProb"
 
     # Método que define cómo se representará el objeto como una cadena de texto.
     def __str__(self):
