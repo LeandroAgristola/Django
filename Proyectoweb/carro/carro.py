@@ -11,9 +11,8 @@ class Carro:
         if not carro:
             # Si el carro no existe en la sesión, inicializa uno vacío.
             carro = self.session["carro"] = {}
-        else:
-            # Si el carro existe, lo asigna al atributo de la instancia.
-            self.carro = carro
+        # Si el carro existe, lo asigna al atributo de la instancia.
+        self.carro = carro
 
     # Método para guardar el carro en la sesión.
     def guardar_carro(self):
@@ -39,6 +38,8 @@ class Carro:
             for key, value in self.carro.items():
                 if key == str(producto.id):
                     value["cantidad"] = value["cantidad"] + 1
+                    # Aumenta el precio del producto en una unidad.
+                    value["precio"] = float(value["precio"]) + producto.precio
                     break
         # Guarda los cambios en la sesión.
         self.guardar_carro()
@@ -60,6 +61,8 @@ class Carro:
             if key == str(producto.id):
                 # Disminuye la cantidad del producto en 1.
                 value["cantidad"] = value["cantidad"] - 1
+                # Disminuye el precio del producto en una unidad.
+                value["precio"] = float(value["precio"]) - producto.precio
                 # Si la cantidad es menor que 1, elimina el producto del carro.
                 if value["cantidad"] < 1:
                     self.eliminar(producto)
