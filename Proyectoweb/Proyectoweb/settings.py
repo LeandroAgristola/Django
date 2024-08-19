@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'carro',
     'autenticacion',
     'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -145,8 +146,8 @@ EMAIL_PORT = 587  # Puerto SMTP para TLS
 EMAIL_HOST_USER='leo_91_166@hotmail.com' #direccion de correo electronico
 EMAIL_HOST_PASSWORD='paozgadndgittrdq' #agregamos la contraseña de nuestro correo 
 
-CRISPY_TEMPLATE_PACK='bootstrap4' #cargamos este paquete en bootstrap
-
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGGING = {
     'version': 1,

@@ -2,9 +2,7 @@ from django.urls import path
 from .views import VRegistro, cerrar_sesion, logear
 
 urlpatterns = [
-    path('',VRegistro.as_view(), name="Autenticacion"), #nos muestra la clase VRegistro como un vista
-    path('cerrar_sesion',cerrar_sesion.as_view(), name="cerrar_sesion"), #nos muestra la clase cerrar sesion como un vista
-    path('logear',logear.as_view(), name="logear"), #nos muestra la clase VRegistro como un vista
+    path('', VRegistro.as_view(), name="Autenticacion"),  # Vista basada en clase, correcto usar as_view()
+    path('cerrar_sesion', cerrar_sesion, name="cerrar_sesion"),  # Vista basada en función, eliminar as_view()
+    path('logear', logear, name="logear"),  # Vista basada en función, eliminar as_view()
 ]
-
-

@@ -39,7 +39,7 @@ class Carro:
                 if key == str(producto.id):
                     value["cantidad"] = value["cantidad"] + 1
                     # Aumenta el precio del producto en una unidad.
-                    value["precio"] = float(value["precio"]) + producto.precio
+                    value["precio"] = float(value["precio"]) + producto.Precio
                     break
         # Guarda los cambios en la sesión.
         self.guardar_carro()
@@ -62,7 +62,7 @@ class Carro:
                 # Disminuye la cantidad del producto en 1.
                 value["cantidad"] = value["cantidad"] - 1
                 # Disminuye el precio del producto en una unidad.
-                value["precio"] = float(value["precio"]) - producto.precio
+                value["precio"] = float(value["precio"]) - producto.Precio
                 # Si la cantidad es menor que 1, elimina el producto del carro.
                 if value["cantidad"] < 1:
                     self.eliminar(producto)
