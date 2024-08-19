@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'contacto',
     'tienda',
     'carro',
-    'autenticacion'
+    'autenticacion',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,8 @@ EMAIL_USE_TLS = True  # Utilizar TLS
 EMAIL_PORT = 587  # Puerto SMTP para TLS
 EMAIL_HOST_USER='leo_91_166@hotmail.com' #direccion de correo electronico
 EMAIL_HOST_PASSWORD='paozgadndgittrdq' #agregamos la contraseña de nuestro correo 
+
+CRISPY_TEMPLATE_PACK='bootstrap4' #cargamos este paquete en bootstrap
 
 
 LOGGING = {
