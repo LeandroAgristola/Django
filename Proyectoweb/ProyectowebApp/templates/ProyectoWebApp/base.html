@@ -22,7 +22,21 @@
     <h1 class="site-heading text-center text-white d-none d-lg-block">
       
         <span class="site-heading-lower">Gestión de Pedidos</span>
-      </h1>
+    </h1>
+
+    <div style="text-align: right; margin-right: 100px; color:white;"> <!--Mensaje de "hola: usuario"-->
+
+      {% if user.is_authenticated %}
+
+        <p>Hola {{ user.username }}</p> &nbsp; &nbsp; <a href="{% url'cerrar_sesion' %}" style="color:white;">Cerrar sesion</a>
+
+      {% else %}
+
+       <a href="#" style="color:white" >Login</a> &nbsp; &nbsp; <a href="{% url'Autenticacion' %}" style="color:white"> Registro</a>
+
+      {% endif %}
+
+    </div>
 
  <!-- Navbar -->
  <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 
 from django.contrib.auth.forms import UserCreationForm
@@ -22,3 +22,8 @@ class VRegistro(View):
             for msj in form.error_messages: #recorremos cada msj de error que haya en el formulario
                 messages.error(request, form.error_messages[msj])
             return render(request,"registro/registro.html",{"form":form}) #mostramos el formulario con los errores 
+        
+
+def cerrar_sesion(request): #creamola funcion para cerrar sesion
+    logout(request)
+    return redirect('Home') #una vez cerrada la sesion, redireccionamos al home
