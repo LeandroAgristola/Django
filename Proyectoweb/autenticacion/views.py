@@ -35,7 +35,7 @@ def logear(request): #creamos la funcion para iniciar sesion
         if form.is_valid(): #si los datos del formulario login son correctos
             nombre_usuario=form.cleaned_data.get("username")
             contra=form.cleaned_data.get("password")
-            usuario=authenticate(username=nombre_usuario, password=contra)
+            usuario=authenticate(username=nombre_usuario, password=contra) #corroboramos si los datos son correctos segun la base de dato
             if usuario is not None: # Si el usuario existe, no logea y nos redirecciona al home
                 login(request, usuario)
                 return redirect('Home')
