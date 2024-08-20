@@ -8,7 +8,15 @@
     
     <div style="float:right;">
 
-        {% include "carro/widget.html" %}
+        {% if request_user.is_authenticated %}
+            
+            {% include "carro/widget.html" %} <!--incluimos el carro si el usuario esta logeado-->
+
+        {% else %}
+
+            <div class="alert alert-danger text-center">Login para ver el carro</div>
+            
+        {% endif %}
 
     </div>
 

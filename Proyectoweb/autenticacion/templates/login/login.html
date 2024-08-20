@@ -12,6 +12,20 @@
         {% csrf_token %}
     
         <div style="width: 75%; margin:auto;">
+
+            {% if messages %} <!--Si hay un error en la carga del formulario, recorremos los mensajes de error y mostramos el error correspondiente-->
+
+                {% for mensaje in messages %}
+ 
+                    <span class="alert alert-{{mensaje.tags}}">{{mensaje}}</span> <!--Le damos estilo al mensaje de error-->
+
+                {% endfor %}
+
+            {% endinf %}
+
+            <br>
+            <br>
+            
             {{form|crispy}}
     
             <button type="submit" class="btn btn-success">Login</button> 

@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+import os
+
+from django.contrib.messages import constants as mensajes_de_error
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -146,9 +151,6 @@ EMAIL_PORT = 587  # Puerto SMTP para TLS
 EMAIL_HOST_USER='leo_91_166@hotmail.com' #direccion de correo electronico
 EMAIL_HOST_PASSWORD='paozgadndgittrdq' #agregamos la contraseña de nuestro correo 
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-CRISPY_TEMPLATE_PACK = "bootstrap4"
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -161,4 +163,18 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'DEBUG',
     },
+}
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4" #importamos crispy para trabajar con formularios 
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+#cargamos los tipos de msj de error
+
+MESSAGE_TAGS={
+    mensajes_de_error.DEBUG:'deburg',
+    mensajes_de_error.INFO:'info',
+    mensajes_de_error.SUCCESS:'success',
+    mensajes_de_error.WARNING:'warning',
+    mensajes_de_error.ERROR:'danger',
+
 }
