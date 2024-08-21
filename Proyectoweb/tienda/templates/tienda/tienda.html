@@ -8,9 +8,8 @@
     
     <div style="float:right;">
 
-        {% if request_user.is_authenticated %}
-            
-            {% include "carro/widget.html" %} <!--incluimos el carro si el usuario esta logeado-->
+        {% if request.user.is_authenticated %}        
+            {% include "carro/widget.html" %} <!-- Incluimos el carro si el usuario está logeado -->
 
         {% else %}
 
@@ -19,7 +18,6 @@
         {% endif %}
 
     </div>
-
     <div class="row">
     {%for producto in productos%}
         <div class="col-md-3">
