@@ -31,7 +31,7 @@ def cerrar_sesion(request): #creamos la funcion para cerrar sesion
 
 def logear(request): #creamos la funcion para iniciar sesion
     if request.method=="POST": #si el usuario apreto en el boton de Login
-        form=AuthenticationForm(request,date=request.POST)#guardamos en la variable form, los datos del formulario ingresado en login
+        form=AuthenticationForm(request,data=request.POST)#guardamos en la variable form, los datos del formulario ingresado en login
         if form.is_valid(): #si los datos del formulario login son correctos
             nombre_usuario=form.cleaned_data.get("username")
             contra=form.cleaned_data.get("password")

@@ -1,4 +1,4 @@
-<table class="table table-bordered ">
+<table class="table table-bordered" style="color: white;">
     <thead>
         <tr>
             <th colspan="3" class="text-center">
@@ -19,7 +19,7 @@
     <tbody>
         {% if request.session.carro.items %}
             {% for key, value in request.session.carro.items %}
-                 <tr class="text-center">
+                 <tr class="text-center"  >
 
                     <td>{{value.nombre}}</td>
                     <td>{{value.cantidad}}</td>
