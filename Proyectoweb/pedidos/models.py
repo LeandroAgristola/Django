@@ -42,9 +42,9 @@ class LineaPedidos(models.Model):
     # Relación de clave foránea con el usuario. Si se elimina el usuario, se eliminan las líneas de pedidos asociadas.
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # Relación de clave foránea con el producto. Si el producto se elimina, se elimina la línea de pedido.
-    producto_id = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     # Relación de clave foránea con el pedido. Si el pedido se elimina, se eliminan las líneas de pedido asociadas.
-    pedido_id = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     # Almacena la cantidad del producto en el pedido. Por defecto, es 1.
     cantidad = models.IntegerField(default=1)
     # Fecha de creación de la línea de pedido, se establece automáticamente al crearse.
@@ -53,7 +53,7 @@ class LineaPedidos(models.Model):
     # Método mágico que devuelve una representación en cadena de la línea de pedido.
     def __str__(self):
         # Muestra la cantidad y el nombre del producto en esta línea de pedido.
-        return f'{self.cantidad} unidades de {self.producto_id.nombre}'
+        return f'{self.cantidad} unidades de {self.producto.nombre}'
 
     # Metadatos del modelo para especificar el nombre de la tabla y otras configuraciones.
     class Meta:
