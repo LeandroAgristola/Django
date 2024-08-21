@@ -19,12 +19,13 @@ class Pedido(models.Model):
         return str(self.id)
 
     # Propiedad que calcula el total del pedido sumando los subtotales de cada línea de pedido.
-    @property  
+    @property
     def total(self):
-        # Usa el método aggregate para sumar los precios por las cantidades de todos los productos del pedido.
         return self.lineapedido_set.aggregate(
-            total=Sum(F("precio") * F("cantidad"), output_field=FloatField())
-        )["total"]
+
+            total=Sum(F("precio")*F("cantidad"), output_field=FloatField())
+
+        )["total"] or FloatField(0)
 
     # Metadatos del modelo para especificar el nombre de la tabla y otras configuraciones.
     class Meta:
