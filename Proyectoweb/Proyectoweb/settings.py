@@ -14,7 +14,7 @@ from pathlib import Path
 
 import os
 
-from django.contrib.messages import constants as mensajes_de_error
+from django.contrib.messages import constants as mensajes_de_error # para trabajar con msj de error 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -177,5 +177,4 @@ MESSAGE_TAGS={
     mensajes_de_error.SUCCESS:'success',
     mensajes_de_error.WARNING:'warning',
     mensajes_de_error.ERROR:'danger',
-
 }
