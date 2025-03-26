@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}  <!-- Extending the base layout for the auctions -->
+
+{% block title %}Search Results{% endblock %}  <!-- Setting the title for the search results page -->
+
+{% block body %}
+<h2 class="text-center">Results for "{{ query }}"</h2>  <!-- Displaying the search query -->
+
+<div class="container-fluid">
+    <div class="row">
+        {% if results %}  <!-- Checking if there are results -->
+            {% for listing in results %}
+                <div class="col-md-3 mb-4">  <!-- Four cards per row -->
+                    <div class="card h-100">  <!-- Using h-100 to maintain a constant height -->
+                        <img src="{{ listing.image.url }}" class="card-img-top img-fluid" alt="{{ listing.title }}" style="object-fit: cover; height: 200px;">  <!-- Image for the listing with responsive styling -->
+                        <div class="card-body d-flex flex-column">  <!-- Flexbox for vertical alignment -->
+                            <h5 class="card-title">{{ listing.title }}</h5>  <!-- Displaying the title of the listing -->
+                            <p class="card-text">{{ listing.description|truncatewords:20 }}</p>  <!-- Displaying a truncated description of the listing -->
+                            <a href="{% url 'listing_detail' listing.id %}" class="btn btn-primary mt-auto">View Details</a>  <!-- Link to view details of the listing -->
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p>No results found for your search.</p>  <!-- Message displayed if no results are found -->
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

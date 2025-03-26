@@ -1,0 +1,102 @@
+{% extends "network/layout.html" %}
+{% load extras %}
+
+{% block body %}
+
+<!-- Profile Header: Display profile picture, username, and follow/unfollow button -->
+<div class="d-flex align-items-center mb-4">
+
+    <!-- Profile Picture -->
+    <img src="{{ profile_user.profile_picture|profile_picture_or_default }}" 
+         alt="Profile Picture" 
+         class="rounded-circle me-3" 
+         width="80" 
+         height="80">
+    
+    <!-- Username -->
+    <h2 class="me-3">{{ profile_user.username }}</h2>
+    
+    <!-- Follow/Unfollow Button: Only visible if the logged-in user is not the profile user -->
+    {% if user.is_authenticated and user != profile_user %}
+        <form method="post" class="d-inline">
+            {% csrf_token %}  <!-- CSRF token for security -->
+            <button type="submit" class="btn follow-btn">
+                {% if is_following %}Unfollow{% else %}Follow{% endif %}
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- Followers and Following count display -->
+<div class="mb-3">
+    <p><strong>Followers:</strong> {{ followers_count }}</p>
+    <p><strong>Following:</strong> {{ following_count }}</p>
+</div>
+
+<hr>  <!-- Horizontal line for separation -->
+
+<!-- Display Posts: Loop through each post of the user and show details -->
+<div>
+    {% for post in posts %}
+    <div class="card mb-3 bg-dark text-white border-light">
+        <div class="card-body">
+            <h5 class="card-title d-flex align-items-center">
+                <!-- Post's Author Profile Picture and Username -->
+                <img src="{{ post.user.profile_picture|profile_picture_or_default }}" alt="Profile Picture" class="rounded-circle me-2" width="40" height="40">
+                <a href="{% url 'profile' post.user.username %}" class="text-white me-2">{{ post.user.username }}</a>
+                <!-- Post Creation Date -->
+                <span class="date-text" >{{ post.created_at|date:"d M Y H:i" }}</span>
+                
+                <!-- Edit Button: Visible only for the post's author -->
+                {% if post.user == user %}
+                    <button class="btn btn-outline-light btn-sm edit-btn" data-post-id="{{ post.id }}">Edit</button>
+                {% endif %}
+            </h5>
+            <!-- Display Post Content -->
+            <p class="card-text post-content" data-post-id="{{ post.id }}">{{ post.content }}</p>
+            <div class="d-flex align-items-center">
+                <!-- Like Button: Changes based on whether the post is liked by the user -->
+                <button 
+                    class="btn like-btn" 
+                    data-post-id="{{ post.id }}" 
+                    data-liked="{{ post.is_liked_by_user }}">
+                    <i class="bi {% if post.is_liked_by_user %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                </button>
+                
+                <!-- Display Like Count -->
+                <p class="card-text" style=" color: rgba(255, 255, 255, 0.6);">
+                    <span class="like-count" data-post-id="{{ post.id }}">{{ post.like_count }}</span> likes
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination: Show pagination controls for navigating through pages of posts -->
+{% if posts.paginator.num_pages > 1 %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <!-- Display Previous page link if there's a previous page -->
+        {% if posts.has_previous %}
+            <li class="page-item">
+                <a class="page-link bg-dark text-white" href="?page={{ posts.previous_page_number }}">Previous</a>
+            </li>
+        {% endif %}
+        <!-- Display page numbers with the active page highlighted -->
+        {% for num in posts.paginator.page_range %}
+            <li class="page-item {% if posts.number == num %}active{% endif %}">
+                <a class="page-link bg-dark text-white" href="?page={{ num }}">{{ num }}</a>
+            </li>
+        {% endfor %}
+        <!-- Display Next page link if there's a next page -->
+        {% if posts.has_next %}
+            <li class="page-item">
+                <a class="page-link bg-dark text-white" href="?page={{ posts.next_page_number }}">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

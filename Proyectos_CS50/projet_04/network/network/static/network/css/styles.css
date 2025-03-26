@@ -1,0 +1,216 @@
+/* General Body Styling */
+body {
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
+    font-family: 'Lato', sans-serif; /* Font family */
+}
+
+/* Link Styling */
+a {
+    text-decoration: none; /* Removes underline from links */
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #000; /* Black background for navbar */
+}
+
+.navbar .nav-link {
+    color: #fff; /* White text for navbar links */
+    font-weight: 500; /* Medium weight for text */
+}
+
+.navbar .nav-link:hover {
+    color: #ccc; /* Light grey color on hover */
+}
+
+/* Container Max Width */
+.container {
+    max-width: 960px; /* Sets maximum width for containers */
+}
+
+/* Hover Effect to Make Text Bold */
+.hover-bold:hover {
+    font-weight: bold; /* Makes text bold when hovered */
+}
+
+/* Card Styling */
+.card {
+    border-radius: 10px; /* Rounded corners for cards */
+    border: none; /* No border */
+}
+
+/* Logo Link Styling */
+.logo-link {
+    color: inherit; /* Inherits the current text color */
+    margin-bottom: 20px; /* Adds bottom margin */
+}
+
+/* Edit Button Styling */
+.edit-btn {
+    display: block; /* Makes the button block-level */
+    width: 100%; /* Full width */
+    margin: 0px 5px 5px 0px; /* Adds margin */
+    color: #ffffff; /* White text color */
+    background-color: #79797979; /* Semi-transparent grey background */
+    border-radius: 8px; /* Rounded corners */
+    border: none; /* No border */
+    width: 80px; /* Fixed width */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for background and color */
+}
+
+.edit-btn:hover {
+    background-color: #53535373; /* Darker background on hover */
+    color: #ffffff; /* White text on hover */
+}
+
+/* Date Text Styling */
+.date-text {
+    color: rgba(255, 255, 255, 0.6); /* Light white color for date */
+    font-size: medium; /* Medium text size */
+    padding: 0px 20px 0px; /* Horizontal padding */
+}
+
+/* Primary Button Styling */
+.btn-primary {
+    width: 100px; /* Fixed width */
+    background-color: rgb(23, 156, 240); /* Blue background */
+    border: none; /* No border */
+    font-weight: bold; /* Bold text */
+}
+
+.btn-primary:hover {
+    background-color: rgb(22, 132, 201); /* Darker blue on hover */
+}
+
+/* Left Panel Styling */
+.left-panel {
+    display: flex; /* Flexbox layout */
+    flex-direction: column; /* Column direction */
+    align-items: center; /* Center items horizontally */
+    text-align: center; /* Center text */
+}
+
+/* Menu Item Styling in Left Panel */
+.left-panel .menu a {
+    display: block; /* Block-level links */
+    width: 100%; /* Full width */
+    padding: 10px 20px; /* Padding inside the links */
+    margin: 5px 0; /* Vertical margin */
+    color: #ffffff; /* White text */
+    background-color: #79797979; /* Semi-transparent grey background */
+    border-radius: 8px; /* Rounded corners */
+    width: 150px; /* Fixed width */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+}
+
+.left-panel .menu a:hover {
+    background-color: #53535373; /* Darker background on hover */
+    color: #ffffff; /* White text on hover */
+}
+
+/* Button Styling in Left Panel */
+.left-panel .btn {
+    display: inline-block; /* Inline-block buttons */
+    width: auto; /* Auto width */
+    padding: 10px 20px; /* Padding inside the buttons */
+    margin: 5px 0; /* Vertical margin */
+    color: #ffffff; /* White text */
+    background-color: #79797979; /* Semi-transparent grey background */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    width: 150px; /* Fixed width */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+/* Follow Button Styling */
+.follow-btn {
+    display: inline-block; /* Inline-block button */
+    width: auto; /* Auto width */
+    margin: 5px 0; /* Vertical margin */
+    color: #ffffff; /* White text */
+    background-color: #79797979; /* Semi-transparent grey background */
+    border: none; /* No border */
+    border-radius: 15px; /* Rounded corners with a larger radius */
+    width: 100px; /* Fixed width */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+.follow-btn:hover {
+    background-color: #c0c0c079; /* Lighter grey background on hover */
+    font-weight: bold; /* Bold text on hover */
+}
+
+/* Button Hover Effect in Left Panel */
+.left-panel .btn:hover {
+    background-color: #ff9b9b; /* Light red background on hover */
+    color: #880000; /* Dark red text color */
+    font-weight: bold; /* Bold text on hover */
+}
+
+/* Outline Button Hover Effect */
+.btn-outline-light:hover {
+    background-color: #fff; /* White background on hover */
+    color: #000; /* Black text on hover */
+}
+
+/* Search Bar Input Styling */
+.search-bar .form-control {
+    background-color: #d3d3d3; /* Light grey background */
+    color: #000; /* Black text */
+    border: none; /* No border */
+    border-radius: 4; /* Rounded corners */
+    padding: 10px; /* Padding inside the input */
+    width: 70%; /* 70% width */
+}
+
+/* Placeholder Text Styling in Search Bar */
+.search-bar .form-control::placeholder {
+    color: #555; /* Grey placeholder text */
+}
+
+/* Search Bar Button Styling */
+.search-bar .btn {
+    background-color: #d3d3d3; /* Light grey background */
+    color: #000; /* Black text */
+    border: none; /* No border */
+    padding: 10px 15px; /* Padding inside the button */
+}
+
+/* Search Bar Button Disabled Styling */
+.search-bar .btn:disabled {
+    color: #555; /* Grey text */
+    background-color: #bcbcbc; /* Light grey background */
+}
+
+/* Like Button Styling */
+.like-btn {
+    background: none; /* No background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    padding: 0px 20px 0px 0px; /* Horizontal padding */
+    display: inline-flex; /* Inline-flex layout */
+    align-items: center; /* Vertically center content */
+}
+
+/* Like Button Icon Styling */
+.like-btn i {
+    font-size: 1.5rem; /* Large icon size */
+    color: #6c757d; /* Grey color for inactive state */
+    transition: transform 0.3s ease, color 0.3s ease-in-out; /* Smooth transition on hover */
+}
+
+.like-btn i.text-danger {
+    color: #ff4d4d; /* Red color for active state */
+}
+
+/* Like Button Hover Effect */
+.like-btn:hover i {
+    transform: scale(1.2); /* Enlarges the icon on hover */
+}
+
+/* Rounded Circle Image Styling */
+.rounded-circle {
+    object-fit: cover; /* Ensures image covers the circle */
+    object-position: center; /* Centers the image inside the circle */
+}

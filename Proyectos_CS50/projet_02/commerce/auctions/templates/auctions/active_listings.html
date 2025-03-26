@@ -1,0 +1,60 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <!-- Title for Active Auctions Section -->
+    <h2 class="text-center">Active Auctions</h2>
+
+    <!-- Categories Buttons -->
+    <div class="text-center mb-4">
+        <a href="{% url 'active_listings' %}" class="btn btn-secondary">All Categories</a>
+        {% for category in categories %}
+            <a href="{% url 'active_listings_by_category' category.name %}" class="btn btn-secondary">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            {% if listings %}
+                {% for listing in listings|slice:":8" %}  <!-- Displays only the first 8 auctions -->
+                    <div class="col-md-3 mb-4">  <!-- 4 cards per row -->
+                        <div class="card h-100">  <!-- h-100 ensures consistent card height -->
+                            <img src="{{ listing.image.url }}" class="card-img-top img-fluid" alt="{{ listing.title }}" style="object-fit: cover; height: 200px;">
+                            <div class="card-body d-flex flex-column">
+                                <!-- Title of the auction item -->
+                                <h5 class="card-title">{{ listing.title }}</h5>
+                                <!-- Current highest bid for the auction -->
+                                <p class="card-text">Current Price: {{ listing.highest_bid }} USD</p>
+                                <!-- Link to view detailed information about the auction item -->
+                                <a href="{% url 'listing_detail' listing.id %}" class="btn btn-primary mt-auto">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Message when there are no active auctions -->
+                <div class="col-12">
+                    {% if selected_category %}
+                        <p>No active auctions available in the selected category: <strong>{{ selected_category }}</strong>.</p>
+                    {% else %}
+                        <p>There are no active auctions at the moment.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination: Only appears if there are more than 8 listings -->
+        {% if listings|length > 8 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=2">2</a>
+                    </li>
+                    <!-- Additional pages can be added here as needed -->
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+{% endblock %}

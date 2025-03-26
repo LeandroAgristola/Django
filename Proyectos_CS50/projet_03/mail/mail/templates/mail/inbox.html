@@ -1,0 +1,85 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="row">
+        <!-- Sidebar section for navigation and options -->
+        <div class="col-2 p-3 border-end">
+            <!-- Logo and title -->
+            <div class="d-flex align-items-center gap-2">
+                <img src="{% static 'mail/logo/LogoMail.png' %}" alt="Logo" width="60" height="40">
+                <h2 class="mb-0">Django Mail</h2>
+            </div>
+            <!-- Navigation menu -->
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <!-- Button to open the compose email view -->
+                    <a class="btn btn-sm btn-outline-dark mb-2" href="#" id="compose">Compose</a>
+                </li>
+                <hr>
+                <!-- Links to different sections of the mailbox -->
+                <li class="nav-item"><a class="nav-link" href="#" id="inbox">Inbox</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="sent">Sent</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="archived">Archived</a></li>
+                <hr>
+                <!-- Logout link -->
+                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+        
+        <!-- Main content section -->
+        <div class="col-10">
+            <!-- User profile section -->
+            <div class="d-flex align-items-center gap-2 mt-3">
+                {% if user.profile_picture %}
+                    <!-- Display user's profile picture if available -->
+                    <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle" width="60" height="60">
+                {% else %}
+                    <!-- Display default profile picture if none is uploaded -->
+                    <img src="{% static 'mail/user/default_profile.jpg' %}" alt="Default Profile" class="rounded-circle" width="50" height="50">
+                {% endif %}
+                <!-- Display user's full name -->
+                <h3>{{ request.user.first_name }} {{ request.user.last_name }}</h3>
+            </div>
+            <hr>
+            
+            <!-- View for displaying emails -->
+            <div id="emails-view" style="display: none;">
+            </div>
+            
+            <!-- View for composing a new email -->
+            <div id="compose-view" style="display: none;">
+                <h3>Nuevo Mensaje</h3>
+                <form id="compose-form" method="POST" class="me-auto" style="max-width: 80%;">
+                    {% csrf_token %}
+                    <!-- Disabled field showing the sender's email -->
+                    <div class="form-group mb-3">
+                        <label>From:</label>
+                        <input disabled class="form-control" value="{{ request.user.email }}">
+                    </div>
+                    <!-- Input field for recipients -->
+                    <div class="form-group mb-3">
+                        <label>To:</label>
+                        <input id="compose-recipients" class="form-control">
+                    </div>
+                    <!-- Input field for the subject -->
+                    <div class="form-group mb-3">
+                        <label>Asunto:</label>
+                        <input class="form-control" id="compose-subject" placeholder="Asunto">
+                    </div>
+                    <!-- Textarea for the email body -->
+                    <div class="form-group mb-3">
+                        <label>Mensaje:</label>
+                        <textarea class="form-control" id="compose-body" placeholder="Mensaje" rows="6"></textarea>
+                    </div>
+                    <!-- Submit button to send the email -->
+                    <input type="submit" class="btn btn-primary mt-2" value="Enviar">
+                </form>
+            </div>
+            
+            <!-- View for displaying email details -->
+            <div id="email-detail-view" style="display: none;">
+            </div>
+        </div>
+    </div>
+{% endblock %}

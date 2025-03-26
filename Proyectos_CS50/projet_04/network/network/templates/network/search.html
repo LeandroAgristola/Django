@@ -1,0 +1,51 @@
+{% extends "network/layout.html" %}
+{% load extras %}
+
+{% block body %}
+
+<!-- Title: Displaying search query results -->
+<h2 class="text-center">Results for "{{ query }}"</h2>
+
+<!-- Posts Results Section -->
+{% if posts %}
+    <h3 class="text-white">Posts</h3>
+    {% for post in posts %}
+        <div class="card mb-3 bg-dark text-white border-light">
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center">
+                    <!-- Author's Profile Picture -->
+                    <img src="{{ post.user.profile_picture|profile_picture_or_default }}" alt="Profile Picture" class="rounded-circle me-2" width="40" height="40">
+                    <!-- Author's Username: Clicking on the username redirects to the author's profile page -->
+                    <a href="{% url 'profile' post.user.username %}" class="text-white me-2">{{ post.user.username }}</a>
+                    <!-- Post Creation Date -->
+                    <span class="date-text">{{ post.created_at|date:"d M Y H:i" }}</span>
+                </h5>
+                <!-- Post Content -->
+                <p class="card-text">{{ post.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <!-- If no posts are found -->
+    <p class="text-muted">No posts found.</p>
+{% endif %}
+
+<!-- Users Results Section -->
+{% if users %}
+    <h3 class="text-white">Users</h3>
+    <ul class="list-group">
+        {% for user in users %}
+            <li class="list-group-item bg-dark text-white border-light">
+                <!-- User's Profile Picture -->
+                <img src="{{ user.profile_picture|profile_picture_or_default }}" alt="Profile Picture" class="rounded-circle me-2" width="30" height="30">
+                <!-- User's Username: Clicking on the username redirects to the user's profile page -->
+                <a href="{% url 'profile' user.username %}" class="text-white">{{ user.username }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <!-- If no users are found -->
+    <p class="text-muted">No users found.</p>
+{% endif %}
+
+{% endblock %}

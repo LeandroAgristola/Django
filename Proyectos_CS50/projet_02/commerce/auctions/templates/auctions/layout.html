@@ -1,0 +1,85 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Auctions{% endblock %}</title>
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create auctions with just one form">
+    
+    <!-- Font and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Custom Stylesheets -->
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% endblock %}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="bg-primary text-white p-2">
+        <div class="container d-flex justify-content-between align-items-center">
+            
+            <!-- Logo and Brand Name -->
+            <div class="logo-container">
+                <img class="logo" src="{% static 'logo/logo.png' %}" alt="Logo"> <!-- logo image -->
+                <a href="{% url 'active_listings' %}" class="text-white logo-link" style="text-decoration: none;">Auctions FREE</a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="w-50">
+                <form class="input-group" action="{% url 'search' %}" method="get">
+                    <input type="text" name="query" class="form-control" placeholder="Search auction..." aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-light" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- User Options -->
+            <div class="d-flex align-items-center">
+                {% if user.is_authenticated %}
+                    <!-- Dropdown Menu for Logged-in Users -->
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome, {{ user.username }}!
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'create_listing' %}">Create Listing</a></li>
+                            <li><a class="dropdown-item" href="{% url 'watchlist_view' %}">My Watchlist</a></li>
+                            <li><a class="dropdown-item" href="{% url 'my_listings_view' %}">My Auctions</a></li>
+                            <li><a class="dropdown-item" href="{% url 'won_auctions' %}">Won Auctions</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <!-- Links for Non-Authenticated Users -->
+                    <a href="{% url 'login' %}" class="text-white">Log In</a>
+                    <span class="mx-1 text-white">|</span>
+                    <a href="{% url 'register' %}" class="text-white">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="container mt-4">
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    <!-- JavaScript for Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

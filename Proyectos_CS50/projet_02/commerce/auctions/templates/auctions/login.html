@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="container mt-5">  <!-- Main container to center the form and add top margin -->
+        <h2 class="text-center mb-4">Login</h2>  <!-- Centered title with bottom margin -->
+
+        {% if message %}
+            <div class="alert alert-info">{{ message }}</div>  <!-- Alert message styled with Bootstrap -->
+        {% endif %}
+
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">  <!-- Bottom margin for each field group -->
+                <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-group mb-4">
+                <input class="form-control" type="password" name="password" placeholder="Password">
+            </div>
+            <input class="btn btn-primary btn-block w-100" type="submit" value="Login">  <!-- Button spans full width -->
+        </form>
+
+        <p class="text-center mt-3">Don't have an account? <a href="{% url 'register' %}">Register here.</a></p> <!-- Centered message with top margin -->
+    </div>
+{% endblock %}

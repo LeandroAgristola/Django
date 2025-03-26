@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es-ES"> <!-- Language set to Spanish (Spain) -->
+<head> 
+	{% load static %} <!-- Load static files for the Django template -->
+	<meta charset="utf-8"> <!-- Define character encoding as UTF-8 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Make the page responsive -->
+	<meta name="description" content=""> <!-- Meta description for SEO (currently empty) -->
+	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> <!-- Link to Google Fonts for Lato font -->
+
+	{% block css %} <!-- Block to allow custom CSS to be added in child templates -->
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.css' %}"> <!-- Link to Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styleManagement.css' %}"> <!-- Link to custom stylesheet for management page -->
+	{% endblock %}
+
+	<link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}"> <!-- Link to the website favicon -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+	integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+	crossorigin="anonymous" referrerpolicy="no-referrer" /> <!-- Link to FontAwesome for icons -->
+
+	<title>{% block title %}Realestate Management{% endblock %}</title> <!-- Title of the webpage, customizable in child templates -->
+</head>
+	<body>
+		<div class="container-fluid"> <!-- Full-width container for the layout -->
+			<div class="row"> <!-- Bootstrap row for grid layout -->
+				<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar vh-100 position-fixed">
+					<!-- Sidebar navigation, fixed to the left of the screen with a vertical height of 100% -->
+					<div class="position-sticky d-flex flex-column align-items-center p-3">
+						<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-2" style="max-width: 120px;"> <!-- Logo image -->
+						<h1 class="text-center logo-text">Realestate</h1> <!-- Main title for the sidebar -->
+						<h4 class="text-center">Management</h4> <!-- Subtitle for the sidebar -->
+						<hr style="border-top: 2px solid black; width: 100%;"> <!-- Horizontal line separator -->
+						<ul class="nav flex-column w-100"> <!-- Vertical navigation list -->
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'home' %}">Home</a> <!-- Home link -->
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'management' %}">Development List</a> <!-- Link to development list -->
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'add_development' %}">Add Development</a> <!-- Link to add a new development -->
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a> <!-- Logout link with red text -->
+							</li>
+						</ul>
+					</div>
+				</nav>
+		
+				<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="margin-left: 16.7%;"> <!-- Main content area, offset by 16.7% for sidebar -->
+					{% block content %} <!-- Content block, customizable in child templates -->
+					{% endblock %}
+				</main>
+			</div>
+		</div>
+		
+		{% block scripts %} <!-- Block to allow custom scripts to be added in child templates -->
+		<script>
+			// Script to show or hide the delete button depending on the state of the checkboxes
+			document.addEventListener("DOMContentLoaded", function () {
+				const checkboxes = document.querySelectorAll('input[name="development_ids"]');
+				const deleteButtonContainer = document.getElementById("delete-button-container");
+
+				// Toggle the delete button visibility
+				function toggleDeleteButton() {
+					const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+					deleteButtonContainer.style.display = anyChecked ? "block" : "none";
+				}
+
+				// Add change event listener to each checkbox
+				checkboxes.forEach(checkbox => {
+					checkbox.addEventListener("change", toggleDeleteButton);
+				});
+			});
+		</script>
+		<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script> <!-- Link to Bootstrap JS bundle -->
+		{% endblock %}
+	</body>
+</html>

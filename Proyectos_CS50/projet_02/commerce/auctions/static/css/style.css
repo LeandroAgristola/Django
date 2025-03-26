@@ -1,0 +1,80 @@
+header, nav {
+    border-bottom: 1px solid #ddd;
+}
+
+header .input-group input {
+    border-radius: 20px 0 0 20px;
+}
+
+header .input-group button {
+    border-radius: 0 20px 20px 0;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+}
+
+.logo-link {
+    font-weight: 600; 
+    text-decoration: none; 
+    font-size: 1.4rem; 
+}
+
+.logo {
+    width: 80px; 
+    height: auto; 
+}
+
+.nav a {
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    color: #007bff;
+}
+
+.card {
+    height: 100%;
+}
+
+.card-img-top {
+    padding: 5px; 
+    border-radius: 0;
+}
+
+.img-fluid {
+    object-fit: cover; 
+    height: 200px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mt-auto .d-flex .justify-content-between .btn{
+    width: 50px;
+
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+}
+
+.alert-danger {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}

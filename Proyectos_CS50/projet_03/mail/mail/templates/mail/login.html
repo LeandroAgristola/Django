@@ -1,0 +1,30 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="login-card p-4 rounded shadow">
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+            <img src="{% static 'mail/logo/LogoMail.png' %}" alt="Logo" width="80" height="60">
+            <h1 class="mb-0">Django Mail</h1>
+        </div>
+        <h3 class="text-center mb-3">Login</h3>
+        {% if message %}
+            <div class="alert alert-danger w-100 text-center">{{ message }}</div>
+        {% endif %}
+        <form action="{% url 'login' %}" method="post" class="w-100">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <input autofocus class="form-control form-control-sm" type="email" name="email" placeholder="Email">
+            </div>
+            <div class="form-group mb-3">
+                <input class="form-control form-control-sm" type="password" name="password" placeholder="Password">
+            </div>
+            <input class="btn btn-dark w-100" type="submit" value="Login">
+        </form>
+        <p class="text-center mt-3">
+            Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,1 @@
+Harvard University, commonly known as Harvard, is a private university in the American city of Cambridge, outside Boston, in the state of Massachusetts (east coast of the country). It was founded in 1636 and is the oldest institution of higher education in the United States.

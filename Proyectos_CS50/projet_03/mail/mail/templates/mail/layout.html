@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Page title block, allows for dynamic titles -->
+    <title>{% block title %}Django Mail{% endblock %}</title>
+    <meta charset="utf-8"> 
+    <!-- Ensures proper scaling on different devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google font integration -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS for responsive design and styling -->
+    <link rel="stylesheet" href="{% static 'mail/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Custom CSS styles -->
+    <link href="{% static 'mail/css/styles.css' %}" rel="stylesheet">
+    <!-- Favicon for browser tab -->
+    <link rel="icon" type="image/x-icon" href="{% static 'mail/logo/favicon.ico' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Body content block, to be filled by specific templates -->
+        {% block body %}
+        {% endblock %}
+    </div>
+    <!-- JavaScript file for inbox functionality -->
+    <script src="{% static 'mail/inbox.js' %}"></script>
+    <!-- Popper.js for Bootstrap tooltips and popovers -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JavaScript bundle -->
+    <script src="{% static 'mail/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

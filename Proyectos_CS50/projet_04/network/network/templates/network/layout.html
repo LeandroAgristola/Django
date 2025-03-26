@@ -1,0 +1,97 @@
+{% load static %}
+{% load extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Page title, allows dynamic replacement using Django block tags -->
+    <title>{% block title %}Django Birdie{% endblock %}</title>
+
+    <!-- Meta tags for character encoding and responsiveness -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF token for secure form submissions -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- External resources and styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'network/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'network/css/styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'network/logo/favicon.ico' %}">
+</head>
+<body class="bg-black text-white">
+    <div class="container">
+        <div class="row">
+    
+            <!-- Left Panel: Includes the site logo, user authentication options, and navigation -->
+            <div class="col-md-3 left-panel py-4">
+                <!-- Logo section -->
+                <a href="{% url 'index' %}" class="logo-link">
+                    <img src="{% static 'network/logo/logoBirdie.png' %}" alt="Birdie Logo" class="mb-2" width="50">
+                    <span class="fs-4">Django Birdie</span>
+                </a>
+                
+                {% if user.is_authenticated %}
+                <!-- User profile section -->
+                <div class="mb-4 text-center menu">
+                    <!-- Display profile picture with fallback to a default image -->
+                    <img 
+                        src="{{ user.profile_picture.url|default:'/path/to/default_image.jpg' }}" 
+                        alt="Profile Picture" 
+                        class="rounded-circle mb-2" 
+                        style="width: 80px; height: 80px; object-fit: cover; object-position: center;">
+                    <!-- Link to the user's profile -->
+                    <a href="{% url 'profile' user.username %}" class="d-block text-white mt-2">{{ user.username }}</a>
+                </div>
+                <!-- Logout button -->
+                <a href="{% url 'logout' %}" class="btn">Logout</a>
+                {% else %}
+                <!-- Login and Sign-up buttons for unauthenticated users -->
+                <a href="{% url 'login' %}" class="btn">Login</a>
+                <a href="{% url 'register' %}" class="btn">Sign Up</a>
+                {% endif %}     
+            </div>
+
+            <!-- Main Section: Displays navigation and dynamic content -->
+            <div class="col-md-9">
+                <!-- Top Navigation bar for browsing posts and following -->
+                <nav class="navbar navbar-expand-lg bg-black border-bottom border-light mb-4">
+                    <div class="container-fluid">
+                        <!-- Links to "All Posts" and "Following" pages -->
+                        <div class="d-flex align-items-center">
+                            <a class="nav-link text-white me-4 hover-bold" href="{% url 'index' %}">All Posts</a>
+                            <a class="nav-link text-white me-4 hover-bold" href="{% url 'following' %}">Following</a>
+                        </div>
+                        <!-- Search bar for finding posts or users -->
+                        <form method="get" action="{% url 'search' %}" class="d-flex ms-auto search-bar" >
+                            <div class="input-group">
+                                <input 
+                                    type="text" 
+                                    name="q" 
+                                    class="form-control bg-light text-black search-input border-0" 
+                                    placeholder="Search..."  required>
+                                <button 
+                                    class="btn btn-outline-dark search-btn border-0" 
+                                    type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+
+                <!-- Main Content Section: Placeholder for page-specific content -->
+                <div class="content py-4">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript files for Bootstrap and custom features -->
+    <script src="{% static 'network/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'network/js/editPost.js' %}"></script>
+    <script src="{% static 'network/js/likePost.js' %}"></script>
+</body>
+</html>

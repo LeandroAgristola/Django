@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+
+{% load form_tags %}
+
+{% block body %}
+<div class="container mt-5">
+    <!-- Page Title for Creating a New Listing -->
+    <h2 class="text-center mb-4">Create New Listing</h2>
+    
+    <!-- Show form errors if there are any -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- Title and Description Fields -->
+        <div class="form-group mb-3">
+            {{ form.title.label_tag }}
+            {{ form.title|add_class:"form-control" }}
+            {% if form.title.errors %}
+                <div class="text-danger">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"form-control" }}
+            {% if form.description.errors %}
+                <div class="text-danger">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Row for Starting Bid, Category, and Image Upload -->
+        <div class="row">
+            <div class="col-md-4 form-group">
+                {{ form.starting_bid.label_tag }}
+                {{ form.starting_bid|add_class:"form-control" }}
+                {% if form.starting_bid.errors %}
+                    <div class="text-danger">
+                        {{ form.starting_bid.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 form-group">
+                {{ form.category.label_tag }}
+                {{ form.category|add_class:"form-control" }}
+                {% if form.category.errors %}
+                    <div class="text-danger">
+                        {{ form.category.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-4 form-group">
+                {{ form.image.label_tag }}
+                {{ form.image|add_class:"form-control" }}
+                {% if form.image.errors %}
+                    <div class="text-danger">
+                        {{ form.image.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Create and Cancel Buttons -->
+        <div class="mt-4 d-flex">
+            <button type="submit" class="btn btn-primary me-2" style="min-width: 100px;">Create</button>
+            <a href="{% url 'active_listings' %}" class="btn btn-secondary" style="min-width: 100px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

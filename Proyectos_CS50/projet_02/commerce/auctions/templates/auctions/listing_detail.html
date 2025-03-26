@@ -1,0 +1,118 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-5">
+    <!-- Main container for auction details -->
+    <div class="row">
+        <!-- Image section with rounded container -->
+        <div class="col-md-6">
+            <div class="card p-3">
+                {% if listing.image %}
+                    <img src="{{ listing.image.url }}" alt="Listing image" class="img-fluid rounded" style="height: 300px; object-fit: cover;">
+                {% else %}
+                    <img src="default-image.jpg" alt="No image available" class="img-fluid rounded" style="height: 300px; object-fit: cover;">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product details and action buttons -->
+        <div class="col-md-6">
+            <h2 class="fw-bold">{{ listing.title }}</h2>
+            <p class="text-muted">Description: {{ listing.description }}</p>
+
+            <!-- Current price -->
+            <h4 class="text-success">
+                Current Price: 
+                {% if listing.current_bid > 0 %}
+                    {{ listing.current_bid }} USD
+                {% else %}
+                    No bids yet
+                {% endif %}
+            </h4>
+
+            <!-- Bid and Watchlist buttons, aligned and set to equal width -->
+            <div class="mt-3 d-grid gap-2 d-md-flex justify-content-md-start">
+                <form action="{% url 'place_bid' listing.id %}" method="POST" class="d-inline w-50">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary w-100">Place Bid</button>
+                </form>
+                
+                {% if is_watching %}
+                    <form action="{% url 'remove_watchlist' listing.id %}" method="POST" class="d-inline w-50">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100 ms-2">Remove from Watchlist</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'add_watchlist' listing.id %}" method="POST" class="d-inline w-50">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success w-100 ms-2">Add to Watchlist</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% if not listing.active %}
+            <div class="mt-3 alert alert-info">
+                {% if request.user == listing.winner %}
+                    You are the winner of the bid.
+                {% else %}
+                    El ganador es: {{ listing.winner.username }}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Edit and delete buttons, visible only to the owner -->
+    {% if request.user == listing.owner %}
+        <div class="mt-4">
+            <a href="{% url 'edit_listing' listing.id %}" class="btn btn-secondary me-2" style="width: 150px;">Edit Listing</a>
+            <a href="{% url 'delete_listing' listing.id %}" class="btn btn-danger me-2" onclick="return confirm('Are you sure you want to delete this listing?');" style="width: 150px;">Delete Listing</a>
+            <form action="{% url 'finalize_listing' listing.id %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning" style="width: 150px;">End Auction</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <!-- Section to add a comment -->
+    <div class="mt-4">
+        <h3>Add Comment</h3>
+        <form action="" method="POST" class="form-inline">  
+            {% csrf_token %}
+            <div class="form-group w-100 mb-2">
+                {{ comment_form.content }}
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary" style="width: 150px;">Comment</button>
+                <button type="reset" class="btn btn-secondary ms-2" style="width: 150px;">Clear</button> <!-- Reset button -->
+            </div>
+        </form>
+    </div>
+
+    <!-- Display existing comments -->
+    <div class="mt-4">
+        <h3>Comments</h3>
+        {% if comments %}
+            <ul class="list-group">
+                {% for comment in comments %}
+                    <li class="list-group-item">
+                        <strong>{{ comment.user }}:</strong> {{ comment.content }}
+                        <small class="text-muted">({{ comment.timestamp }})</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No comments yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

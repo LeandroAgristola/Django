@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+{% load form_tags %}
+
+{% block body %}
+<div class="container mt-5">
+    <!-- Page Title for Editing Listing -->
+    <h2 class="text-center mb-4">Edit Listing</h2>
+    <form action="{% url 'edit_listing' listing.id %}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- Title and Description Fields -->
+        <div class="form-group mb-3">
+            {{ form.title.label_tag }}
+            {{ form.title|add_class:"form-control" }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"form-control" }}
+        </div>
+
+        <!-- Row for Starting Bid and Category Fields -->
+        <div class="row">
+            <div class="col-md-6 form-group">
+                {{ form.starting_bid.label_tag }}
+                {{ form.starting_bid|add_class:"form-control" }}
+            </div>
+            <div class="col-md-6 form-group">
+                {{ form.category.label_tag }}
+                {{ form.category|add_class:"form-control" }}
+            </div>
+        </div>
+        
+        <!-- Image Upload Field -->
+        <div class="form-group md-3">
+            {{ form.image.label_tag }}
+            {{ form.image|add_class:"form-control" }}
+        </div>
+
+        <!-- Save Changes and Cancel Buttons -->
+        <div class="mt-4 d-flex">
+            <button type="submit" class="btn btn-primary me-2" style="min-width: 100px;">Save Changes</button>
+            <a href="javascript:void(0);" onclick="history.back();" class="btn btn-secondary" style="min-width: 100px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html> <!-- Declares the document type as HTML5 -->
+<html lang="es-ES"> <!-- Set the language of the document to Spanish (Spain) -->
+
+<head>
+    {% load static %} <!-- Loads the static template tag, which allows access to static files like CSS, JS, images, etc. -->
+    
+    <meta charset="utf-8"> <!-- Specifies the character encoding for the HTML document -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures the page is responsive on mobile devices -->
+    <meta name="description" content=""> <!-- Meta tag for the description of the page (empty for now) -->
+    
+    <!-- Preconnect to external font providers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    
+    <!-- Link to Google Fonts for Lato font -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> 
+
+    <!-- Block to insert additional CSS links -->
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.css' %}">  <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styleManagement.css' %}">  <!-- Custom management style CSS -->
+    {% endblock %}
+
+    <!-- Favicon for the website -->
+    <link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+    
+    <!-- Link to Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+    
+    <!-- Title block, allows the page title to be overwritten in child templates -->
+    <title>{% block title %}Realestate Management{% endblock %}</title>
+</head>
+
+<body class="login-page"> <!-- Body with class 'login-page' for specific styling -->
+
+    <!-- Main container for the login page, centered both vertically and horizontally -->
+    <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div id="development-form" class="p-4 rounded shadow"> <!-- Form container with padding, rounded corners, and shadow -->
+            
+            <!-- Logo and title section -->
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+                <img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img" style="max-width: 200px;"> <!-- Logo image -->
+                <div>
+                    <h1 class="text-center logo-text">Realestate</h1> <!-- Main title -->
+                    <h4 class="text-center">Management</h4> <!-- Subtitle for the page -->
+                </div>
+            </div>
+
+            <!-- Display an error message if it exists -->
+            {% if message %}
+                <div class="alert alert-danger">{{ message }}</div> <!-- Error message displayed in red -->
+            {% endif %}
+
+            <!-- Login form that posts to the login URL -->
+            <form action="{% url 'login' %}" method="post" class="w-100"> 
+                {% csrf_token %} <!-- CSRF token for security -->
+                
+                <!-- Username input field -->
+                <div class="mb-3">
+                    <label for="username">Username</label> <!-- Label for the username field -->
+                    <input autofocus class="form-control" type="text" name="username" id="username" placeholder="Enter your username"> <!-- Username input -->
+                </div>
+
+                <!-- Password input field -->
+                <div class="mb-3">
+                    <label for="password">Password</label> <!-- Label for the password field -->
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password"> <!-- Password input -->
+                </div>
+
+                <!-- Submit button for the login form -->
+                <div class="d-flex justify-content-center">
+                    <input class="btn" type="submit" value="Login"> <!-- Login button -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Block to include JavaScript files -->
+    {% block scripts %}
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script> <!-- Bootstrap JS -->
+    {% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+{% extends "realestate/layout_development.html" %} <!-- Inherit the layout from 'layout_development.html' template -->
+
+{% block content %} <!-- Define the content block for this page -->
+
+<div class="container mt-5"> <!-- Container for the page content with margin-top -->
+    <h1 class="text-center mb-4 logo-text">Development Lists</h1> <!-- Page title centered with bottom margin -->
+
+    <!-- Form to submit selected developments for management -->
+    <form method="post" action="{% url 'management' %}"> 
+        {% csrf_token %} <!-- Django CSRF token for security -->
+
+        <ul class="list-group"> <!-- Start of the list group for displaying developments -->
+            <!-- List item header for the table -->
+            <li class="list-group-item d-flex justify-content-between align-items-center fw-bold bg-light">
+                <div class="col-1">Select</div> <!-- Column for the checkbox -->
+                <div class="col-3">Title</div> <!-- Column for the development title -->
+                <div class="col-7">Content</div> <!-- Column for the development content -->
+                <div class="col-1">Actions</div> <!-- Column for the action buttons (e.g., edit) -->
+            </li>
+
+            <!-- Loop through each development in 'developments' -->
+            {% for dev in developments %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="col-1">
+                    <input type="checkbox" name="development_ids" value="{{ dev.id }}"> <!-- Checkbox for each development -->
+                </div>
+                <div class="col-3">
+                    <strong>{{ dev.title }}</strong> <!-- Display the title of the development -->
+                </div>
+                <div class="col-7">
+                    <p class="mb-0 text-truncate" title="{{ dev.content }}">{{ dev.content }}</p> <!-- Display the content with truncation and tooltip for overflow -->
+                </div>
+                <div class="col-1">
+                    <!-- Edit button linked to the 'edit_development' URL with the development's id -->
+                    <a href="{% url 'edit_development' dev.id %}" class="edit-btn">
+                        Edit
+                    </a>
+                </div>
+            </li>
+            {% empty %} <!-- If there are no developments -->
+            <li class="list-group-item text-center">
+                There are no developments available. <!-- Message indicating no developments -->
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Delete button container that appears if at least one checkbox is selected -->
+        <div class="mt-3" id="delete-button-container" style="display: none;">
+            <!-- Button to delete selected developments, with a confirmation prompt -->
+            <button type="submit" name="delete" class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to delete the selected developments?');">
+                Delete selected
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %} <!-- End of content block -->

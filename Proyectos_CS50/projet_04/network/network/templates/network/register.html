@@ -1,0 +1,29 @@
+{% extends "network/layautLoginRegister.html" %}
+{% load static %}
+{% load extras %}
+
+{% block body %}
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="login-card p-4 rounded shadow">
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+            <img src="{% static 'network/logo/logoBirdie.png' %}" alt="Birdie Logo" class="mb-2" width="50">
+            <h1 class="mb-0">Django Birdie</h1>
+        </div>
+        <h4 class="text-center mb-3">Register</h4>
+
+        {% if message %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+
+        <form action="{% url 'register' %}" method="post" enctype="multipart/form-data" class="w-100">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+
+        <p class="text-center mt-3">
+            Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

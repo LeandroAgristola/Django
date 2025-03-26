@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="text-center">Your Won Auctions</h2>  <!-- Centered title -->
+
+    <div class="container-fluid">
+        <div class="row">
+            {% if won_listings %}
+                {% for listing in won_listings %}
+                    <div class="col-md-3 mb-4">  <!-- 4 cards per row -->
+                        <div class="card h-100">  <!-- h-100 to keep consistent height across cards -->
+                            <img src="{{ listing.image.url }}" class="card-img-top img-fluid" alt="{{ listing.title }}" style="object-fit: cover; height: 200px;">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ listing.title }}</h5>
+                                <p class="card-text">Final Price: {{ listing.current_bid }} USD</p>  <!-- Show final price -->
+                                <a href="{% url 'listing_detail' listing.id %}" class="btn btn-primary mt-auto">View Details</a>  <!-- 'mt-auto' to push the button to the bottom -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p>No won auctions.</p>  <!-- Message when there are no won listings -->
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
