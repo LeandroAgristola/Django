@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-ES"> 
+	<head> 
+		<meta charset="utf-8"> <!-- Sets character encoding to support special characters -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design for mobile devices -->
+		<meta name="description" content="COMPLETAR"> <!-- SEO meta description -->
+		
+		<!-- Preconnect to external fonts to optimize load performance -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+		<link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> <!-- Preloads the Lato font -->
+
+		{% block css %}
+		<!-- Bootstrap CSS for responsive design -->
+		<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.css' %}">
+		<!-- Custom CSS styles -->
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+		{% endblock %}
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+		<!-- Font Awesome for icons -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+		integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+		crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+		<title>{% block title %}Espacio{% endblock %}</title> <!-- Page title with a block for dynamic content -->
+	</head>
+	<body>
+
+<!-- Header Section -->
+		<header id="home" class="fixed-top custom-header">
+			<div class="container">
+				<!-- Primera fila: Iconos sociales y logo -->
+				<div class="row align-items-center py-2">
+					<!-- Iconos sociales -->
+					<div class="col-md-3 social-icons">
+						<a href="#" target="_blank" class="text-decoration-none">
+							<i class="fab fa-instagram fa-lg mx-2"></i>
+						</a>
+						<a href="#" target="_blank" class="text-decoration-none">
+							<i class="fab fa-facebook-f fa-lg mx-2"></i>
+						</a>
+						<a href="#" target="_blank" class="text-decoration-none">
+							<i class="fab fa-youtube fa-lg mx-2"></i>
+						</a>
+					</div>
+					
+					<!-- Logo centrado -->
+					<div class="col-md-6 text-center">
+						<a href="{% url 'home' %}" class="d-flex flex-column align-items-center text-decoration-none">
+							<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img">
+							<h1 class="logo-title mb-0">Estudio</h1>
+						</a>
+					</div>
+					
+					<!-- Espacio vacío para balancear el grid -->
+					<div class="col-md-3"></div>
+				</div>
+				
+				<!-- Segunda fila: Navbar -->
+				<div class="row">
+					<div class="col-12">
+						<nav class="navbar navbar-expand-md navbar-light justify-content-center">
+							<!-- Botón de hamburguesa -->
+							<button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							</button>
+
+							<!-- Menú colapsable -->
+							<div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
+								<ul class="navbar-nav">
+									<li class="nav-item mx-2"><a class="nav-link" href="#hero">Home</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#planes">Planes</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#horarios">Horarios</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#staff">Staff</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#eventos">Eventos</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#contacto">Contacto</a></li>
+								</ul>
+
+								<!-- Iconos sociales dentro del menú en móvil -->
+								<div class="menu-social-icons d-md-none">
+									<a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+									<a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+									<a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<!-- Dynamic content block -->
+		{% block content %}
+
+		{% endblock %}
+		
+		<!-- Footer Section -->
+		<footer class="text-dark py-2"> <!-- Footer with dark text and padding -->
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col d-flex justify-content-around mb-2"> <!-- Footer links aligned with spacing -->
+						<div class="d-flex align-items-center">
+							<i class="fa-brands fa-square-instagram me-2"></i> <!-- Instagram icon -->
+							<a href="https://www.instagram.com/estudio/?hl=es" target="_blank">@estudio</a>
+						</div>
+						<div class="d-flex align-items-center">
+							<i class="fa-solid fa-phone me-2"></i> <!-- Phone icon -->
+							<a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">1143214321</a>
+						</div>
+						<div class="d-flex align-items-center">
+							<i class="fa-solid fa-envelope me-2"></i> <!-- Email icon -->
+							<a href="mailto:consultas@estudio.com" target="_blank">consultations@estudio.com</a>
+						</div>
+						<div class="d-flex align-items-center">
+							<i class="fa-solid fa-location-dot me-2"></i> <!-- Location icon -->
+							<a href="https://maps.app.goo.gl/7smjejBQubtxXAZKA" target="_blank">14th Street No. 12, La Plata, Buenos Aires</a>
+						</div>
+					</div>
+					<div class="text-end">
+						<p class="mb-0">&copy; My company 2023</p> <!-- Copyright notice -->
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<!-- Scripts block for JS files -->
+		{% block scripts %}
+		<!-- Bootstrap JS bundle -->
+		<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+		<!-- Custom menu animations -->
+		<script src="{% static 'js/menu-animations.js' %}"></script>
+		{% endblock %}
+	</body>
+</html>
