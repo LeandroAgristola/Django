@@ -12,15 +12,6 @@ body {
     margin: 0;
 }
 
-h1 { font-size: 3em; font-weight: bold; }
-h2 { font-size: 2.5em; font-weight: bold; }
-h3 { font-size: 2em; }
-p { font-size: 1.1em; }
-a {text-decoration: none; } 
-
-
-.accent_color { color:rgb(89, 89, 247);}
-
 .container{
     padding: 0;
     height: 100vh;
@@ -53,7 +44,6 @@ a {text-decoration: none; }
 }
 
 .logo-title {
-    font-family: 'Lato', sans-serif;
     font-size: 1.8rem;
     font-weight: 700;
     color: #000000;
@@ -74,7 +64,7 @@ a {text-decoration: none; }
     font-size: 0.9rem;
     font-weight: 500;
     color: #000000 !important;
-    padding: 8px 0;
+    padding: 5px 0;
     position: relative;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -162,6 +152,10 @@ a {text-decoration: none; }
 
 /* Estilos para mobile */
 @media (max-width: 767.98px) {
+    .custom-header {
+        height: 150px;
+    }
+
     .logo-img {
         height: 50px;
     }
@@ -177,15 +171,14 @@ a {text-decoration: none; }
     /* Estilo para el navbar mobil */
 
     .nav-link {
-        font-size: 1.8rem;
+        font-size: 0.8rem;
     }
 
     .navbar-collapse {
         position: fixed;
-        top: 180px;
+        top: 150px;
         left: 0;
         width: 100%;
-        height: calc(100vh - 180px);
         background-color: rgba(247, 235, 220, 0.95);
         display: flex;
         flex-direction: column;
@@ -211,14 +204,14 @@ a {text-decoration: none; }
 
     /* Iconos sociales dentro del menú */
     .menu-social-icons {
-        margin-top: 100px;
+        margin-top: 20px;
         display: flex;
         gap: 15px;
         padding: 25px;
     }
 
     .menu-social-icons a {
-        font-size: 2.5rem;
+        font-size: 1rem;
         color: #000;
         transition: color 0.3s ease;
     }
