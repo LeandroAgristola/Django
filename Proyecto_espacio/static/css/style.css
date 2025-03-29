@@ -12,9 +12,8 @@ body {
     margin: 0;
 }
 
-.container{
-    padding: 0;
-    height: 100vh;
+a {
+    text-decoration: none;
 }
 
 /* Estilos para el header */
@@ -90,6 +89,30 @@ body {
     width: 100%;
 }
 
+/* Specific style for the "Footer" section */
+
+footer {
+    height: 100%;
+    font-size: 1.1em;
+    background-color: rgba(247, 235, 220, 0.95);
+}
+
+footer a {
+    color: black; 
+}
+
+footer a:hover {
+    color: #696969;
+}
+
+footer .fa {
+    font-size: 1.5rem; 
+}
+
+footer .text-end {
+    margin-top: 0.5rem; 
+}
+
 /* Estilos para mobile */
 @media (max-width: 767.98px) {
     .custom-header {
@@ -108,8 +131,6 @@ body {
         display: none;;
     }
 
-    /* Estilo para el navbar mobil */
-
     .nav-link {
         font-size: 0.8rem;
     }
@@ -124,14 +145,6 @@ body {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .navbar-collapse.show {
-        opacity: 1;
-        transform: scale(1);
-        visibility: visible;
     }
 
     .navbar-nav {
@@ -182,7 +195,7 @@ body {
 
     /* Animación del botón de hamburguesa a cruz */
     .navbar-toggler.active .navbar-toggler-icon {
-        background: none; /*esta propiedad soluciona la linea del medio al hacer la animacion de hamburguesa a X*/
+        background: none; /*esta propiedad soluciona la linea del medio al hacer la animacion de hamburguesa a*/
     }
 
     .navbar-toggler.active .navbar-toggler-icon::before {
@@ -211,5 +224,34 @@ body {
 
     .menu-social-icons a:hover {
         color: #696969;
+    }
+
+    footer {
+        padding: 1rem; 
+    }
+
+    footer .row {
+        text-align: center;
+    }
+
+    footer .col {
+        flex-direction: column;
+        align-items: center; 
+    }
+
+    footer .d-flex.align-items-center {
+        flex-direction: row; 
+        align-items: center; 
+        margin-bottom: 0.5rem; 
+        height: 40px;
+    }
+
+    footer .text-end {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    footer .fa {
+        font-size: 1.2rem;
     }
 }
