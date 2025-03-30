@@ -1,0 +1,55 @@
+Apps: 
+
+web (Para la parte pública del sitio)
+    Home
+    Nosotros
+    Planes
+    Horarios
+    Staff
+    Eventos (vista pública)
+    Contacto
+  
+    Layout: 
+        Agregar iconos de redes dentro del menu en la version mobil
+        Ajustar el icono de menu para version mobil
+        Ajustar el menu de la version mobil para q ocupe el ancho de la pantalla
+        Ajugar footer:
+            Iconos hotizontales 
+                Instagram
+                Whatsapp
+                Mail
+                ubicacion
+            copy rigth debajo
+    Home:
+        
+
+clientes (Para la gestión de clientes)
+
+    Registro y listado de clientes
+    Administración de planes
+    Inscripción en horarios y eventos
+    Historial de bajas y métricas
+
+empleados (Para la gestión del staff)
+
+    Listado y creación de empleados
+    Información de empleados
+    Edición y eliminación de empleados
+
+eventos (Para la gestión de eventos)
+
+    Creación, edición y eliminación de eventos
+    Control de cupos y disponibilidad
+    Inscripción de clientes a eventos
+
+calendario (Para la administración de horarios)
+
+    Gestión de horarios disponibles
+    Inscripción y visualización de clientes por turno
+    Exportación de calendario a Drive
+
+admin_panel (Para la administración general)
+
+    Dashboard con estadísticas
+    Administración centralizada de clientes, empleados, eventos y horarios
+    Configuración del sistema
