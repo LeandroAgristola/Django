@@ -8,8 +8,8 @@
 		
 		<!-- Preconnect to external fonts to optimize load performance -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-		<link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> <!-- Preloads the Lato font -->
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&family=Noto+Sans+Gunjala+Gondi:wght@400..700&display=swap" rel="stylesheet">
 
 		{% block css %}
 		<!-- Bootstrap CSS for responsive design -->
@@ -36,13 +36,13 @@
 				<div class="row align-items-center py-2">
 					<!-- Iconos sociales -->
 					<div class="col-md-3 social-icons">
-						<a href="#" target="_blank" class="text-decoration-none">
+						<a href="#" target="_blank">
 							<i class="fab fa-instagram fa-lg mx-2"></i>
 						</a>
-						<a href="#" target="_blank" class="text-decoration-none">
+						<a href="#" target="_blank">
 							<i class="fab fa-facebook-f fa-lg mx-2"></i>
 						</a>
-						<a href="#" target="_blank" class="text-decoration-none">
+						<a href="#" target="_blank">
 							<i class="fab fa-youtube fa-lg mx-2"></i>
 						</a>
 					</div>
@@ -99,31 +99,31 @@
 		{% endblock %}
 		
 		<!-- Footer Section -->
-		<footer class="text-dark py-2"> <!-- Footer with dark text and padding -->
+		<footer class="py-2"> 
 			<div class="container-fluid">
-				<div class="row">
-					<div class="col d-flex justify-content-around mb-2"> <!-- Footer links aligned with spacing -->
-						<div class="d-flex align-items-center">
-							<i class="fab fa-instagram fa-lg mx-2"></i> <!-- Instagram icon -->
-							<a href="https://www.instagram.com/estudio/?hl=es" target="_blank">@estudio</a>
-						</div>
-						<div class="d-flex align-items-center">
-							<i class="fa-solid fa-phone me-2"></i> <!-- Phone icon -->
-							<a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">1143214321</a>
-						</div>
-						<div class="d-flex align-items-center">
-							<i class="fa-solid fa-envelope me-2"></i> <!-- Email icon -->
-							<a href="mailto:consultas@estudio.com" target="_blank">consultations@estudio.com</a>
-						</div>
-						<div class="d-flex align-items-center">
-							<i class="fa-solid fa-location-dot me-2"></i> <!-- Location icon -->
-							<a href="https://maps.app.goo.gl/7smjejBQubtxXAZKA" target="_blank">14th Street No. 12, La Plata, Buenos Aires</a>
-						</div>
-					</div>
-					<div class="text-end">
-						<p class="mb-0">&copy; My company 2023</p> <!-- Copyright notice -->
-					</div>
-				</div>
+                <div class="row text-center text-md-start">
+                    <div class="col-12 col-md d-flex flex-column flex-md-row justify-content-md-around align-items-center mb-2">
+                        <div class="d-flex align-items-center mb-2 mb-md-0">
+                            <i class="fab fa-instagram me-2"></i> 
+                            <a href="#" target="_blank">@estudio</a>
+                        </div>
+                        <div class="d-flex align-items-center mb-2 mb-md-0">
+                            <i class="fa-solid fa-phone me-2"></i> 
+                            <a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">1143214321</a>
+                        </div>
+                        <div class="d-flex align-items-center mb-2 mb-md-0">
+                            <i class="fa-solid fa-envelope me-2"></i> 
+                            <a href="mailto:consultas@estudio.com" target="_blank">consultations@estudio.com</a>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-location-dot me-2"></i> 
+                            <a href="#" target="_blank">14 Nro 12, La Plata</a>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center text-md-end">
+                        <p class="mb-0">&copy; My company 2023</p> 
+                    </div>
+                </div>
 			</div>
 		</footer>
 

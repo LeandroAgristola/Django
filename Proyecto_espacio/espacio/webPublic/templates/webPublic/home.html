@@ -1,7 +1,21 @@
 {% extends "webPublic/layout.html" %}
-
 {% load static %}
 
 {% block content %}
+<section id="hero">
 
+    <div class="container-fluid  d-flex align-items-center justify-content-center">   
+        <div class="row w-100">
+            <div class="col-md-6 d-flex justify-content-center align-items-center fade-in text-center">
+                <p id="Textohero">"Tu cuerpo es tu templo, pilates es la llave para desbloquear tu máximo potencial..."</p>
+            </div>
+            
+            <div class="col-md-6 d-flex justify-content-center align-items-cente fade-in">
+                <img src="{% static 'img/Img_princ.png' %}" alt="Imagen Principal" class="img-fluid">
+            </div>
+
+        </div>
+    </div>
+    
+</section>
 {% endblock %}

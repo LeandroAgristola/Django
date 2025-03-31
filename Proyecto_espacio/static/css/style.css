@@ -1,14 +1,20 @@
 /* Estilos Generales */
-* {
-    box-sizing: border-box;
-}
-
 html {
     scroll-behavior: smooth;
 }
 
+.Paleta {
+    color: #f6eddc;
+    color: #e3e5d7;/*Fondos*/
+    color: #bdd6d2; 
+    color: #a5c8ca; 
+    color: #586875; /*Texto*/
+    color: #3c4750; /*Hover / Focus*/
+}
+
+
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Noto Sans Gunjala Gondi', sans-serif;
     margin: 0;
 }
 
@@ -19,19 +25,21 @@ a {
 /* Estilos para el header */
 
 .custom-header {
-    background-color: #f7ebdc;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #e3e5d7;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     padding: 10px 0;
     height: 180px;
 }
 
 .social-icons a {
-    color: #000000;
+    font-size: 1rem;
+    color: #586875;
     transition: color 0.3s ease;
 }
 
 .social-icons a:hover {
-    color: #696969;
+    font-size: 1.05rem;
+    color: #3c4750;
 }
 
 /* Estilos para el logo */
@@ -45,7 +53,7 @@ a {
 .logo-title {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #000000;
+    color: #586875;
     letter-spacing: 1px;
 }
 
@@ -59,19 +67,17 @@ a {
 }
 
 .nav-link {
-    font-family: 'Lato', sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #000000 !important;
+    color: #586875 !important;
     padding: 5px 0;
     position: relative;
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .nav-link:hover,
 .nav-link:focus {
-    color: #696969 !important;
+    color: #3c4750 !important;
 }
 
 .nav-link::after {
@@ -81,7 +87,7 @@ a {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color:  #000000;
+    background-color:  #3c4750;
     transition: width 0.3s ease;
 }
 
@@ -89,61 +95,57 @@ a {
     width: 100%;
 }
 
+/* Estilo para texto de hero */
+
+#Textohero {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #586875;
+}
+
+/* Estilo de aparicion de los elementos */
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInAnimation 1.8s ease-out forwards;
+    -webkit-animation: fadeInAnimation 1.8s ease-out forwards;
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Specific style for the "Footer" section */
 
 footer {
     height: 100%;
-    font-size: 1.1em;
-    background-color: #f7ebdc;
+    font-size: 0.9em;
+    background-color: #e3e5d7;
 }
 
 footer a {
-    color: black; 
+    color: #586875; 
 }
 
 footer a:hover {
-    color: #696969;
+    color: #3c4750;
 }
 
-footer .fa {
-    font-size: 1.5rem; 
-}
-
-footer .text-end {
-    margin-top: 0.5rem; 
+footer i {
+    font-size: 1rem;
+    color: #586875;
 }
 
 @media (max-width: 1024px) {
-
-    footer {
-        padding: 1rem; 
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    footer .row {
-        text-align: center;
-    }
-
-    footer .col {
-        flex-direction: column;
-        align-items: center; 
-    }
-
-    footer .d-flex.align-items-center {
-        flex-direction: row; 
-        align-items: center; 
-        margin-bottom: 0.5rem; 
-        height: 40px;
-    }
-
-    footer .text-end {
-        text-align: center;
-        margin-top: 0.5rem;
-    }
-
-    footer .fa {
-        font-size: 1.2rem;
-    }
 
 }
 
@@ -166,7 +168,8 @@ footer .text-end {
     }
 
     .nav-link {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        font-weight: lighter;
     }
 
     .navbar-collapse {
@@ -174,11 +177,11 @@ footer .text-end {
         top: 150px;
         left: 0;
         width: 100%;
-        background-color: #f7ebdc;
+        background-color: #e3e5d7;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        z-index: 1050; /* Asegura que esté por encima del contenido */
     }
 
     .navbar-nav {
@@ -198,7 +201,7 @@ footer .text-end {
     .navbar-toggler-icon {
         width: 30px;
         height: 3px;
-        background-color: #000;
+        background-color: #586875;;
         position: relative;
         transition: all 0.3s ease-in-out;
     }
@@ -208,7 +211,7 @@ footer .text-end {
         content: "";
         width: 30px;
         height: 3px;
-        background-color: #000;
+        background-color: #3c4750;
         position: absolute;
         left: 0;
         transition: all 0.3s ease-in-out;
@@ -242,6 +245,11 @@ footer .text-end {
         transform: rotate(-45deg);
     }
 
+    #Textohero {
+        margin-top: 20px;
+        font-size: 1rem;
+    }
+
     /* Iconos sociales dentro del menú */
     .menu-social-icons {
         margin-top: 20px;
@@ -252,12 +260,17 @@ footer .text-end {
 
     .menu-social-icons a {
         font-size: 1.5rem;
-        color: #000;
+        color: #586875;
         transition: color 0.3s ease;
-    }
+        -webkit-transition: color 0.3s ease;
+        -moz-transition: color 0.3s ease;
+        -ms-transition: color 0.3s ease;
+        -o-transition: color 0.3s ease;
+}
 
     .menu-social-icons a:hover {
-        color: #696969;
+        color: #3c4750;
+        font-size: 1.55rem;
     }
 
 }
