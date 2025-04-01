@@ -28,35 +28,37 @@ a {
 /* Estilos para el header */
 
 .custom-header {
-    background-color: #e3e5d7;
+    background-color: #e3e5d7c2;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     padding: 10px 0;
-    height: 180px;
+    height: 110px;
 }
 
 .social-icons a {
     font-size: 1rem;
-    color: #586875;
+    color: #3c4750;
     transition: color 0.3s ease;
 }
 
 .social-icons a:hover {
     font-size: 1.05rem;
-    color: #3c4750;
+    color: #586875;
 }
 
 /* Estilos para el logo */
 
 .logo-img {
-    height: 60px;
+    height: 50px;
+    color:#3c4750;
     width: auto;
     margin-bottom: 5px;
 }
 
 .logo-title {
-    font-size: 1.8rem;
+    font-family: "Faculty Glyphic", sans-serif;
+    font-size: 2rem;
     font-weight: 700;
-    color: #586875;
+    color: black;
     letter-spacing: 1px;
 }
 
@@ -72,7 +74,7 @@ a {
 .nav-link {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #586875 !important;
+    color:#3c4750;
     padding: 5px 0;
     position: relative;
     letter-spacing: 1px;
@@ -80,7 +82,7 @@ a {
 
 .nav-link:hover,
 .nav-link:focus {
-    color: #3c4750 !important;
+    color: #586875;
 }
 
 .nav-link::after {
@@ -90,7 +92,7 @@ a {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color:  #3c4750;
+    background-color:  #586875;
     transition: width 0.3s ease;
 }
 
@@ -100,8 +102,11 @@ a {
 
 /* Estilo para texto de hero */
 
+#hero{
+    height: calc(100vh - 110px);    
+}
+
 #Textohero {
-    font-family: "Faculty Glyphic", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 2rem;
@@ -113,7 +118,8 @@ a {
 
 /* Estilo para texto de nosotros */
 
-#nosotros .container-fluid{
+#nosotros {
+    height: 100vh;
     background-color: #f6eddc;
     padding: 50px;
 }
@@ -158,20 +164,20 @@ a {
 footer {
     height: 100%;
     font-size: 0.9em;
-    background-color: #e3e5d7;
+    background-color: #e3e5d7c2;
 }
 
 footer a {
-    color: #586875; 
+    color: #3c4750;
 }
 
 footer a:hover {
-    color: #3c4750;
+    color: #586875;
 }
 
 footer i {
     font-size: 1rem;
-    color: #586875;
+    color: #3c4750;
 }
 
 @media (max-width: 1024px) {
@@ -230,17 +236,21 @@ footer i {
     .navbar-toggler-icon {
         width: 30px;
         height: 3px;
-        background-color: #586875;;
+        background-color: #3c4750;
         position: relative;
         transition: all 0.3s ease-in-out;
-    }
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+}
 
     .navbar-toggler-icon::before,
     .navbar-toggler-icon::after {
         content: "";
         width: 30px;
         height: 3px;
-        background-color: #3c4750;
+        background-color: #000000;
         position: absolute;
         left: 0;
         transition: all 0.3s ease-in-out;
@@ -289,7 +299,7 @@ footer i {
 
     .menu-social-icons a {
         font-size: 1.5rem;
-        color: #586875;
+        color: #3c4750;
         transition: color 0.3s ease;
         -webkit-transition: color 0.3s ease;
         -moz-transition: color 0.3s ease;
@@ -298,7 +308,7 @@ footer i {
 }
 
     .menu-social-icons a:hover {
-        color: #3c4750;
+        color: #586875;
         font-size: 1.55rem;
     }
 

@@ -10,17 +10,16 @@ web (Para la parte pública del sitio)
     Contacto
   
     Layout: 
-        Agregar iconos de redes dentro del menu en la version mobil
-        Ajustar el icono de menu para version mobil
-        Ajustar el menu de la version mobil para q ocupe el ancho de la pantalla
+        NavBar:
+            Cambiar color de links
+            cambiar color de fondo
         Ajugar footer:
-            Iconos hotizontales 
-                Instagram
-                Whatsapp
-                Mail
-                ubicacion
-            copy rigth debajo
+
     Home:
+        version movil:
+            Anclar el header
+            Ajustar secciones a vh
+
         
 
 clientes (Para la gestión de clientes)
