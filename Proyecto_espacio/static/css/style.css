@@ -1,3 +1,5 @@
+
+
 /* Estilos Generales */
 html {
     scroll-behavior: smooth;
@@ -14,7 +16,8 @@ html {
 
 
 body {
-    font-family: 'Noto Sans Gunjala Gondi', sans-serif;
+    font-family: "Funnel Sans", sans-serif;
+    font-style: normal;
     margin: 0;
 }
 
@@ -98,10 +101,36 @@ a {
 /* Estilo para texto de hero */
 
 #Textohero {
+    font-family: "Faculty Glyphic", sans-serif;
+    font-weight: 400;
+    font-style: normal;
     font-size: 2rem;
-    font-weight: 900;
+    font-weight: bold;
     letter-spacing: 1px;
     color: #586875;
+    padding: 20px;
+}
+
+/* Estilo para texto de nosotros */
+
+#nosotros .container-fluid{
+    background-color: #f6eddc;
+    padding: 50px;
+}
+
+#nosotros .col{
+    padding: 50px;
+}
+
+#textNosotros {
+    font-size: 1rem;
+    letter-spacing: 1px;
+    color: #586875;
+
+}
+
+#textNosotros h3{
+    font-weight: bold;
 }
 
 /* Estilo de aparicion de los elementos */
