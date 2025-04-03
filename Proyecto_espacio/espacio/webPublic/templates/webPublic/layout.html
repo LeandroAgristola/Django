@@ -20,11 +20,7 @@
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&display=swap" rel="stylesheet">
-		
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Farro:wght@300;400;500;700&family=Federo&display=swap" rel="stylesheet">
 
 		<!-- Font Awesome for icons -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
@@ -33,6 +29,7 @@
 		
 		<title>{% block title %}Espacio{% endblock %}</title> <!-- Page title with a block for dynamic content -->
 	</head>
+	
 	<body>
 
 <!-- Header Section -->
@@ -54,8 +51,8 @@
 					</div>
 					
 					<!-- Logo centrado -->
-					<div class="col-md-6 text-center">
-						<a href="{% url 'home' %}" class="d-flex flex-row align-items-center justify-content-center text-decoration-none">
+					<div class="col-md-6 text-center fade-in">
+						<a href="{% url 'home' %}" class="d-flex flex-row align-items-center justify-content-center">
 							<h1 class="logo-title mb-0">Estudio</h1>
 							<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-2"> 
 						</a>
@@ -78,12 +75,12 @@
 							<!-- Menú colapsable -->
 							<div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
 								<ul class="navbar-nav">
-									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#hero">Home</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="#home">Home</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#nosotros">Nosotros</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#planes">Planes</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#horarios">Horarios</a></li>
-									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#staff">Staff</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#eventos">Eventos</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#staff">Staff</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#contacto">Contacto</a></li>
 								</ul>
 
@@ -106,39 +103,51 @@
 		{% endblock %}
 		
 		<!-- Footer Section -->
-		<footer class="py-2"> 
-			<div class="container-fluid">
-                <div class="row text-center text-md-start">
-                    <div class="col-12 col-md d-flex flex-column flex-md-row justify-content-md-around align-items-center mb-2">
-                        <div class="d-flex align-items-center mb-2 mb-md-0">
-                            <i class="fab fa-instagram me-2"></i> 
-                            <a href="#" target="_blank">@estudio</a>
-                        </div>
-                        <div class="d-flex align-items-center mb-2 mb-md-0">
-                            <i class="fa-solid fa-phone me-2"></i> 
-                            <a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">1143214321</a>
-                        </div>
-                        <div class="d-flex align-items-center mb-2 mb-md-0">
-                            <i class="fa-solid fa-envelope me-2"></i> 
-                            <a href="mailto:consultas@estudio.com" target="_blank">consultations@estudio.com</a>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <i class="fa-solid fa-location-dot me-2"></i> 
-                            <a href="#" target="_blank">14 Nro 12, La Plata</a>
-                        </div>
-                    </div>
-                    <div class="col-12 text-center text-md-end">
-                        <p class="mb-0">&copy; My company 2023</p> 
-                    </div>
-                </div>
+		<footer class="py-4">
+			<div class="container">
+				<div class="row justify-content-center align-items-center text-center text-md-start">
+					
+					<!-- Columna 1: Logo, redes y dirección -->
+					<div class="col-md-6">
+						<div class="footer-brand mb-3 d-flex flex-md-row align-items-center justify-content-center justify-content-md-start">
+							<h1 class="logo-title mb-0 mt-2 mt-md-0">Estudio</h1>
+							<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-md-2">
+						</div>
+						<div class="footer-social">
+							<a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+							<a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+							<a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank"><i class="fab fa-whatsapp"></i></a>
+							<a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+							<a href="#" target="_blank"><i class="fa-solid fa-location-dot"></i></a>
+						</div>
+						<p class="mt-2">14 Nro 12, La Plata, Buenos Aires</p>
+					</div>
+
+					<!-- Columna 2: Información legal -->
+					<div class="col-md-6 text-center text-md-end mt-4 mt-md-0">
+						<p class="mb-1">&copy; Copyright 2024 | Todos los derechos reservados</p>
+						<p class="mb-0">CUIT 30-12345678-0 | 14 Nro 12, La Plata, Argentina</p>
+					</div>
+
+				</div>
 			</div>
 		</footer>
+		
+		<!-- Boton de whatsapp -->
+		<a href="https://api.whatsapp.com/send?phone=541143214321" 
+			class="whatsapp-float" 
+			target="_blank" 
+			aria-label="Chatea con nosotros por WhatsApp">
+			<i class="fab fa-whatsapp"></i>
+		</a>
 
 		<!-- Scripts block for JS files -->
 		{% block scripts %}
 		<!-- Bootstrap JS bundle -->
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-		<!-- Custom menu animations -->
+		<!-- Animacion del scroll -->
+		<script src="{% static 'js/fadeInOnScroll.js' %}"></script>
+		<!-- Animacion del Menu -->
 		<script src="{% static 'js/menu-animations.js' %}"></script>
 		{% endblock %}
 	</body>

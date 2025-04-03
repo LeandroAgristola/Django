@@ -10,55 +10,93 @@ html {
     color: #e3e5d7;/*Fondos*/
     color: #bdd6d2; 
     color: #a5c8ca; 
-    color: #586875; /*Texto*/
-    color: #3c4750; /*Hover / Focus*/
+    color: #586875; /*Hover / Focus*/
+    color: #3c4750; /*Texto*/
+    color: #283131; /*Texto Acento*/
 }
 
+.Fuentes {
+    font-family: "Federo", sans-serif; /* Logo */
+    font-family: "Faculty Glyphi", sans-serif; /* Fuente Principal*/ 
+    font-family: "Farro", sans-serif; /*NavLink*/        
+}
 
 body {
-    font-family: "Funnel Sans", sans-serif;
-    font-style: normal;
     margin: 0;
 }
 
-a {
+/* Botón flotante de WhatsApp */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #fff;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #1ebe57;
+}
+
+.TextoAcento {
+    color: #283131;
+    font-weight: bold;
+    font-family: "Federo", sans-serif;
+
+}
+
+p ,h1, h2, h3, h4, h5, h6, a {
+    color: #3c4750;
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    color: #586875;
 }
 
 /* Estilos para el header */
 
 .custom-header {
-    background-color: #e3e5d7c2;
+    background-color: #e3e5d7;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     padding: 10px 0;
-    height: 110px;
+    height: 120px;
 }
 
 .social-icons a {
     font-size: 1rem;
-    color: #3c4750;
     transition: color 0.3s ease;
 }
 
 .social-icons a:hover {
     font-size: 1.05rem;
-    color: #586875;
 }
 
 /* Estilos para el logo */
 
 .logo-img {
     height: 50px;
-    color:#3c4750;
     width: auto;
     margin-bottom: 5px;
 }
 
 .logo-title {
-    font-family: "Faculty Glyphic", sans-serif;
+    font-family: "Federo", sans-serif;
     font-size: 2rem;
     font-weight: 700;
-    color: black;
     letter-spacing: 1px;
 }
 
@@ -72,17 +110,12 @@ a {
 }
 
 .nav-link {
+    font-family: "Farro", sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
-    color:#3c4750;
     padding: 5px 0;
     position: relative;
     letter-spacing: 1px;
-}
-
-.nav-link:hover,
-.nav-link:focus {
-    color: #586875;
 }
 
 .nav-link::after {
@@ -103,40 +136,45 @@ a {
 /* Estilo para texto de hero */
 
 #hero{
-    height: calc(100vh - 110px);    
+    height: calc(100vh - 120px);    
 }
 
 #Textohero {
-    font-weight: 400;
-    font-style: normal;
+    font-family: "Federo", sans-serif;
+    font-weight: 900;
     font-size: 2rem;
-    font-weight: bold;
     letter-spacing: 1px;
-    color: #586875;
-    padding: 20px;
+    padding: 0 15px;
 }
 
-/* Estilo para texto de nosotros */
-
+/* Sección Nosotros */
 #nosotros {
-    height: 100vh;
+    min-height: 100vh;
     background-color: #f6eddc;
-    padding: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#nosotros .col{
-    padding: 50px;
+#nosotros .row{
+    padding: 15px;
 }
 
-#textNosotros {
-    font-size: 1rem;
-    letter-spacing: 1px;
-    color: #586875;
-
+.text-nosotros {
+    font-family: "Faculty Glyphi", sans-serif;
+    max-width: 90%;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 15px 10px; 
 }
 
-#textNosotros h3{
-    font-weight: bold;
+.img-nosotros {
+    width: 90%;
+    max-height: 350px;  /* Evita que la imagen crezca demasiado */
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilo de aparicion de los elementos */
@@ -144,40 +182,39 @@ a {
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInAnimation 1.8s ease-out forwards;
-    -webkit-animation: fadeInAnimation 1.8s ease-out forwards;
+    transition: opacity 1.8s ease-out, transform 1.8s ease-out;
 }
 
-@keyframes fadeInAnimation {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Specific style for the "Footer" section */
-
+/* Footer */
 footer {
-    height: 100%;
+    background-color: #e3e5d7;
     font-size: 0.9em;
-    background-color: #e3e5d7c2;
+    padding: 20px 0;
 }
 
-footer a {
-    color: #3c4750;
+/* Centrar elementos en móvil */
+.footer-brand {
+    text-align: center;
 }
 
-footer a:hover {
-    color: #586875;
+.footer-social {
+    display: flex;
+    gap: 15px;
 }
 
-footer i {
-    font-size: 1rem;
-    color: #3c4750;
+/* Iconos de redes y dirección */
+.footer-social a {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.footer-social a:hover {
+    transform: scale(1.2);
 }
 
 @media (max-width: 1024px) {
@@ -203,26 +240,41 @@ footer i {
     }
 
     .nav-link {
-        font-size: 0.9rem;
+        font-family: "Farro", sans-serif;
+        font-size: 1.5rem;
         font-weight: lighter;
     }
 
     .navbar-collapse {
         position: fixed;
-        top: 150px;
         left: 0;
+        height: 100vh;
         width: 100%;
         background-color: #e3e5d7;
-        display: flex;
+        display: flex ;
         flex-direction: column;
         align-items: center;
-        z-index: 1050; /* Asegura que esté por encima del contenido */
+        justify-content: flex-start !important;
+        padding-top: 20px;
+        z-index: 1050;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        opacity: 0;
+        display: none;
+    }
+
+    .navbar-collapse.show {
+        transform: translateY(0);
+        opacity: 1;
+        z-index: 1050;
     }
 
     .navbar-nav {
+        width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        align-items: center;
+        gap: 15px; /* Espacio entre los enlaces */
     }
 
     /* Estilos para el botón de hamburguesa */
@@ -286,30 +338,65 @@ footer i {
 
     #Textohero {
         margin-top: 20px;
-        font-size: 1rem;
+        font-size: 1.8rem;
+    }
+
+    /* Bloqueo de scroll al abrir el menú */
+    .menu-open {
+        overflow: hidden;
+        height: 100vh;
     }
 
     /* Iconos sociales dentro del menú */
     .menu-social-icons {
-        margin-top: 20px;
+        margin-top: 100px;
+        padding-bottom: 20px; /* Espaciado inferior */
         display: flex;
         gap: 20px;
-        padding-bottom: 25px;
     }
 
-    .menu-social-icons a {
+    .menu-social-icons a i {
         font-size: 1.5rem;
-        color: #3c4750;
-        transition: color 0.3s ease;
-        -webkit-transition: color 0.3s ease;
-        -moz-transition: color 0.3s ease;
-        -ms-transition: color 0.3s ease;
-        -o-transition: color 0.3s ease;
-}
-
-    .menu-social-icons a:hover {
-        color: #586875;
-        font-size: 1.55rem;
+        transition: transform 0.3s ease-in-out;
+        display: inline-block; /* Evita que afecte el flujo */
     }
 
+    .menu-social-icons a i:hover {
+        transform: scale(1.2);
+    }
+
+     /* Seccion Nosotros Movil */
+
+    #nosotros {
+        padding: 50px 15px; /* Más espacio en móviles */
+    }
+
+    .text-nosotros {
+        font-size: 1rem; /* Texto más pequeño en móviles */
+        max-width: 100%;
+    }
+
+    .img-nosotros {
+        max-height: 200px; /* Imagen más pequeña en móviles */
+    }
+
+    #nosotros .row {
+        gap: 20px; /* Espacio entre filas */
+    }
+
+    .footer-brand {
+        flex-direction: row; /* Mantiene el logo y el texto en línea */
+        align-items: center;
+        justify-content: center; /* Centra horizontalmente */
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .logo-title {
+        margin-top: 0; /* Elimina el margen superior */
+        margin-left: 10px; /* Espacio entre el logo y el texto */
+    }
 }

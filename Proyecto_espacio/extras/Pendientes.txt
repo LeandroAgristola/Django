@@ -10,15 +10,8 @@ web (Para la parte pública del sitio)
     Contacto
   
     Layout: 
-        NavBar:
-            Cambiar color de links
-            cambiar color de fondo
-        Ajugar footer:
 
     Home:
-        version movil:
-            Anclar el header
-            Ajustar secciones a vh
 
         
 

@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-<section id="hero">
+<section id="hero" class="d-flex align-items-center justify-content-center">
 
-    <div class="container-fluid  d-flex align-items-center justify-content-center">   
-        <div class="row w-100">
+    <div class="container-fluid d-flex align-items-center justify-content-center">   
+        <div class="row">
             <div class="col-md-6 d-flex justify-content-center align-items-center fade-in text-center">
-                <p id="Textohero">Tu cuerpo es tu templo, pilates es la llave para desbloquear tu máximo potencial</p>
+                <p id="Textohero">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus esse deleniti numquam.</p>
             </div>
             
             <div class="col-md-6 d-flex justify-content-center align-items-cente fade-in">
@@ -20,26 +20,48 @@
 </section>
 
 
-<section id="nosotros">
+<section id="nosotros" class="d-flex align-items-center justify-content-center">
+    <div class="container-fluid d-flex flex-column align-items-center justify-content-center"> 
 
-    <div class="container-fluid  d-flex align-items-center justify-content-center">   
-        
-        <div class="row w-100">
-
-            <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <img src="{% static 'img/img_espacio02.png' %}" alt="Imagen Nosotros" class="img-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6 d-flex justify-content-center fade-in">
+                <img src="{% static 'img/img_espacio01.png' %}" alt="Imagen Nosotros" class="img-nosotros">
             </div>
 
-            <div class="col-md-6 d-flex justify-content-center align-items-center text-faded">
-                <div id="textNosotros">
-                    <h3>Nuestro Espacio</h3>
+            <div class="col-md-6 d-flex justify-content-center text-faded fade-in">
+                <div class="text-nosotros">
+                    <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
                 </div>
             </div>
-            
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-md-6 order-md-2 d-flex justify-content-center fade-in">
+                <img src="{% static 'img/img_espacio02.png' %}" alt="Imagen Nosotros" class="img-nosotros">
+            </div>
+
+            <div class="col-md-6 order-md-1 d-flex justify-content-center text-faded fade-in">
+                <div class="text-nosotros">
+                    <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
+                </div>
+            </div>
         </div>
     </div>
-    
+</section>
+
+
+<section id="planesHorarios" class="">
+
+</section>
+
+<section id="eventos" class="">
+
+</section>
+
+<section id="Staff" class="">
+
 </section>
 
 {% endblock %}
