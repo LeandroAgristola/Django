@@ -85,13 +85,18 @@ a:focus {
     height: 120px;
 }
 
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
 .social-icons a {
     font-size: 1rem;
-    transition: color 0.3s ease;
+    transition: transform 0.3s ease-in-out;
 }
 
 .social-icons a:hover {
-    font-size: 1.05rem;
+    transform: scale(1.2);
 }
 
 /* Estilos para el logo */
@@ -157,7 +162,7 @@ a:focus {
 
 /* Sección Nosotros */
 #nosotros {
-    min-height: 100vh;
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 100% de la altura de la ventana */
     background-color: #f6eddc;
     display: flex;
     align-items: center;
@@ -186,7 +191,7 @@ a:focus {
 
 /* Sección Planes y Horarios */
 #planesHorarios {
-    height: 50vh;
+    min-height: 50vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
     background: url('/static/img/ImgPlanesHorarios.png') center/cover no-repeat;
     position: relative;
     display: flex;
@@ -208,8 +213,8 @@ a:focus {
 .card-custom {
     background: #bdd6d29a; /* Color armonioso con opacidad */
     border-radius: 20px;
-    height: 180px;
-    padding: 30px;
+    height: 100%;
+    padding: 15px;
     position: relative;
     z-index: 1;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -219,7 +224,7 @@ a:focus {
 .titulo-card {
     color: #3c4750;
     font-size: 1.5rem;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 /* Botón personalizado */
@@ -243,7 +248,7 @@ a:focus {
 
 /* Sección Eventos */
 #eventos {
-    height: 50vh;
+    min-height: 50vh; 
     background: #bdd6d29a;
     display: flex;
     align-items: center;
@@ -255,6 +260,15 @@ a:focus {
     color: #3c4750;
     font-size: 1rem;
     max-width: 350px; /* Reduce el ancho del texto */
+}
+
+/* Imagen */
+.img-eventos {
+    width: 90%;
+    height: 90%;
+    border-radius: 5px;
+    margin-left: auto; /* Alinea la imagen a la derecha */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Botón */
@@ -274,16 +288,6 @@ a:focus {
 
 .btn-eventos:hover {
     background-color: #3c4750;
-}
-
-/* Imagen */
-.img-eventos {
-    width: 100%;
-    max-width: 450px;
-    height: 100%;
-    border-radius: 5px;
-    margin-left: auto; /* Alinea la imagen a la derecha */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Seccion Staff */
@@ -316,7 +320,9 @@ a:focus {
 
 .descripcion-staff {
     font-family: "Faculty Glyphi", sans-serif;
-    color: #586875;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #3c4750;
     margin-bottom: 30px;
     position: relative;
     z-index: 1;
@@ -428,7 +434,7 @@ footer {
 
     .nav-link {
         font-family: "Farro", sans-serif;
-        font-size: 1.5rem;
+        font-size: 1rem;
         font-weight: lighter;
     }
 
@@ -523,11 +529,6 @@ footer {
         transform: rotate(-45deg);
     }
 
-    #Textohero {
-        margin-top: 20px;
-        font-size: 1.8rem;
-    }
-
     /* Bloqueo de scroll al abrir el menú */
     .menu-open {
         overflow: hidden;
@@ -536,7 +537,7 @@ footer {
 
     /* Iconos sociales dentro del menú */
     .menu-social-icons {
-        margin-top: 100px;
+        margin-top: 50px;
         padding-bottom: 20px; /* Espaciado inferior */
         display: flex;
         gap: 20px;
@@ -550,6 +551,12 @@ footer {
 
     .menu-social-icons a i:hover {
         transform: scale(1.2);
+    }
+
+    /* Seccion Hero Movil */
+    #Textohero {
+        margin-top: 20px;
+        font-size: 1.5rem;
     }
 
      /* Seccion Nosotros Movil */
@@ -593,7 +600,7 @@ footer {
 
     .img-eventos {
         max-width: 70%;
-        margin: 0 auto 20px auto;
+        margin: 20px auto 20px auto;
     }
 
     /* Seccion Footer Movil */
