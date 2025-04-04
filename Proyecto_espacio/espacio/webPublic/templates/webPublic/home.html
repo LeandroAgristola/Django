@@ -10,7 +10,7 @@
                 <p id="Textohero">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus esse deleniti numquam.</p>
             </div>
             
-            <div class="col-md-6 d-flex justify-content-center align-items-cente fade-in">
+            <div class="col-md-6 d-flex justify-content-center align-items-center fade-in">
                 <img src="{% static 'img/Img_princ.png' %}" alt="Imagen Principal" class="img-fluid">
             </div>
 
@@ -29,22 +29,22 @@
             </div>
 
             <div class="col-md-6 d-flex justify-content-center text-faded fade-in">
-                <div class="text-nosotros">
+                <div class="text-center">
                     <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
+                    <p class="text-nosotros">Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
                 </div>
             </div>
         </div>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center ">
             <div class="col-md-6 order-md-2 d-flex justify-content-center fade-in">
                 <img src="{% static 'img/img_espacio02.png' %}" alt="Imagen Nosotros" class="img-nosotros">
             </div>
 
             <div class="col-md-6 order-md-1 d-flex justify-content-center text-faded fade-in">
-                <div class="text-nosotros">
+                <div class="text-center">
                     <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
+                    <p class="text-nosotros">Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
                 </div>
             </div>
         </div>
@@ -52,16 +52,86 @@
 </section>
 
 
-<section id="planesHorarios" class="">
+<section id="planesHorarios" class="planes-horarios d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center fade-in">
+            <!-- Tarjeta de Planes -->
+            <div class="col-md-5 mb-3">
+                <div class="card-custom text-center">
+                    <h2 class="titulo-card">Descubre nuestros planes</h2>
+                    <button class="btn-custom">Ver Planes</button>
+                </div>
+            </div>
+            <!-- Tarjeta de Horarios -->
+            <div class="col-md-5 mb-3">
+                <div class="card-custom text-center">
+                    <h2 class="titulo-card">Encuentra tu horario ideal</h2>
+                    <button class="btn-custom">Ver Horarios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="eventos">
+    <div class="container fade-in">
+        <div class="row eventos-contenedor">
+
+            <!-- Columna de Imagen -->
+            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                <img src="/static/img/ImgEventos.png" alt="Eventos" class="img-eventos">
+            </div>            
+
+            <!-- Columna de Texto -->
+            <div class="col-md-6 d-flex flex-column justify-content-center ">
+                <h3><span class="TextoAcento">Eventos</span></h3>
+                <p class="eventos-texto">
+                    Únete a nuestras clases especiales, talleres y eventos exclusivos para mejorar tu bienestar físico y mental.
+                </p>
+                <button class="btn-eventos">Ver próximos eventos</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="staff" class="staff-seccion">
+    <div class="container text-center">
+        <h2 class="titulo-staff">Nuestro Staff</h2>
+        <p class="descripcion-staff">Conoce a nuestro equipo de profesionales comprometidos con tu bienestar.</p>
+
+        <!-- Contenedor de tarjetas para escritorio -->
+        <div class="d-none d-md-flex justify-content-center">
+            <div class="staff-card">
+                <img src="/static/img/perfil_01.png" alt="Staff 1">
+                <h4>Mariano</h4>
+                <a href="https://instagram.com/" target="_blank">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+            </div>
+            <div class="staff-card">
+                <img src="/static/img/perfil_02.png" alt="Staff 2">
+                <h4>Lucas</h4>
+                <a href="https://instagram.com/" target="_blank">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+            </div>
+            <div class="staff-card">
+                <img src="/static/img/perfil_03.png" alt="Staff 3">
+                <h4>Estefania</h4>
+                <a href="https://instagram.com/" target="_blank">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+            </div>
+            <div class="staff-card">
+                <img src="/static/img/perfil_04.png" alt="Staff 4">
+                <h4>Marina</h4>
+                <a href="https://instagram.com/" target="_blank">
+                    <i class="fab fa-instagram"></i> Instagram
+                </a>
+            </div>
+        </div>
 
 </section>
 
-<section id="eventos" class="">
-
-</section>
-
-<section id="Staff" class="">
-
-</section>
 
 {% endblock %}
