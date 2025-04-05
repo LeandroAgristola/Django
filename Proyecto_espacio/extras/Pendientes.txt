@@ -12,6 +12,7 @@ web (Para la parte pública del sitio)
     Layout: 
 
     Home:
+    
 
         
 

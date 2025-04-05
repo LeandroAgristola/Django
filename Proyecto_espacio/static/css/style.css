@@ -26,6 +26,7 @@ body {
 }
 
 /* Botón flotante de WhatsApp */
+
 .whatsapp-float {
     position: fixed;
     bottom: 20px;
@@ -57,9 +58,8 @@ body {
 
 }
 
-p ,h1, h2, h3, a {
-    color: #3c4750;
-    
+p ,h1, h2, h3, h4, a {
+    color: #3c4750;   
 }
 
 a {
@@ -74,6 +74,10 @@ p {
 a:hover,
 a:focus {
     color: #586875;
+}
+
+.btn {
+    
 }
 
 /* Estilos para el header */
@@ -161,6 +165,7 @@ a:focus {
 }
 
 /* Sección Nosotros */
+
 #nosotros {
     min-height: 100vh; /* Asegura que la sección ocupe al menos el 100% de la altura de la ventana */
     background-color: #f6eddc;
@@ -174,7 +179,6 @@ a:focus {
 }
 
 .text-nosotros {
-    max-width: 90%;
     font-size: 1.2rem;
     letter-spacing: 0.5px;
     text-align: center;
@@ -192,21 +196,12 @@ a:focus {
 /* Sección Planes y Horarios */
 #planesHorarios {
     min-height: 50vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
-    background: url('/static/img/ImgPlanesHorarios.png') center/cover no-repeat;
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/ImgPlanesHorarios.png');
+    background-size: cover;
+    background-position: center;
     position: relative;
     display: flex;
     align-items: center;
-}
-
-/* Efecto de opacidad sobre la imagen de fondo */
-#planesHorarios::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f6eddcb9; /* Color de fondo con opacidad */
 }
 
 /* Tarjetas personalizadas */
@@ -292,27 +287,23 @@ a:focus {
 
 /* Seccion Staff */
 
-.staff-seccion {
-    position: relative; /* Necesario para que el ::before se posicione correctamente */
-    min-height: 50vh;
-    background: url('/static/img/img_staff.png') center/cover no-repeat;
-    padding: 40px 0;
+#containerCarusel {
+    display: none;
 }
 
-/* Efecto de opacidad sobre la imagen de fondo */
-.staff-seccion::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f6eddcb9; /* Color con opacidad */
+.staff-seccion {
+    min-height: 50vh;
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/img_staff.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    padding: 40px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .titulo-staff {
     font-family: "Federo", sans-serif;
-    color: #3c4750;
     margin-bottom: 10px;
     position: relative;
     z-index: 1;
@@ -320,9 +311,8 @@ a:focus {
 
 .descripcion-staff {
     font-family: "Faculty Glyphi", sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #3c4750;
+    font-size: 1.2rem;
+    font-weight: 500;
     margin-bottom: 30px;
     position: relative;
     z-index: 1;
@@ -348,11 +338,13 @@ a:focus {
     width: 200px;
     height: 200px;
     border-radius: 50%;
+    border-style: solid;
+    border-color: #a5c8ca;
     object-fit: cover;
 }
 
 .staff-card h4 {
-    font-family: "Faculty Glyphi", sans-serif;
+    font-family: "Farro", sans-serif;
     color: #3c4750;
     margin-top: 10px;
 }
@@ -361,26 +353,10 @@ a:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Farro", sans-serif;
-    color: #586875;
-    text-decoration: none;
 }
 
 .staff-card i {
     margin-right: 5px;
-}
-
-/* Estilo de aparicion de los elementos */
-
-.fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1.8s ease-out, transform 1.8s ease-out;
-}
-
-.fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* Footer */
@@ -408,6 +384,19 @@ footer {
 
 .footer-social a:hover {
     transform: scale(1.2);
+}
+
+/* Estilo de aparicion de los elementos */
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.8s ease-out, transform 1.8s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 @media (max-width: 1024px) {
@@ -603,6 +592,12 @@ footer {
         margin: 20px auto 20px auto;
     }
 
+    /* Seccion Staff Movil */
+
+    #containerCarusel {
+        display: flex;
+    }
+
     /* Seccion Footer Movil */
 
     .footer-brand {
@@ -620,4 +615,63 @@ footer {
         margin-top: 0; /* Elimina el margen superior */
         margin-left: 10px; /* Espacio entre el logo y el texto */
     }
+
+    #hero .carousel {
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    
+    #hero .carousel-inner {
+        justify-content: center;
+        padding-bottom: 0; 
+        padding-bottom: 50px;
+        align-items: center;
+    }
+    
+    #hero .carousel-item {
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #hero .card {
+        border-radius: 10px;
+        height: 500px;
+        max-width: 500px; 
+        background: rgba(0, 0, 0, 0.700);
+        color: white;
+        background-position: center;
+        background-size: cover;
+        padding: 15px;
+        margin: 20px auto; 
+    }
+    
+    #hero .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    #hero .card-text {
+        height: 100px;
+    
+    }
+    
+    #hero .card .btn {
+        font-size: 1em;
+        padding: 10px 20px;
+        background-color: rgb(48, 48, 119);
+        border-color: rgb(48, 48, 119);
+    }
+    
+    #hero .card .btn:hover {
+        background-color:rgb(89, 89, 247);
+        border-color:rgb(89, 89, 247);
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 70px; 
+        height: 70px; 
+    }
 }
+
+
