@@ -76,8 +76,20 @@ a:focus {
     color: #586875;
 }
 
-.btn {
-    
+.btn-custom {
+    background-color: #586875;
+    color: #f6eddc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-family: "Farro", sans-serif;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-custom:hover {
+    background-color: #3c4750;
 }
 
 /* Estilos para el header */
@@ -204,7 +216,6 @@ a:focus {
     align-items: center;
 }
 
-/* Tarjetas personalizadas */
 .card-custom {
     background: #bdd6d29a; /* Color armonioso con opacidad */
     border-radius: 20px;
@@ -219,27 +230,22 @@ a:focus {
 .titulo-card {
     color: #3c4750;
     font-size: 1.5rem;
+    font-weight: bold;
     margin-bottom: 15px;
+    font-family: "Federo", sans-serif;
 }
 
-/* Botón personalizado */
-.btn-custom {
-    background-color: #586875;
-    width: 180px;
-    color: #f6eddc;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
+#planesHorarios .card-text {
+    font-family: "Faculty Glyphi", sans-serif;
+    color: #3c4750;
     font-size: 1rem;
-    font-family: "Farro", sans-serif;
-    transition: background 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 25px;
 }
 
-.btn-custom:hover {
-    background-color: #3c4750;
+/* Botón */
+#planesHorarios .btn-custom {
+    width: 50%;
 }
-
 
 /* Sección Eventos */
 #eventos {
@@ -267,18 +273,8 @@ a:focus {
 }
 
 /* Botón */
-.btn-eventos {
-    background-color: #586875;
-    color: #f6eddc;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-family: "Farro", sans-serif;
-    transition: background 0.3s ease;
-    width: 100%;
-    max-width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+#eventos .btn-custom {
+    width: 50%;
 }
 
 .btn-eventos:hover {
@@ -399,7 +395,7 @@ footer {
     transform: translateY(0);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1366px) {
 
 }
 
@@ -579,7 +575,7 @@ footer {
         margin: 0 auto;
     }
 
-    .btn-eventos {
+    #eventos .btn-custom {
         width: 90%;
         max-width: 250px;
         margin: 20px auto; /* Asegura que el botón se centre */
@@ -595,7 +591,70 @@ footer {
     /* Seccion Staff Movil */
 
     #containerCarusel {
+        display: block; /* Asegura que el carrusel se muestre */
+        margin: 0 auto;
+    }
+
+    #containerCarusel .carousel {
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    #containerCarusel .carousel-inner {
+        justify-content: center;
+        padding-bottom: 0; 
+        align-items: center;
+    }
+
+    #containerCarusel .carousel-item {
+        justify-content: center;
+        align-items: center;
+    }
+
+    #containerCarusel .staff-card {
+        border-radius: 15px;
+        height: 220px;
+        max-width: 220px; 
+        background-color:#bdd6d2;
+        color: white;
+        background-position: center;
+        background-size: cover;
+        padding: 15px;
+        margin: 20px auto; 
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #containerCarusel .staff-card img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border-style: solid;
+        border-color: #a5c8ca;
+    }
+
+    #containerCarusel .staff-card h4 {
+        font-family: "Farro", sans-serif;
+        color: #3c4750;
+        margin-top: 10px;
+    }
+
+    #containerCarusel .staff-card a {
         display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ajustes para los controles del carrusel */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        z-index: 2; /* Asegura que los botones estén por encima de las tarjetas */
     }
 
     /* Seccion Footer Movil */
@@ -611,67 +670,5 @@ footer {
         justify-content: center;
     }
 
-    .logo-title {
-        margin-top: 0; /* Elimina el margen superior */
-        margin-left: 10px; /* Espacio entre el logo y el texto */
-    }
-
-    #hero .carousel {
-        padding: 0;
-        margin-bottom: 20px;
-    }
-    
-    #hero .carousel-inner {
-        justify-content: center;
-        padding-bottom: 0; 
-        padding-bottom: 50px;
-        align-items: center;
-    }
-    
-    #hero .carousel-item {
-        justify-content: center;
-        align-items: center;
-    }
-    
-    #hero .card {
-        border-radius: 10px;
-        height: 500px;
-        max-width: 500px; 
-        background: rgba(0, 0, 0, 0.700);
-        color: white;
-        background-position: center;
-        background-size: cover;
-        padding: 15px;
-        margin: 20px auto; 
-    }
-    
-    #hero .card-img-top {
-        height: 200px;
-        object-fit: cover;
-    }
-    
-    #hero .card-text {
-        height: 100px;
-    
-    }
-    
-    #hero .card .btn {
-        font-size: 1em;
-        padding: 10px 20px;
-        background-color: rgb(48, 48, 119);
-        border-color: rgb(48, 48, 119);
-    }
-    
-    #hero .card .btn:hover {
-        background-color:rgb(89, 89, 247);
-        border-color:rgb(89, 89, 247);
-    }
-    
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        width: 70px; 
-        height: 70px; 
-    }
 }
-
 

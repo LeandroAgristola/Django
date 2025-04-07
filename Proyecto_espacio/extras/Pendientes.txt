@@ -3,8 +3,7 @@ Apps:
 web (Para la parte pública del sitio)
     Home
     Nosotros
-    Planes
-    Horarios
+    Planes y Horarios
     Staff
     Eventos (vista pública)
     Contacto
@@ -12,37 +11,82 @@ web (Para la parte pública del sitio)
     Layout: 
 
     Home:
-    
 
-        
+    Planes.html:
+        Layaut
+        Fondo con img con degrade
+        Tarjeta grande con color trasparente
+        Debajo del titulo mostrar horario en que esta abierto el espacio
+        Tartetas pequeñas cuadradas 3x3
+        En version movil solo se expande el contenedor y se muestran las tarjetas una encima de la otra 
+        El contenedor debe ser dinamico ya que se va a expandir segun el contenido
+        Cada tarjeta con plan debe tener un boton de "consultar por plan" 
+        Funcionalidad al apretar el boton debe abrir whatsapp y  rellenar una msj de este estilo:
+            "hola queria consultar por el plan {}"
+        Luego de crear la app de eventos las tarjetas se var a cargar segun los planes creados.
 
-clientes (Para la gestión de clientes)
+admin_panel (Para la administración general)
+    Dashboard con estadísticas (tomar el de Realestate)
+    Administración centralizada de clientes, empleados, eventos, planes y Calendario
+    Configuración del sistema
+    Vistas a crear:
+        management 
+        login 
+        logut
 
-    Registro y listado de clientes
-    Administración de planes
-    Inscripción en horarios y eventos
-    Historial de bajas y métricas
-
+      
 empleados (Para la gestión del staff)
 
     Listado y creación de empleados
     Información de empleados
     Edición y eliminación de empleados
 
+clientes (Para la gestión de clientes)
+
+    Buscador de clientes (busca en eliminados y activos)
+    Registro de clientes:
+        Nombre y apellido (obligatorio)
+        Celular (obligatorio)
+        Plan:
+            litado desplegable con el plan
+            En base al plane que seleccionamos seleccionar del calendario los dias disponibles
+        Boton de "reservar" o "confirmar"
+    listado de clientes
+        listado con botones de "editar" "baja"
+            Editar:
+                abre el formulario de editar los campos
+                botones debajo de "confirmar" o "cancelar"
+            Baja:
+                mensaje de advertencia de "seguro que quiere dar de baja a {nombre}"
+                    botones debajo del msj de "confirmar" "cancelar"
+        Si esta en reservar el cliente figura con otro color con un msj de "pendiente" y boton al la de "confirmar"
+        Si esta en confirmar el cliente figura en verde clarito con el msj de "confirmado"
+    Inscripción en horarios y eventos
+    Historial de bajas y métricas
+    Listado de "historial debajar" con los clientes dado de baja con el boton de "reactivar" por si vuelve a inscribirse
+
 eventos (Para la gestión de eventos)
 
     Creación, edición y eliminación de eventos
     Control de cupos y disponibilidad
     Inscripción de clientes a eventos
+        Agregar que muestre un formulario estilo a agregar "nuevo cliente"
+        Opcion de buscar para buscar cliente activos y poder agregarlo al evento
 
 calendario (Para la administración de horarios)
 
     Gestión de horarios disponibles
     Inscripción y visualización de clientes por turno
-    Exportación de calendario a Drive
+    Exportación de calendario a Drive   
+    Calendario grande 
+    Calendario dinamico:
+        Calendario con colores segun horarios disponibles Rojo horario no disponible verde disponible
+        Cada dia debe tener color segun disponibilidad
+        Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
 
-admin_panel (Para la administración general)
 
-    Dashboard con estadísticas
-    Administración centralizada de clientes, empleados, eventos y horarios
-    Configuración del sistema
+        
+
+        
+
+

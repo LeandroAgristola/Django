@@ -56,21 +56,13 @@
     <div class="container">
         <div class="row justify-content-center fade-in">
             <!-- Tarjeta de Planes -->
-            <div class="col-md-5 mb-3">
+            <div class="col-md-6 mb-3">
                 <div class="card-custom text-center">
-                    <h2 class="titulo-card">Descubre nuestros planes</h2>
+                    <h3 class="titulo-card">Descubre nuestros planes</h3>
+                    <p class="card-text">En <span class="TextoAcento">Estudio</span>, encontrarás horarios diseñados para adaptarse a tu rutina.</p>
                     <button class="btn-custom">Ver Planes</button>
                 </div>
             </div>
-            <!-- Tarjeta de Horarios -->
-            <div class="col-md-5 mb-3">
-                <div class="card-custom text-center">
-                    <h2 class="titulo-card">Encuentra tu horario ideal</h2>
-                    <button class="btn-custom">Ver Horarios</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 
 <section id="eventos">
@@ -88,7 +80,7 @@
                 <p class="eventos-texto">
                     Únete a nuestras clases especiales, talleres y eventos exclusivos para mejorar tu bienestar físico y mental.
                 </p>
-                <button class="btn-eventos">Ver próximos eventos</button>
+                <button class="btn-custom">Ver próximos eventos</button>
             </div>
         </div>
     </div>
@@ -131,14 +123,13 @@
             </div>
         </div>
 
-        <!-- Contenedor de tarjetas para móvil -->
+<!-- Contenedor de tarjetas para móvil -->
 
         <div class="container" id="containerCarusel">
             <div class="carousel slide" id="carousel1" data-bs-ride="carousel">
                 
-                <!-- Carousel Inner: Contains all the items with development information -->
                 <div class="carousel-inner">
-                    <div class="carousel-item">
+                    <div class="carousel-item active">
                         <div class="staff-card">
                             <img src="/static/img/perfil_01.png" alt="Staff 1">
                             <h4>Mariano</h4>
@@ -146,7 +137,8 @@
                                 <i class="fab fa-instagram"></i> Instagram
                             </a>
                         </div>
-
+                    </div>
+                    <div class="carousel-item">
                         <div class="staff-card">
                             <img src="/static/img/perfil_02.png" alt="Staff 2">
                             <h4>Lucas</h4>
@@ -154,7 +146,8 @@
                                 <i class="fab fa-instagram"></i> Instagram
                             </a>
                         </div>
-
+                    </div>
+                    <div class="carousel-item">
                         <div class="staff-card">
                             <img src="/static/img/perfil_03.png" alt="Staff 3">
                             <h4>Estefania</h4>
@@ -162,19 +155,26 @@
                                 <i class="fab fa-instagram"></i> Instagram
                             </a>
                         </div>
-
+                    </div>
+                    <div class="carousel-item">
+                        <div class="staff-card">
+                            <img src="/static/img/perfil_04.png" alt="Staff 4">
+                            <h4>Marina</h4>
+                            <a href="https://instagram.com/" target="_blank">
+                                <i class="fab fa-instagram"></i> Instagram
+                            </a>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Carousel Controls for navigating through items -->
+        
                 <a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only"></span>
+                    <span class="sr-only">Previous</span>
                 </a>
-
+        
                 <a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only"></span>
+                    <span class="sr-only">Next</span>
                 </a>
             </div>
         </div>
