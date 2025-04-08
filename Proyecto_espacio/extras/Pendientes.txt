@@ -64,6 +64,10 @@ eventos (Para la gestión de eventos)
     Inscripción de clientes a eventos
         Agregar que muestre un formulario estilo a agregar "nuevo cliente"
         Opcion de buscar para buscar cliente activos y poder agregarlo al evento
+    Listado de inscriptos en estado de "pendiente" "confirmado"
+        El cliente aparece en gris si esta confirmado
+        El cliente aparece en rojo claro si esta pendiento con un boton al lado que dice "confirmar"
+        Al cabo de 48 horas que no se confirmo el cliente su Inscripción se da de baja
 
 calendario (Para la administración de horarios)
 
