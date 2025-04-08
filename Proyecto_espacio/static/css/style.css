@@ -1,6 +1,6 @@
 
 
-/* Estilos Generales */
+/* Estilos Generales ------------------> */
 html {
     scroll-behavior: smooth;
 }
@@ -17,7 +17,7 @@ html {
 
 .Fuentes {
     font-family: "Federo", sans-serif; /* Logo */
-    font-family: "Faculty Glyphi", sans-serif; /* Fuente Principal*/ 
+    font-family: "Faculty Glyphic", sans-serif; /* Fuente Principal*/ 
     font-family: "Farro", sans-serif; /*NavLink*/        
 }
 
@@ -25,8 +25,48 @@ body {
     margin: 0;
 }
 
-/* Botón flotante de WhatsApp */
+.TextoAcento {
+    color: #283131;
+    font-weight: bold;
+    font-family: "Federo", sans-serif;
 
+}
+
+p ,h1, h2, h3, h4, a {
+    color: #3c4750;   
+}
+
+a {
+    text-decoration: none;
+    font-family: "Farro", sans-serif;
+}
+
+p {
+    font-family: "Faculty Glyphic", sans-serif
+}
+
+a:hover,
+a:focus {
+    color: #586875;
+}
+
+.btn-custom {
+    background-color: #586875;
+    color: #f6eddc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-family: "Farro", sans-serif;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-custom:hover {
+    background-color: #3c4750;
+}
+
+/* Botón flotante de WhatsApp ------------------> */
 .whatsapp-float {
     position: fixed;
     bottom: 20px;
@@ -51,52 +91,11 @@ body {
     background-color: #1ebe57;
 }
 
-.TextoAcento {
-    color: #283131;
-    font-weight: bold;
-    font-family: "Federo", sans-serif;
-
-}
-
-p ,h1, h2, h3, h4, a {
-    color: #3c4750;   
-}
-
-a {
-    text-decoration: none;
-    font-family: "Farro", sans-serif;
-}
-
-p {
-    font-family: "Faculty Glyphi", sans-serif;
-}
-
-a:hover,
-a:focus {
-    color: #586875;
-}
-
-.btn-custom {
-    background-color: #586875;
-    color: #f6eddc;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 1rem;
-    font-family: "Farro", sans-serif;
-    transition: background 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.btn-custom:hover {
-    background-color: #3c4750;
-}
-
-/* Estilos para el header */
+/* Estilos para el header ------------------> */
 
 .custom-header {
     background-color: #e3e5d7;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     padding: 10px 0;
     height: 120px;
 }
@@ -115,7 +114,7 @@ a:focus {
     transform: scale(1.2);
 }
 
-/* Estilos para el logo */
+/* Estilos para el logo ------------------> */
 
 .logo-img {
     height: 50px;
@@ -130,7 +129,7 @@ a:focus {
     letter-spacing: 1px;
 }
 
-/* Estilos para el navbar */
+/* Estilos para el navbar ------------------> */
 .navbar {
     padding: 0;
 }
@@ -162,7 +161,7 @@ a:focus {
     width: 100%;
 }
 
-/* Estilo para texto de hero */
+/* Estilo para texto de hero ------------------> */
 
 #hero{
     height: calc(100vh - 120px);    
@@ -173,10 +172,10 @@ a:focus {
     font-weight: 900;
     font-size: 2rem;
     letter-spacing: 1px;
-    padding: 0 15px;
+    padding: 0 50px;
 }
 
-/* Sección Nosotros */
+/* Sección Nosotros ------------------> */
 
 #nosotros {
     min-height: 100vh; /* Asegura que la sección ocupe al menos el 100% de la altura de la ventana */
@@ -205,49 +204,76 @@ a:focus {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Sección Planes y Horarios */
+/* Sección Planes y Horarios ------------------>*/
+
 #planesHorarios {
-    min-height: 50vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
     background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/ImgPlanesHorarios.png');
     background-size: cover;
     background-position: center;
     position: relative;
     display: flex;
     align-items: center;
+    padding: 60px 0;
 }
 
-.card-custom {
-    background: #bdd6d29a; /* Color armonioso con opacidad */
-    border-radius: 20px;
-    height: 100%;
-    padding: 15px;
-    position: relative;
-    z-index: 1;
+#planesHorarios .card-custom {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: #bdd6d2; /* Color armonioso con opacidad */
+    border-radius: 20px;
+    z-index: 1;
 }
 
-/* Títulos de tarjetas */
-.titulo-card {
-    color: #3c4750;
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-family: "Federo", sans-serif;
+#planesHorarios .titulo-card {
+    margin-bottom: 30px;
 }
 
 #planesHorarios .card-text {
-    font-family: "Faculty Glyphi", sans-serif;
+    font-size: 1.5rem;
     color: #3c4750;
+    margin-bottom: 10px;
+    background-color: #e3e5d7;
+    border-radius: 20px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-plan { /* Tarjetas individuales */
+    background-color: #e3e5d7;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.card-plan:hover {
+    transform: translateY(-4px);
+}
+
+.titulo-plan {
+    font-family: "Federo", sans-serif;
+    font-size: 1.2rem;
+    color: #283131;
+    margin-bottom: 10px;
+}
+
+.detalle-plan {
     font-size: 1rem;
-    margin-bottom: 25px;
+    color: #3c4750;
 }
 
-/* Botón */
-#planesHorarios .btn-custom {
-    width: 50%;
+.precio-plan {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: #3c4750;
 }
 
-/* Sección Eventos */
+#planesHorarios .btn-custom { /* Botón */
+    width: 50%; 
+}
+
+/* Sección Eventos  ------------------>*/
 #eventos {
     min-height: 50vh; 
     background: #bdd6d29a;
@@ -255,33 +281,26 @@ a:focus {
     align-items: center;
 }
 
-/* Columna del texto */
-.eventos-texto {
-    font-family: "Faculty Glyphi", sans-serif;
+.eventos-texto {/* Columna del texto */
     color: #3c4750;
     font-size: 1rem;
     max-width: 350px; /* Reduce el ancho del texto */
 }
 
-/* Imagen */
-.img-eventos {
-    width: 90%;
-    height: 90%;
+.img-eventos { /* Imagen */
+    width: 70%;
+    height: 70%;
     border-radius: 5px;
+    object-fit: cover;
     margin-left: auto; /* Alinea la imagen a la derecha */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Botón */
-#eventos .btn-custom {
+#eventos .btn-custom { /* Botón */
     width: 50%;
 }
 
-.btn-eventos:hover {
-    background-color: #3c4750;
-}
-
-/* Seccion Staff */
+/* Seccion Staff ------------------>*/
 
 #containerCarusel {
     display: none;
@@ -295,7 +314,7 @@ a:focus {
     position: relative;
     display: flex;
     padding: 40px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
 
 .titulo-staff {
@@ -306,7 +325,6 @@ a:focus {
 }
 
 .descripcion-staff {
-    font-family: "Faculty Glyphi", sans-serif;
     font-size: 1.2rem;
     font-weight: 500;
     margin-bottom: 30px;
@@ -328,6 +346,7 @@ a:focus {
     justify-content: space-between;
     position: relative;
     z-index: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .staff-card img {
@@ -355,15 +374,15 @@ a:focus {
     margin-right: 5px;
 }
 
-/* Footer */
+/* Footer ------------------>*/
 footer {
     background-color: #e3e5d7;
     font-size: 0.9em;
     padding: 20px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Centrar elementos en móvil */
-.footer-brand {
+.footer-brand {/* Centrar elementos en móvil */
     text-align: center;
 }
 
@@ -372,8 +391,7 @@ footer {
     gap: 15px;
 }
 
-/* Iconos de redes y dirección */
-.footer-social a {
+.footer-social a {/* Iconos de redes y dirección */
     font-size: 1.5rem;
     transition: transform 0.3s ease-in-out;
 }
@@ -382,7 +400,7 @@ footer {
     transform: scale(1.2);
 }
 
-/* Estilo de aparicion de los elementos */
+/* Estilo de aparicion de los elementos ------------------>*/
 
 .fade-in {
     opacity: 0;
@@ -399,7 +417,7 @@ footer {
 
 }
 
-/* Estilos para mobile */
+/* Estilos para mobile ------------------>*/
 @media (max-width: 767.98px) {
     .custom-header {
         height: 150px;
@@ -563,6 +581,16 @@ footer {
         gap: 20px; /* Espacio entre filas */
     }
 
+    /* Seccion planesHorios movil */
+
+    #planesHorarios {
+        min-height: auto; /* Se adapta al contenido */
+    }
+
+    .card-plan {
+        margin-bottom: 20px;
+    }
+
     /* Seccion Eventos Movil */
 
     .eventos-contenedor {
@@ -613,8 +641,8 @@ footer {
 
     #containerCarusel .staff-card {
         border-radius: 15px;
-        height: 220px;
-        max-width: 220px; 
+        height: 280px;
+        width: 220px; 
         background-color:#bdd6d2;
         color: white;
         background-position: center;
@@ -624,11 +652,12 @@ footer {
         text-align: center;
         flex-direction: column;
         align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     #containerCarusel .staff-card img {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
         object-fit: cover;
         border-style: solid;
@@ -672,3 +701,57 @@ footer {
 
 }
 
+/* Template eventos ------------------>*/
+
+#eventosTemplate {
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/ImgEventosTemplate.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 60px 0;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+#eventosTemplate .card-custom { /*Tarjeta contenedora  de fondo*/
+    background: #bdd6d2; /* Color armonioso con opacidad */
+    border-radius: 20px;
+    z-index: 1;
+}
+.card-evento {
+    --imagen-evento: none; /* valor default lo carga dinamicamente desde HTML */
+    background-image: linear-gradient(90deg, #f5ecdb, #f5ecdbf5, #f5ecdb86),var(--imagen-evento); /* agregamos el gradient que aplica a la variable que tomamos desde HTML */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.card-evento:hover {
+    transform: translateY(-4px);
+}
+
+.titulo-evento {
+    font-family: "Federo", sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #283131;
+    margin-bottom: 10px;
+}
+
+#eventosTemplate .card-text{
+    font-size: 1.2rem;
+}
+
+#eventosTemplate .btn-custom { /* Botón */
+    width: 100%;
+}
+
+#btn-Nodisponible {
+    background-color: #f8d7da;
+    color: #842029;
+}

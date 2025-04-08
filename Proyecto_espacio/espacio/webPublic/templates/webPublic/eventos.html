@@ -2,5 +2,41 @@
 {% load static %}
 
 {% block content %}
+<section id="eventosTemplate" class="seccion-eventos d-flex align-items-center">
+  <div class="container">
+    <div class="row justify-content-center fade-in">
+      <div class="col-12 col-lg-10">
+        <div class="card-custom text-center p-4">
+          <h2 class="titulo-card">Eventos</h2>
+          <p class="card-text">¡Participá de nuestras próximas actividades!</p>
 
+          <div class="row">
+            {% for evento in eventos %}
+            <div class="col-12 col-md-6 mb-4">
+                <!--style="background-image: url('{{ evento.imagen.url }}');"--> <!-- Cambiar cuando se agreguen los modelos en eventos--> 
+                <div class="card-evento p-3 h-100 text-start" style="--imagen-evento: url('/media/{{ evento.imagen }}');">
+                <h5 class="titulo-evento">{{ evento.nombre }}</h5>
+                <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+                <p><strong>Hora:</strong> {{ evento.hora }}</p>
+                <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+                <p><strong>Costo:</strong> 
+                  {% if evento.costo == "0" %}Sin costo{% else %}$ {{ evento.costo }}{% endif %}
+                </p>
+                <p><strong>Cupos disponibles:</strong> {{ evento.cupos_disponibles }}</p>
+
+                {% if evento.cupos_disponibles|add:"0" > 0 %}
+                  <button class="btn-custom">Inscribirme</button>
+                {% else %}
+                  <button class="btn-custom" id="btn-Nodisponible" disabled>No disponible</button>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

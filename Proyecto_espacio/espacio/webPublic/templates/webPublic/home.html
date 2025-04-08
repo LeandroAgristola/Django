@@ -51,24 +51,38 @@
     </div>
 </section>
 
-
 <section id="planesHorarios" class="planes-horarios d-flex align-items-center">
     <div class="container">
-        <div class="row justify-content-center fade-in">
-            <!-- Tarjeta de Planes -->
-            <div class="col-md-6 mb-3">
-                <div class="card-custom text-center">
-                    <h3 class="titulo-card">Descubre nuestros planes</h3>
-                    <p class="card-text">En <span class="TextoAcento">Estudio</span>, encontrarás horarios diseñados para adaptarse a tu rutina.</p>
-                    <button class="btn-custom">Ver Planes</button>
+      <div class="row justify-content-center fade-in">
+        <!-- Tarjeta principal -->
+        <div class="col-12 col-lg-10">
+          <div class="card-custom text-center p-4">
+            <h2 class="titulo-card"><span class="TextoAcento">Nuestros Planes</span></h2>
+  
+            <!-- Grid de tarjetas -->
+            <div class="row">
+              {% for plan in planes %}
+              <div class="col-12 col-md-4 mb-4">
+                <div class="card-plan p-3 h-100 text-center">
+                  <h5 class="titulo-plan">{{ plan.nombre }}</h5>
+                  <p class="detalle-plan">{{ plan.detalle }}</p>
+                  <p class="precio-plan">$ {{ plan.precio }}</p>
+                  <a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank"><button class="btn-custom ">Consultar</button></a>
                 </div>
+              </div>
+              {% endfor %}
             </div>
-</section>
+            <p class="card-text">Abierto de lunes a viernes de 8 a 21 hs. Sábados de 9 a 13 hs.</p>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 <section id="eventos">
     <div class="container fade-in">
         <div class="row eventos-contenedor">
-
             <!-- Columna de Imagen -->
             <div class="col-md-6 d-flex justify-content-end align-items-center">
                 <img src="/static/img/ImgEventos.png" alt="Eventos" class="img-eventos">
@@ -80,7 +94,7 @@
                 <p class="eventos-texto">
                     Únete a nuestras clases especiales, talleres y eventos exclusivos para mejorar tu bienestar físico y mental.
                 </p>
-                <button class="btn-custom">Ver próximos eventos</button>
+                <a href="{% url 'eventos' %}#eventos"><button class="btn-custom">Ver próximos eventos</button></a>
             </div>
         </div>
     </div>
@@ -93,91 +107,47 @@
 
         <!-- Contenedor de tarjetas para escritorio -->
         <div class="d-none d-md-flex justify-content-center">
+            {% for empleado in empleados %}
             <div class="staff-card">
-                <img src="/static/img/perfil_01.png" alt="Staff 1">
-                <h4>Mariano</h4>
-                <a href="https://instagram.com/" target="_blank">
-                    <i class="fab fa-instagram"></i> Instagram
+                <img src="/media/{{ empleado.imagen }}" alt="{{ empleado.nombre }}">
+                <h4>{{ empleado.nombre }}</h4>
+                <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
+                    <i class="fab fa-instagram"></i> {{ empleado.instagram }}
                 </a>
             </div>
-            <div class="staff-card">
-                <img src="/static/img/perfil_02.png" alt="Staff 2">
-                <h4>Lucas</h4>
-                <a href="https://instagram.com/" target="_blank">
-                    <i class="fab fa-instagram"></i> Instagram
-                </a>
-            </div>
-            <div class="staff-card">
-                <img src="/static/img/perfil_03.png" alt="Staff 3">
-                <h4>Estefania</h4>
-                <a href="https://instagram.com/" target="_blank">
-                    <i class="fab fa-instagram"></i> Instagram
-                </a>
-            </div>
-            <div class="staff-card">
-                <img src="/static/img/perfil_04.png" alt="Staff 4">
-                <h4>Marina</h4>
-                <a href="https://instagram.com/" target="_blank">
-                    <i class="fab fa-instagram"></i> Instagram
-                </a>
-            </div>
+            {% endfor %}
         </div>
 
 <!-- Contenedor de tarjetas para móvil -->
 
-        <div class="container" id="containerCarusel">
-            <div class="carousel slide" id="carousel1" data-bs-ride="carousel">
-                
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="staff-card">
-                            <img src="/static/img/perfil_01.png" alt="Staff 1">
-                            <h4>Mariano</h4>
-                            <a href="https://instagram.com/" target="_blank">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </a>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="staff-card">
-                            <img src="/static/img/perfil_02.png" alt="Staff 2">
-                            <h4>Lucas</h4>
-                            <a href="https://instagram.com/" target="_blank">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </a>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="staff-card">
-                            <img src="/static/img/perfil_03.png" alt="Staff 3">
-                            <h4>Estefania</h4>
-                            <a href="https://instagram.com/" target="_blank">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </a>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="staff-card">
-                            <img src="/static/img/perfil_04.png" alt="Staff 4">
-                            <h4>Marina</h4>
-                            <a href="https://instagram.com/" target="_blank">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </a>
-                        </div>
-                    </div>
+<div class="container" id="containerCarusel">
+    <div class="carousel slide" id="carousel1" data-bs-ride="carousel">
+        
+        <div class="carousel-inner">
+            {% for empleado in empleados %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="staff-card">
+                    <img src="/media/{{ empleado.imagen }}" alt="{{ empleado.nombre }}">
+                    <h4>{{ empleado.nombre }}</h4>
+                    <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
+                        <i class="fab fa-instagram"></i> {{ empleado.instagram }}
+                    </a>
                 </div>
-        
-                <a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-        
-                <a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
             </div>
+            {% endfor %}
         </div>
+
+        <a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </a>
+
+        <a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </a>
+    </div>
+</div>
 
 </section>
 

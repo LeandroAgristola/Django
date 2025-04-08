@@ -75,10 +75,10 @@
 							<!-- Menú colapsable -->
 							<div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
 								<ul class="navbar-nav">
-									<li class="nav-item mx-2"><a class="nav-link" href="#home">Home</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#nosotros">Nosotros</a></li>
-									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#planes">Planes</a></li>
-									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#eventos">Eventos</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#planesHorarios">Planes</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'eventos' %}#eventos">Eventos</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#staff">Staff</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">Consultar</a></li>
 								</ul>
@@ -129,7 +129,6 @@
 						<p class="mb-1">&copy; Copyright 2024 | Todos los derechos reservados</p>
 						<p class="mb-0">CUIT 30-12345678-0 | 14 Nro 12, La Plata, Argentina</p>
 					</div>
-
 				</div>
 			</div>
 		</footer>

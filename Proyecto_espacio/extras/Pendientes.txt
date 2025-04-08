@@ -11,16 +11,9 @@ web (Para la parte pública del sitio)
     Layout: 
 
     Home:
+        Staff: agrear funcionabilidad de carga igual que planes
 
     Planes.html:
-        Layaut
-        Fondo con img con degrade
-        Tarjeta grande con color trasparente
-        Debajo del titulo mostrar horario en que esta abierto el espacio
-        Tartetas pequeñas cuadradas 3x3
-        En version movil solo se expande el contenedor y se muestran las tarjetas una encima de la otra 
-        El contenedor debe ser dinamico ya que se va a expandir segun el contenido
-        Cada tarjeta con plan debe tener un boton de "consultar por plan" 
         Funcionalidad al apretar el boton debe abrir whatsapp y  rellenar una msj de este estilo:
             "hola queria consultar por el plan {}"
         Luego de crear la app de eventos las tarjetas se var a cargar segun los planes creados.
@@ -34,7 +27,6 @@ admin_panel (Para la administración general)
         login 
         logut
 
-      
 empleados (Para la gestión del staff)
 
     Listado y creación de empleados
@@ -63,7 +55,7 @@ clientes (Para la gestión de clientes)
         Si esta en confirmar el cliente figura en verde clarito con el msj de "confirmado"
     Inscripción en horarios y eventos
     Historial de bajas y métricas
-    Listado de "historial debajar" con los clientes dado de baja con el boton de "reactivar" por si vuelve a inscribirse
+    Listado de "historial de bajar" con los clientes dado de baja con el boton de "reactivar" por si vuelve a inscribirse
 
 eventos (Para la gestión de eventos)
 
