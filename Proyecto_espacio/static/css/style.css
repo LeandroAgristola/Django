@@ -92,7 +92,6 @@ a:focus {
 }
 
 /* Estilos para el header ------------------> */
-
 .custom-header {
     background-color: #e3e5d7;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
@@ -115,7 +114,6 @@ a:focus {
 }
 
 /* Estilos para el logo ------------------> */
-
 .logo-img {
     height: 50px;
     width: auto;

@@ -1,0 +1,149 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.admin-wrapper {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f6eddc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+    text-align: center;
+}
+
+.logo-container {
+    color: #283131;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.logo-title {
+    font-family: "Federo", sans-serif;
+    font-size: 1.5rem;
+}
+
+.subtitle {
+    font-family: "Faculty Glyphic", sans-serif;
+    font-size: 0.9rem;
+    color: #283131;
+    margin: 0;
+}
+
+.nav-menu {
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-link {
+    font-family: "Farro", sans-serif;
+    width: 90%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    text-decoration: none;
+    background-color: #586875;
+    color: #f6eddc;
+    border-radius: 8px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #3c4750;
+}
+
+.nav-link.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+    background-color: #e74c3c;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+}
+
+/*Estilo para login*/
+
+.login-page {
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/img_espacio02.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-page .btn-custom {
+    font-weight: 500;
+    width: 50%;
+    background-color: #586875;
+    color: #f6eddc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.login-page .btn-custom:hover {
+    background-color: #3c4750;
+}
+
+
+.login-page .logo-img {
+    height: 50px;
+    width: auto;
+    margin-bottom: 5px;
+}
+
+.login-page .logo-title {
+    font-family: "Federo", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#development-form {
+    background-color: #e3e5d7;
+    width: 350px;
+    max-height: 450px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    margin: auto;
+}
+
+#development-form .form-control:focus { 
+    border-color: #bdd6d2 !important;
+    box-shadow: 0 0 0 .2rem #bdd6d2!important;
+}
+
+#development-form label {
+    font-weight: 500;
+    color: #3c4750;
+}

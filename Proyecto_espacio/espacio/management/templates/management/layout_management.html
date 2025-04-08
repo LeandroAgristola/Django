@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="{% static 'css/styleManagement.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Farro:wght@300;400;500;700&family=Federo&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <!-- Bloque para el logo y el título en la misma línea -->
+                <div class="logo-container d-flex flex-row align-items-center justify-content-center">
+                    <h1 class="logo-title mb-0">Estudio</h1>
+                    <img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img ms-2">
+                </div>
+                <!-- Bloque para el subtítulo debajo -->
+                <p class="subtitle text-center mt-2">Administración</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-link"><i class="fa-solid fa-user-tie"></i> Empleados</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-users"></i> Clientes</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-calendar-days"></i> Eventos</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-clock"></i> Calendario</a>
+                <a href="{% url 'logout' %}" class="nav-link logout"><i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión</a>
+            </nav>
+        </aside>
+
+		{% block content %}
+
+		{% endblock %}
+    </div>
+</body>
+</html>
