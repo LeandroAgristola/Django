@@ -3,9 +3,23 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
+.form-control:focus { 
+    border-color: #bdd6d2 !important;
+    box-shadow: 0 0 0 .2rem #bdd6d2!important;
+}
+
+label {
+    font-weight: 500;
+    color: #3c4750;
+}
+
 .admin-wrapper {
     display: flex;
     height: 100vh;
+}
+
+.btn {
+    border-radius: 10px;
 }
 
 .sidebar {
@@ -141,12 +155,43 @@ body {
     margin: auto;
 }
 
-#development-form .form-control:focus { 
-    border-color: #bdd6d2 !important;
-    box-shadow: 0 0 0 .2rem #bdd6d2!important;
+/*Estilo para emplados*/
+
+#formsEmplados{
+    background-color: #e3e5d7;
+    width: 800px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-#development-form label {
-    font-weight: 500;
-    color: #3c4750;
+#listaEmpleados {  
+    background-color: #e3e5d7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+#listaEmpleados td .btn{
+    border: none;
+    width: 100px;
+    border-radius: 10px;
+    color: white;
+}
+
+#tarjetaEmpleado{
+    background-color: #e3e5d7;
+    width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#tarjetaEmpleado .btn{
+    border: none;
+    width: 100px;
 }

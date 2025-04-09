@@ -4,8 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel de Administración</title>
-    <link rel="stylesheet" href="{% static 'css/styleManagement.css' %}">
+    <meta charset="utf-8"> <!-- Sets character encoding to support special characters -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design for mobile devices -->
+    <meta name="description" content="COMPLETAR"> <!-- SEO meta description -->
+
+    <!-- Favicon -->
+	<link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styleManagement.css' %}?v=2">
     <!-- Font -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,9 +41,38 @@
             </nav>
         </aside>
 
-		{% block content %}
-
-		{% endblock %}
+        <main class="col" style="margin:20px"> 
+            {% block content %}
+            {% endblock %}
+        </main>
     </div>
+
+    {% block scripts %}
+    {% if mostrar_modal %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var myModal = new bootstrap.Modal(document.getElementById('modalEmpleado'));
+            myModal.show();
+        });
+    </script>
+    {% endif %}
+    <script>
+    function verDetalleEmpleado(empleadoId) {
+        fetch(`/empleados/detalle_modal/${empleadoId}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Insertar el contenido del modal en el contenedor
+                document.getElementById('detalleEmpleadoContent').innerHTML = data.html;
+                // Mostrar el modal (asegurate que el id del modal sea correcto)
+                let modal = new bootstrap.Modal(document.getElementById('modalDetalleEmpleado'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al cargar el detalle del empleado:', error);
+            });
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
 </body>
 </html>

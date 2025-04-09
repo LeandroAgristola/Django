@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Empleado
 from .forms import EmpleadoForm
+from django.views.decorators.http import require_POST
 
 @login_required
 def lista_empleados(request):
@@ -22,7 +23,13 @@ def crear_empleado(request):
             return redirect('lista_empleados')
     else:
         form = EmpleadoForm()
-    return render(request, 'empleados/empleado_form.html', {'form': form})
+
+    empleados = Empleado.objects.all()
+    return render(request, 'empleados/lista_empleados.html', {
+        'empleados': empleados,
+        'form': form,
+        'mostrar_modal': True
+    })
 
 @login_required
 def editar_empleado(request, pk):
@@ -34,12 +41,18 @@ def editar_empleado(request, pk):
             return redirect('lista_empleados')
     else:
         form = EmpleadoForm(instance=empleado)
-    return render(request, 'empleados/empleado_form.html', {'form': form})
 
+    empleados = Empleado.objects.all()
+    return render(request, 'empleados/lista_empleados.html', {
+        'empleados': empleados,
+        'form': form,
+        'mostrar_modal': True
+    })
+
+@require_POST
 @login_required
 def eliminar_empleado(request, pk):
+    # Solo entra si es POST
     empleado = get_object_or_404(Empleado, pk=pk)
-    if request.method == 'POST':
-        empleado.delete()
-        return redirect('lista_empleados')
-    return render(request, 'empleados/confirmar_eliminar.html', {'empleado': empleado})
+    empleado.delete()
+    return redirect('lista_empleados')

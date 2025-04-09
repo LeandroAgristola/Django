@@ -1,23 +1,26 @@
 {% extends "management/layout_management.html" %}
 
 {% block content %}
-<h2>Detalle del Empleado</h2>
+<div class="container-fluid" id="tarjetaEmpleado">
+    <h2>Detalle del Empleado</h2>
 
-<div class="card mt-3 p-3">
-    <p><strong>Nombre:</strong> {{ empleado.nombre }} {{ empleado.apellido }}</p>
-    <p><strong>Email:</strong> {{ empleado.email }}</p>
-    <p><strong>Teléfono:</strong> {{ empleado.telefono }}</p>
-    <p><strong>Dirección:</strong> {{ empleado.direccion }}</p>
-    <p><strong>Fecha de ingreso:</strong> {{ empleado.ingreso }}</p>
-    <p><strong>Mostrar en web:</strong> {{ empleado.mostrar_en_web|yesno:"Sí,No" }}</p>
-    
-    {% if empleado.imagen_perfil %}
-    <p><strong>Imagen de perfil:</strong><br>
-        <img src="{{ empleado.imagen_perfil.url }}" alt="Foto de {{ empleado.nombre }}" style="max-height: 200px;">
-    </p>
-    {% endif %}
+    <div class="card mt-3 p-3">
+        {% if empleado.imagen_perfil %}
+        <p>
+            <img src="{{ empleado.imagen_perfil.url }}" alt="Foto de {{ empleado.nombre }}" style="max-height: 200px;">
+        </p>
+        {% endif %}
 
-    <a href="{% url 'editar_empleado' empleado.pk %}" class="btn btn-warning">Editar</a>
-    <a href="{% url 'lista_empleados' %}" class="btn btn-secondary">Volver</a>
+        <p><strong>Nombre:</strong> {{ empleado.nombre }} {{ empleado.apellido }}</p>
+        <p><strong>Email:</strong> {{ empleado.email }}</p>
+        <p><strong>Teléfono:</strong> {{ empleado.telefono }}</p>
+        <p><strong>Dirección:</strong> {{ empleado.direccion }}</p>
+        <p><strong>Fecha de ingreso:</strong> {{ empleado.ingreso }}</p>
+        <p><strong>Mostrar en web:</strong> {{ empleado.mostrar_en_web|yesno:"Sí,No" }}</p>
+        
+        <div class="text-center">
+            <a href="{% url 'lista_empleados' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
 </div>
 {% endblock %}
