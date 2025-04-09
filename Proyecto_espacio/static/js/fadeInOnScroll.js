@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         },
-        { threshold: 0.2 } // Se activa cuando el 20% del elemento es visible
+        { threshold: 0.3 } // Se activa cuando el 20% del elemento es visible
     );
 
     elements.forEach((el) => observer.observe(el));

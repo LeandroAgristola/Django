@@ -628,7 +628,6 @@ footer {
     }
 
     #containerCarusel .carousel-inner {
-        position: relative;
         justify-content: center;
         padding-bottom: 0; 
         align-items: center;
@@ -637,12 +636,7 @@ footer {
     #containerCarusel .carousel-item {
         justify-content: center;
         align-items: center;
-        position: absolute;
-        width: 100%;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        transition: opacity 0.6s ease;
+        transition: transform 0.6s ease-in-out;
     }
 
     #containerCarusel .staff-card {
@@ -670,12 +664,6 @@ footer {
         border-color: #a5c8ca;
     }
 
-    #containerCarusel .carousel-item.active {
-        position: relative;
-        opacity: 1;
-        z-index: 1;
-    }
-
     #containerCarusel .staff-card h4 {
         font-family: "Farro", sans-serif;
         color: #3c4750;
@@ -693,7 +681,8 @@ footer {
     .carousel-control-next-icon {
         width: 40px;
         height: 40px;
-        filter: invert(100%); /* Cambia el color de los iconos */
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
         z-index: 2; /* Asegura que los botones estén por encima de las tarjetas */
     }
 

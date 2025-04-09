@@ -121,13 +121,13 @@
 <!-- Contenedor de tarjetas para móvil -->
 
 <div class="container" id="containerCarusel">
-    <div class="carousel slide" id="carousel1" data-bs-ride="carousel">
+    <div class="carousel slide carousel-fade" id="carousel1" data-bs-ride="carousel">
         
         <div class="carousel-inner">
             {% for empleado in empleados %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 <div class="staff-card">
-                    <img src="/media/{{ empleado.imagen }}" alt="{{ empleado.nombre }}">
+                    <img src="/media/{{ empleado.imagen_perfil }}" alt="{{ empleado.nombre }}">
                     <h4>{{ empleado.nombre }}</h4>
                     <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
                         <i class="fab fa-instagram"></i> {{ empleado.instagram }}

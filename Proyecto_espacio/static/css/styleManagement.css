@@ -193,5 +193,24 @@ label {
 
 #tarjetaEmpleado .btn{
     border: none;
-    width: 100px;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#tarjetaEmpleado img {
+    border-color: #e3e5d7;;
+    border-radius: 50%;
+    border-style: solid;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#tarjetaEmpleado .TextoEmpleado{
+    font-size: 1rem;
+    color: #3c4750;
+    margin-bottom: 10px;
+    background-color: #e3e5d7;
+    border-radius: 20px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }

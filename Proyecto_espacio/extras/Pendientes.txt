@@ -11,7 +11,6 @@ web (Para la parte pública del sitio)
     Layout: 
 
     Home:
-        Staff: agrear funcionabilidad de carga igual que planes
 
     Planes.html:
         Funcionalidad al apretar el boton debe abrir whatsapp y  rellenar una msj de este estilo:
@@ -19,19 +18,11 @@ web (Para la parte pública del sitio)
         Luego de crear la app de eventos las tarjetas se var a cargar segun los planes creados.
 
 admin_panel (Para la administración general)
-    Dashboard con estadísticas (tomar el de Realestate)
-    Administración centralizada de clientes, empleados, eventos, planes y Calendario
-    Configuración del sistema
-    Vistas a crear:
-        management 
-        login 
-        logut
 
 empleados (Para la gestión del staff)
 
-    Listado y creación de empleados
-    Información de empleados
-    Edición y eliminación de empleados
+    Información de empleados eliminados:
+        Agregar un seccion en listado de empleados que muestre los empleados eliminados y un boton de elimina permanetemente
 
 clientes (Para la gestión de clientes)
 
