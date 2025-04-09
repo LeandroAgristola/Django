@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from empleados.models import Empleado
 
 def home(request):
         planes = [
@@ -9,12 +10,9 @@ def home(request):
         {"nombre": "Plan Full", "detalle": "Cinco veces por semanaa", "precio": "65000"},
         {"nombre": "Personalizado", "detalle": "Dos veces por semana", "precio": "70000"},
     ]
-        empleados = [
-        {"nombre": "Juan", "instagram": "juan", "imagen": "imgEmpleados/perfil01.png"},
-        {"nombre": "Martin", "instagram": "martin", "imagen": "imgEmpleados/perfil02.png"},
-        {"nombre": "Mariana", "instagram": "mariana", "imagen": "imgEmpleados/perfil03.png"},
-        {"nombre": "Estefania", "instagram": "estefania", "imagen": "imgEmpleados/perfil04.png"},
-    ]
+        empleados = Empleado.objects.filter(mostrar_en_web=True).values(
+        'nombre', 'instagram' , 'imagen_perfil' )
+    
         return render(request, 'webPublic/home.html', {'planes': planes, 'empleados': empleados})
 
 def eventos(request):

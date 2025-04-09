@@ -261,6 +261,7 @@ a:focus {
 }
 
 .precio-plan {
+    font-family: "Farro", sans-serif;
     font-weight: bold;
     font-size: 1.1rem;
     margin: 10px 0;

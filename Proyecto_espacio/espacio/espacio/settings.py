@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'webPublic',
     'management',
+    'empleados',
 ]
 
 MIDDLEWARE = [

@@ -61,7 +61,7 @@ body {
     padding: 10px 15px;
     margin: 5px 0;
     text-decoration: none;
-    background-color: #586875;
+    background-color: #3c4750;
     color: #f6eddc;
     border-radius: 8px;
     text-align: left;
@@ -69,10 +69,13 @@ body {
     align-items: center;
     gap: 10px;
     transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .nav-link:hover {
-    background-color: #3c4750;
+    background-color: #586875;
+    width: 95%;
+    margin-left: 10px;
 }
 
 .nav-link.logout {

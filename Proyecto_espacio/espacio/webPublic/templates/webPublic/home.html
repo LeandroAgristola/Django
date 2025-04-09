@@ -109,7 +109,7 @@
         <div class="d-none d-md-flex justify-content-center">
             {% for empleado in empleados %}
             <div class="staff-card">
-                <img src="/media/{{ empleado.imagen }}" alt="{{ empleado.nombre }}">
+                <img src="/media/{{ empleado.imagen_perfil }}" alt="{{ empleado.nombre }}">
                 <h4>{{ empleado.nombre }}</h4>
                 <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
                     <i class="fab fa-instagram"></i> {{ empleado.instagram }}

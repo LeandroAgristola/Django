@@ -1,0 +1,33 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<h2 class="mb-4">Lista de Empleados</h2>
+<a href="{% url 'crear_empleado' %}" class="btn btn-success mb-3">Nuevo Empleado</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Mostrar en web</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for empleado in empleados %}
+        <tr>
+            <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
+            <td>{{ empleado.email }}</td>
+            <td>{{ empleado.mostrar_en_web|yesno:"Sí,No" }}</td>
+            <td>
+                <a href="{% url 'detalle_empleado' empleado.pk %}" class="btn btn-sm btn-primary">Ver</a>
+                <a href="{% url 'editar_empleado' empleado.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                <a href="{% url 'eliminar_empleado' empleado.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No hay empleados cargados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
