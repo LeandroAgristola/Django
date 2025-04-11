@@ -5,13 +5,14 @@ from django.contrib.auth.decorators import login_required
 from .forms import EventoForm
 from django.views.decorators.http import require_POST
 
-@login_required
 def lista_eventos(request):
-    activos = Evento.objects.filter(estado=True, fecha__gte=date.today()).order_by('fecha', 'hora')
-    papelera = Evento.objects.filter(estado=False, fecha__gte=date.today()).order_by('fecha', 'hora')
+    eventos = Evento.objects.filter(estado=True)
+    papelera = Evento.objects.filter(estado=False)
+    form = EventoForm()  # Agregá esto
     return render(request, 'eventos/lista_eventos.html', {
-        'eventos': activos,
+        'eventos': eventos,
         'papelera': papelera,
+        'form': form,  # Y esto
     })
 
 @login_required
@@ -25,31 +26,35 @@ def crear_evento(request):
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('lista_eventos')
+            return redirect('eventos_admin:lista_eventos')
+        else:
+            eventos = Evento.objects.filter(estado=True)
+            papelera = Evento.objects.filter(estado=False)
+            return render(request, 'eventos/lista_eventos.html', {
+                'eventos': eventos,
+                'papelera': papelera,
+                'form': form,
+                'mostrar_modal': True  # para que reabra el modal con los errores
+            })
     else:
-        form = EventoForm()
-
-    eventos = Evento.objects.all()
-    return render(request, 'eventos/lista_eventos.html', {
-        'eventos': eventos,
-        'form': form,
-        'mostrar_modal': True
-    })
+        return redirect('eventos_admin:lista_eventos')
 
 @login_required
 def editar_evento(request, pk):
-    evento = get_object_or_404(evento, pk=pk)
+    evento = get_object_or_404(Evento, pk=pk)
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES, instance=evento)
         if form.is_valid():
             form.save()
-            return redirect('lista_eventos')
+            return redirect('eventos_admin:lista_eventos')
     else:
         form = EventoForm(instance=evento)
 
-    eventos = evento.objects.all()
+    eventos = Evento.objects.filter(estado=True)
+    papelera = Evento.objects.filter(estado=False)
     return render(request, 'eventos/lista_eventos.html', {
         'eventos': eventos,
+        'papelera': papelera,
         'form': form,
         'mostrar_modal': True
     })
@@ -57,31 +62,22 @@ def editar_evento(request, pk):
 @require_POST
 @login_required
 def desactivar_evento(request, pk):
-    evento = get_object_or_404(evento, pk=pk)
-    fecha_baja = request.POST.get('fecha_baja')
-
-    if fecha_baja:
-        evento.fecha_baja = fecha_baja
-        evento.activo = False
-        evento.save()
-    return redirect('lista_eventos')
+    evento = get_object_or_404(Evento, pk=pk)
+    evento.estado = False
+    evento.save()
+    return redirect('eventos_admin:lista_eventos')
 
 @require_POST
 @login_required
 def reactivar_evento(request, pk):
-    evento = get_object_or_404(evento, pk=pk)
-    fecha_alta = request.POST.get('fecha_alta')
-
-    if fecha_alta:
-        evento.fecha_alta = fecha_alta
-        evento.fecha_baja = None
-        evento.activo = True
-        evento.save()
-    return redirect('lista_eventos')
+    evento = get_object_or_404(Evento, pk=pk)
+    evento.estado = True
+    evento.save()
+    return redirect('eventos_admin:lista_eventos')
 
 @require_POST
 @login_required
 def eliminar_evento(request, pk):
-    evento = get_object_or_404(evento, pk=pk)
+    evento = get_object_or_404(Evento, pk=pk)
     evento.delete()
-    return redirect('lista_eventos')
+    return redirect('eventos_admin:lista_eventos')

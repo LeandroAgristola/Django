@@ -8,7 +8,7 @@ urlpatterns = [
     path('', include('webPublic.urls')),
     path('management/empleados/', include('empleados.urls')),
     path('management/', include('management.urls')),
-    path('eventos/', include('eventos.urls')),
+    path('management/eventos/', include('eventos.urls', namespace='eventos_admin')),
 ]
 
 if settings.DEBUG:

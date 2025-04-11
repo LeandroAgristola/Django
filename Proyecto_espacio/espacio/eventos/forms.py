@@ -3,11 +3,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from .models import Evento
 import re
+import unicodedata
 
 # Validación: solo letras
 def validar_solo_letras(valor):
-    if not valor.isalpha():
-        raise ValidationError('Este campo debe contener solo letras.')
+    for char in valor:
+        if not (char.isalpha() or char.isspace()):
+            raise ValidationError('Este campo debe contener solo letras y espacios.')
 
 # Validación: solo números
 def validar_solo_numeros(valor):
@@ -39,13 +41,15 @@ class EventoForm(forms.ModelForm):
         return self._validar_letras('titulo')
 
     def clean_descripcion(self):
-        return self._validar_letras('descripcion')
-
-    def clean_mostrar_en_web(self):
-        mostrar_en_web = self.cleaned_data.get('mostrar_en_web')
-        return mostrar_en_web
+        return self.cleaned_data.get('descripcion')
 
     def _validar_letras(self, campo):
         valor = self.cleaned_data.get(campo)
         validar_solo_letras(valor)
         return valor
+
+    def clean_cupos(self):
+        cupos = self.cleaned_data.get('cupos')
+        if cupos is not None and cupos < 0:
+            raise ValidationError('El número de cupos debe ser mayor o igual a cero.')
+        return cupos

@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container-fluid" id="listaEventos">
     <h2 class="mb-4">Lista de Eventos</h2>
-    <a href="{% url 'crear_Evento' %}" class="btn btn-success mb-3">Nuevo Evento</a>
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalEvento">Nuevo Evento</button>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -23,8 +23,8 @@
                 <td>{{ evento.ubicacion }}</td> 
                 <td>{{ evento.cupos}}</td>
                 <td>
-                    <a href="{% url 'detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver</a>
-                    <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">Eliminar</button>
                 </td>
             </tr>
@@ -33,7 +33,7 @@
             <div class="modal fade" id="modalDesactivar{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form method="post" action="{% url 'desactivar_evento' evento.id %}">
+                        <form method="post" action="{% url 'eventos_admin:desactivar_evento' evento.id %}">
                             {% csrf_token %}
                             <div class="modal-header">
                                 <h5 class="modal-title">Confirmar baja</h5>
@@ -67,12 +67,12 @@
                 <th>Titulo</th>
                 <th>Fecha y hora</th>
                 <th>Ubicacion</th>
-                <th>Estado/th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for Evento in papelera %}
+            {% for evento in papelera %}
             <tr>
                 <td>{{ evento.titulo }}</td>
                 <td>{{ evento.fecha }} {{ evento.hora }}</td>
@@ -91,7 +91,7 @@
             <div class="modal fade" id="modalReactivar{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form method="post" action="{% url 'reactivar_evento' evento.id %}" onsubmit="return validarFecha(this, 'fecha_alta{{ evento.id }}')">
+                        <form method="post" action="{% url 'eventos_admin:reactivar_evento' evento.id %}" onsubmit="return validarFecha(this, 'fecha_alta{{ evento.id }}')">
                             {% csrf_token %}
                             <div class="modal-header">
                                 <h5 class="modal-title">Reactivar Evento</h5>
@@ -126,7 +126,7 @@
                             <small class="text-danger">Esta acción no se puede revertir.</small>
                         </div>
                         <div class="modal-footer">
-                            <form method="post" action="{% url 'eliminar_evento' evento.id %}">
+                            <form method="post" action="{% url 'eventos_admin:eliminar_evento' evento.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger">Eliminar</button>
                             </form>
@@ -166,7 +166,7 @@
                 {% endfor %}
                 <div class="text-center">
                     <button type="submit" class="btn btn-success">Guardar</button>
-                    <a href="{% url 'lista_Eventos' %}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{% url 'eventos_admin:lista_eventos' %}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
             </div>
