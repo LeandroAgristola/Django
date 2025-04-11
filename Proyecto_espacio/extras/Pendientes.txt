@@ -85,56 +85,19 @@ Orden	Aplicación	Motivo
 
 Eventos 
 
-Vamos a empezar con la app de planes, vamos a repasar lo que pretendo de esta app:
+Crear un nuevo evento:
+    Si el costo es 0 no se muestran las opciones de pago
+    Las opciones de pago deberian estar encerradas en un select en el cual seleccionamos uno de los dos
+        si seleccionamos "pago en el estudio" solo se muestrra esa opcion
+        si seleccionamos "pago enlase" se abre un input "link de pago" en donde colocamos el link de pago
+Incribir un cliente a un evento:
+    Primero y principal tenemos q tener una select que diga "cliente cargado" o "nuevo cliente" 
+        si es cliente cargado seleccionamos de la lista que le pasamos a la vista (luego sera de la base de datos de clientes)
+        si es nuevo cliente (se habilitan los datos para cargar un cliente especifico para el evento)
+detelle eventos:
+    vamos a mostrar de un lado del contenedor el detalle de los campos, al lado la foto que cargamos para el evento
+    debajo el listado de clientes que agregamos
+        en este listado vamos a tener los clientes con dos botones
+            confirmar: este boton se muestra si no confirmamos el pago (este boton se muestra si el costo no es 0 "es gratis")
+            eliminar: eliminar el cliente de la lista, el cupo se suma a los cupos restantes
 
-Esta app sera parecida al listado de empleados, ya que vamos a usar la misma logica de modales, formulario, etc
-
-Es una logica que vamos a seguir en casi todas las app que restan
-
-vamos a tener un listado de eventos, el cual tendra los siguientes campos:
-
-Nombre 
-Fecha 
-Hora
-Ubicación
-Costo
-link de pago (opcional)
-Tilde para informar si es pago en efectivo (opcional)
-Cupos
-imagen (que se usa en la web)
-
-En la ventana general de los eventos tendremos un boton en la parte superior de "Agregar evento"
-que no mostrara el modal del formulario para agregar un evento nuevo, tambien veremos un listado de eventos actuales 
-Es este listado veremos los siguientes campos:
-Nombre 
-Fecha  y Hora (sumaremos los dos campos)
-cupos disponibles (segun la cantidad de incriptos) si el cupo es = 0 un msj que diga "completo"
-Luego en la parte de botonera tendremos los botones de siempre:
-eliminar, editar, detalle
-
-si presionamos en detalle nos abrira una nueva ventana con el detalle de todos los campos del evento, 
-la foto que cargamos y debajo el listado de clientes actuales "nombre y apellido", va a informar si el pago 
-esta ok o no, y tambien la opcion de eliminar a ese cliente del listado, si elimnamos a un cliente el cupo se tiene que liberar y estar libre para poder ser ocupado. 
-
-Los clientes que tengan el pago pendiente deberán figurar en sombreado rojo con un boton de "confirmar pago" 
-que al presionarlo figurar como "pago confirmado" y el color de fondo pasar a ser del mismo que el resto del listado. 
-
-En la ventana general del listado, al igual que empleados, tendremos un historial de eventos, pero en este caso 
-solo nos dejara reactivar el evento, dandonos la opcion de editar los campos.
-
-Tambien opcional podremos eliminar automaticamente un evento que finalizo por fecha osea que vencio.
-
-Importante el evento al estar eliminado tiene que figurar como "no activo" para poder ser mostrado o no en la web principal
-
-Los eventos finalizados o eliminados se seguiran mostrando en el listado de "eventos finalizados" con todos los detalles que 
-tenian antes. Solo que al reactivarlos se borraran todos los clientes que estaban activos, dejando el cupo en blanco
-
-Esto lo que hara es que sea mas facil crear un evento que ya hicimos solo cambiandole la fecha
-
-Dato a tener en cuenta: la fecha de inicio de cualquier evento, nuevo o reactivado tiene que ser distinta a la actual.
-
-Vamoos a reutilizar estilos de otras secciones (empleados) ya que la lógica será la misma, solo en el detalle:
-
-Te paso de ejemplo los archivos de "empleados" 
-
-Una modificación que no te informe, el pago puede ser por link de pago o en efectivo, esto quiere decir que en el formulario de creación podremos cargar una de las dos formas de pago.

@@ -1,10 +1,13 @@
-from .models import Evento
-from datetime import date
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import EventoForm
+from datetime import datetime
+from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+from .forms import EventoForm, InscripcionForm
+from .models import Evento, InscripcionEvento
 
+@login_required
 def lista_eventos(request):
     eventos = Evento.objects.filter(estado=True)
     papelera = Evento.objects.filter(estado=False)
@@ -25,39 +28,41 @@ def crear_evento(request):
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
+            new_fecha = form.cleaned_data.get('fecha')
+            new_hora = form.cleaned_data.get('hora')
+            new_datetime = datetime.combine(new_fecha, new_hora)
+            now = datetime.now().replace(second=0, microsecond=0)
+            if new_datetime < now:
+                form.add_error('fecha', "La fecha y hora deben ser posteriores a la actual.")
+                return render(request, 'eventos/evento_form.html', {'form': form})
             form.save()
             return redirect('eventos_admin:lista_eventos')
         else:
-            eventos = Evento.objects.filter(estado=True)
-            papelera = Evento.objects.filter(estado=False)
-            return render(request, 'eventos/lista_eventos.html', {
-                'eventos': eventos,
-                'papelera': papelera,
-                'form': form,
-                'mostrar_modal': True  # para que reabra el modal con los errores
-            })
+            return render(request, 'eventos/evento_form.html', {'form': form})
     else:
-        return redirect('eventos_admin:lista_eventos')
-
+        form = EventoForm()
+        return render(request, 'eventos/evento_form.html', {'form': form})
+    
 @login_required
 def editar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     if request.method == 'POST':
         form = EventoForm(request.POST, request.FILES, instance=evento)
         if form.is_valid():
+            new_fecha = form.cleaned_data.get('fecha')
+            new_hora = form.cleaned_data.get('hora')
+            new_datetime = datetime.combine(new_fecha, new_hora)
+            now = datetime.now().replace(second=0, microsecond=0)
+            original_datetime = datetime.combine(evento.fecha, evento.hora)
+            # Si se modificó la fecha/hora, se valida que no sea en el pasado
+            if (new_datetime != original_datetime) and (new_datetime < now):
+                form.add_error('fecha', "La fecha y hora deben ser posteriores a la actual.")
+                return render(request, 'eventos/evento_form.html', {'form': form})
             form.save()
             return redirect('eventos_admin:lista_eventos')
     else:
         form = EventoForm(instance=evento)
-
-    eventos = Evento.objects.filter(estado=True)
-    papelera = Evento.objects.filter(estado=False)
-    return render(request, 'eventos/lista_eventos.html', {
-        'eventos': eventos,
-        'papelera': papelera,
-        'form': form,
-        'mostrar_modal': True
-    })
+    return render(request, 'eventos/evento_form.html', {'form': form})
 
 @require_POST
 @login_required
@@ -71,6 +76,18 @@ def desactivar_evento(request, pk):
 @login_required
 def reactivar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
+    new_fecha_str = request.POST.get('fecha_alta')
+    try:
+        new_fecha = datetime.strptime(new_fecha_str, '%Y-%m-%d').date()
+    except ValueError:
+        messages.error(request, "Formato de fecha incorrecto.")
+        return redirect('eventos_admin:lista_eventos')
+
+    if new_fecha == evento.fecha:
+        messages.error(request, "La nueva fecha debe ser distinta a la actual.")
+        return redirect('eventos_admin:lista_eventos')
+
+    evento.fecha = new_fecha
     evento.estado = True
     evento.save()
     return redirect('eventos_admin:lista_eventos')
@@ -81,3 +98,39 @@ def eliminar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     evento.delete()
     return redirect('eventos_admin:lista_eventos')
+
+@login_required
+def inscribir_cliente(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    clientes = [("Juan Pérez", "Juan Pérez"), ("Ana López", "Ana López"), ("Carlos Gómez", "Carlos Gómez")]  # Simulación de clientes, deberías obtenerlos de tu base de datos
+    #clientes = Cliente.objects.all().values_list('id', 'nombre')
+
+    if request.method == 'POST':    
+        if evento.cupos <= 0:
+            return HttpResponse("No hay cupos disponibles para este evento.")
+        form = InscripcionForm(request.POST)
+        if form.is_valid():
+            inscripcion = form.save(commit=False)
+            inscripcion.evento = evento
+            inscripcion.save()
+            evento.cupos -= 1
+            evento.save()
+            return redirect('eventos_admin:detalle_eventos', pk=pk)
+    else:
+        form = InscripcionForm()
+
+    return render(request, 'eventos/inscribir_cliente.html', {
+        'form': form,
+        'evento': evento,
+        'clientes': clientes
+    })
+
+@require_POST
+@login_required
+def eliminar_inscripcion(request, insc_id):
+    inscripcion = get_object_or_404(InscripcionEvento, id=insc_id)
+    evento = inscripcion.evento
+    inscripcion.delete()
+    evento.cupos += 1
+    evento.save()
+    return redirect('eventos_admin:detalle_eventos', pk=evento.pk)
