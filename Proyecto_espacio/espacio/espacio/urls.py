@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('webPublic.urls')),
     path('management/empleados/', include('empleados.urls')),
     path('management/', include('management.urls')),
+    path('eventos/', include('eventos.urls')),
 ]
 
 if settings.DEBUG:

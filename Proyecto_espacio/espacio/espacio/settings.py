@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'webPublic',
     'management',
     'empleados',
+    'eventos',
 ]
 
 MIDDLEWARE = [

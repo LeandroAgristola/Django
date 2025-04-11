@@ -1,0 +1,28 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="tarjetaEvento">
+    <h2 class="text-center">Detalle del Evento</h2>
+
+    <div class="card mt-3 p-3">
+        {% if evento.imagen %}
+        <p class="text-center">
+            <img src="{{ evento.url }}" alt="Foto de {{ evento.titulo }}" style="max-height: 200px;">
+        </p>
+        {% endif %}
+
+        <p class="TextoEvento"><strong>Nombre:</strong> {{ evento.titulo }} </p>    
+        <p class="TextoEvento"><strong>Fecha:</strong> {{ evento.fecha }} </p>
+        <p class="TextoEvento"><strong>Hora:</strong> {{ evento.hora }} </p>
+        <p class="TextoEvento"><strong>Ubicación:</strong> {{ evento.ubicacion }} </p>
+        <p class="TextoEvento"><strong>Descripción:</strong> {{ evento.descripcion }} </p>
+        <p class="TextoEvento"><strong>Cupos Disponibles:</strong> {{ evento.cupos }} </p>
+        <p class="TextoEvento"><strong>Estado:</strong> {{ evento.estado }} </p>
+        <p class="TextoEvento"><strong>Precio:</strong> {{ evento.precio }} </p>
+
+        <div class="text-center">
+            <a href="{% url 'lista_eventos' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

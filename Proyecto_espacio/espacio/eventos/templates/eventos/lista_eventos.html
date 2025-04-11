@@ -1,50 +1,46 @@
 {% extends "management/layout_management.html" %}
 
 {% block content %}
-<div class="container-fluid" id="listaEmpleados">
-    <h2 class="mb-4">Lista de Empleados</h2>
-    <a href="{% url 'crear_empleado' %}" class="btn btn-success mb-3">Nuevo Empleado</a>
+<div class="container-fluid" id="listaEventos">
+    <h2 class="mb-4">Lista de Eventos</h2>
+    <a href="{% url 'crear_Evento' %}" class="btn btn-success mb-3">Nuevo Evento</a>
 
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Celular</th>
-                <th>Ingreso</th>
+                <th>Titulo</th>
+                <th>Fecha y hora</th>
+                <th>Ubicacion</th>
+                <th>Cupos Disponibles</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for empleado in empleados %}
+            {% for evento in eventos %}
             <tr>
-                <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
-                <td>{{ empleado.email }}</td>
-                <td>{{ empleado.telefono }}</td>
-                <td>{{ empleado.fecha_alta }}</td>
+                <td>{{ evento.titulo }}</td>
+                <td>{{ evento.fecha }} {{ evento.hora }}</td>
+                <td>{{ evento.ubicacion }}</td> 
+                <td>{{ evento.cupos}}</td>
                 <td>
-                    <a href="{% url 'detalle_empleado' empleado.pk %}" class="btn btn-sm btn-info">Ver</a>
-                    <a href="{% url 'editar_empleado' empleado.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ empleado.id }}">Eliminar</button>
+                    <a href="{% url 'detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">Eliminar</button>
                 </td>
             </tr>
 
-            <!-- Modal de eliminación por empleado -->
-            <div class="modal fade" id="modalDesactivar{{ empleado.id }}" tabindex="-1" aria-hidden="true">
+            <!-- Modal de eliminación por evento -->
+            <div class="modal fade" id="modalDesactivar{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form method="post" action="{% url 'desactivar_empleado' empleado.id %}" onsubmit="return validarFecha(this, 'fecha_baja{{ empleado.id }}')">
+                        <form method="post" action="{% url 'desactivar_evento' evento.id %}">
                             {% csrf_token %}
                             <div class="modal-header">
                                 <h5 class="modal-title">Confirmar baja</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                ¿Estás seguro que querés dar de baja a <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong>?
-                                <div class="mt-3">
-                                    <label for="fecha_baja{{ empleado.id }}" class="form-label">Fecha de baja</label>
-                                    <input type="date" name="fecha_baja" id="fecha_baja{{ empleado.id }}" class="form-control" required>
-                                </div>
+                                ¿Estás seguro que querés dar de baja el evento <strong>{{ evento.titulo }}</strong>?
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-danger">Sí, dar de baja</button>
@@ -56,56 +52,56 @@
             </div>
 
             {% empty %}
-            <tr><td colspan="5">No hay empleados cargados.</td></tr>
+            <tr><td colspan="5">No hay eventos cargados.</td></tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Empleados No activos -->
+    <!-- Eventos No activos -->
     <hr>
-    <h4 class="mt-5">Empleados <strong> NO </strong> Activos</h4>
+    <h4 class="mt-5">Eventos finalizados</h4>
 
     <table class="table table-bordered table-striped mt-3">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Celular</th>
-                <th>Baja</th>
+                <th>Titulo</th>
+                <th>Fecha y hora</th>
+                <th>Ubicacion</th>
+                <th>Estado/th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for empleado in papelera %}
+            {% for Evento in papelera %}
             <tr>
-                <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
-                <td>{{ empleado.email }}</td>
-                <td>{{ empleado.telefono }}</td>
-                <td>{{ empleado.fecha_baja }}</td>
+                <td>{{ evento.titulo }}</td>
+                <td>{{ evento.fecha }} {{ evento.hora }}</td>
+                <td>{{ evento.ubicacion }}</td> 
+                <td>{{ evento.cupos}}</td>
                 <td>
                     <!-- Botón Reactivar -->
-                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ empleado.id }}">Reactivar</button>
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ evento.id }}">Reactivar</button>
                     
                     <!-- Botón Eliminar Permanente -->
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ empleado.id }}">Eliminar</button>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ evento.id }}">Eliminar</button>
                 </td>
             </tr>
 
             <!-- Modal Reactivar -->
-            <div class="modal fade" id="modalReactivar{{ empleado.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modalReactivar{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form method="post" action="{% url 'reactivar_empleado' empleado.id %}" onsubmit="return validarFecha(this, 'fecha_alta{{ empleado.id }}')">
+                        <form method="post" action="{% url 'reactivar_evento' evento.id %}" onsubmit="return validarFecha(this, 'fecha_alta{{ evento.id }}')">
                             {% csrf_token %}
                             <div class="modal-header">
-                                <h5 class="modal-title">Reactivar Empleado</h5>
+                                <h5 class="modal-title">Reactivar Evento</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                ¿Querés reactivar al empleado <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong>?
+                                ¿Querés reactivar el evento <strong>{{ evento.titulo }}</strong>?
                                 <div class="mt-3">
-                                    <label for="fecha_alta{{ empleado.id }}" class="form-label">Nueva fecha de alta</label>
-                                    <input type="date" name="fecha_alta" id="fecha_alta{{ empleado.id }}" class="form-control" required>
+                                    <label for="fecha_alta{{ Evento.id }}" class="form-label">Nueva fecha</label>
+                                    <input type="date" name="fecha_alta" id="fecha_alta{{ Evento.id }}" class="form-control" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -118,7 +114,7 @@
             </div>
 
             <!-- Modal Eliminar Permanente -->
-            <div class="modal fade" id="modalEliminarPermanente{{ empleado.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="modalEliminarPermanente{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -126,11 +122,11 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            ¿Estás seguro que deseas eliminar a <strong>{{ empleado.nombre }} {{ empleado.apellido }}</strong> permanentemente?<br>
+                            ¿Estás seguro que deseas eliminar a <strong>{{ evento.titulo }}</strong> permanentemente?<br>
                             <small class="text-danger">Esta acción no se puede revertir.</small>
                         </div>
                         <div class="modal-footer">
-                            <form method="post" action="{% url 'eliminar_empleado' empleado.id %}">
+                            <form method="post" action="{% url 'eliminar_evento' evento.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger">Eliminar</button>
                             </form>
@@ -144,12 +140,12 @@
     </table>
 
     <!-- Modal Formulario Crea/-->
-    <div class="modal fade" id="modalEmpleado" tabindex="-1" aria-labelledby="modalEmpleadoLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEvento" tabindex="-1" aria-labelledby="modalEventoLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content p-3" id="formsEmplados">
+        <div class="modal-content p-3" id="formsEvento">
             <div class="modal-header">
             <h1 class="text-center mb-4 logo-text">
-                {% if form.instance.pk %}Editar{% else %}Crear{% endif %} Empleado
+                {% if form.instance.pk %}Editar{% else %}Crear{% endif %} evento
             </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
@@ -170,7 +166,7 @@
                 {% endfor %}
                 <div class="text-center">
                     <button type="submit" class="btn btn-success">Guardar</button>
-                    <a href="{% url 'lista_empleados' %}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{% url 'lista_Eventos' %}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
             </div>

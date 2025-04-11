@@ -37,7 +37,7 @@
                 <a href="#" class="nav-link"><i class="fa-solid fa-users"></i> Clientes</a>
                 <a href="#" class="nav-link"><i class="fa-solid fa-tag"></i> Planes</a>
                 <a href="{% url 'lista_empleados' %}" class="nav-link"><i class="fa-solid fa-user-tie"></i> Empleados</a>
-                <a href="#" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Eventos</a>
+                <a href="{% url 'lista_eventos' %}" class="nav-link"><i class="fa-solid fa-calendar-check"></i> Eventos</a>
                 <a href="{% url 'logout' %}" class="nav-link logout"><i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión</a>
             </nav>
         </aside>
@@ -57,22 +57,6 @@
         });
     </script>
     {% endif %}
-    <script>
-    function verDetalleEmpleado(empleadoId) {
-        fetch(`/empleados/detalle_modal/${empleadoId}/`)
-            .then(response => response.json())
-            .then(data => {
-                // Insertar el contenido del modal en el contenedor
-                document.getElementById('detalleEmpleadoContent').innerHTML = data.html;
-                // Mostrar el modal (asegurate que el id del modal sea correcto)
-                let modal = new bootstrap.Modal(document.getElementById('modalDetalleEmpleado'));
-                modal.show();
-            })
-            .catch(error => {
-                console.error('Error al cargar el detalle del empleado:', error);
-            });
-    }
-    </script>
     <script> /*Script para validar las fechas de eliminar/reactivar empleado */
         function validarFecha(formulario, inputId) {
             const inputFecha = document.getElementById(inputId);
