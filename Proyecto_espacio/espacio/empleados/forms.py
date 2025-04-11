@@ -26,7 +26,7 @@ class EmpleadoForm(forms.ModelForm):
         model = Empleado
         fields = [
             'nombre', 'apellido', 'email', 'direccion', 'telefono',
-            'instagram', 'ingreso', 'imagen_perfil', 'mostrar_en_web'
+            'instagram', 'fecha_alta', 'imagen_perfil', 'mostrar_en_web'
         ]
 
         widgets = {
@@ -36,7 +36,7 @@ class EmpleadoForm(forms.ModelForm):
             'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
             'instagram': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '@usuario'}),
-            'ingreso': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'fecha_alta': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'imagen_perfil': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'mostrar_en_web': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

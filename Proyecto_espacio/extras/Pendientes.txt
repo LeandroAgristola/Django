@@ -73,7 +73,13 @@ calendario (Para la administración de horarios)
 
 
         
+🔁 Recomendación de orden:
 
-        
+Orden	Aplicación	Motivo
+
+1️⃣	planes	Independiente. Base para todo lo demás.
+2️⃣	eventos	Ya podés usar los planes cargados.
+3️⃣	clientes	Ya podés asignar plan, evento, y preparar la lógica de pago/estado.
+4️⃣	calendario	Tenés clientes cargados, podés manejar turnos, cupos, y validaciones. 
 
 

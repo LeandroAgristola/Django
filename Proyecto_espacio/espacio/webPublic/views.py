@@ -10,7 +10,7 @@ def home(request):
         {"nombre": "Plan Full", "detalle": "Cinco veces por semanaa", "precio": "65000"},
         {"nombre": "Personalizado", "detalle": "Dos veces por semana", "precio": "70000"},
     ]
-        empleados = Empleado.objects.filter(mostrar_en_web=True).values(
+        empleados = Empleado.objects.filter(mostrar_en_web=True, activo=True).values(
         'nombre', 'instagram' , 'imagen_perfil' )
     
         return render(request, 'webPublic/home.html', {'planes': planes, 'empleados': empleados})

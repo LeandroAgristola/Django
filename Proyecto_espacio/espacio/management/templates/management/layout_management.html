@@ -73,6 +73,16 @@
             });
     }
     </script>
+    <script> /*Script para validar las fechas de eliminar/reactivar empleado */
+        function validarFecha(formulario, inputId) {
+            const inputFecha = document.getElementById(inputId);
+            if (!inputFecha.value) {
+                inputFecha.classList.add('is-invalid');
+                return false;
+            }
+            return true;
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% endblock %}
 </body>

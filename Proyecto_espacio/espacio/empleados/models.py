@@ -8,9 +8,11 @@ class Empleado(models.Model):
     instagram = models.CharField(max_length=50, blank=True, null=True)
     direccion = models.CharField(max_length=100)
     telefono = models.CharField(max_length=20)
-    ingreso = models.DateField()
+    fecha_alta = models.DateField(null=True, blank=True)
+    fecha_baja = models.DateField(null=True, blank=True)
     imagen_perfil = models.ImageField(upload_to='empleados/', blank=True, null=True)
     mostrar_en_web = models.BooleanField(default=False)
+    activo = models.BooleanField(default=True)  #Campor para saber si el empleado esta activo!
     
     def delete(self, *args, **kwargs):
         if self.imagen_perfil and os.path.isfile(self.imagen_perfil.path):
