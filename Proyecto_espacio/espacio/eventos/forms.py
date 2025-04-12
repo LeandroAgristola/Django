@@ -15,43 +15,80 @@ def validar_solo_numeros(valor):
     if not re.match(r'^\d+$', valor):
         raise ValidationError('El número de teléfono debe contener solo números.')
 
+METODO_PAGO_CHOICES = (
+    ('', 'Seleccione método de pago'),
+    ('estudio', 'Pago en el estudio'),
+    ('enlace', 'Pago con enlace'),
+)
+
 class EventoForm(forms.ModelForm):
+    metodo_pago = forms.ChoiceField(
+        choices=METODO_PAGO_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_metodo_pago'})
+    )
+
     class Meta:
         model = Evento
-        fields = ['titulo', 'descripcion', 'fecha', 'hora', 'ubicacion', 'cupos', 'imagen', 'precio','pago_enlace', 'pago_en_estudio', 'link_pago', 'mostrar_en_web']
+        fields = ['titulo', 'mostrar_en_web', 'descripcion', 'fecha', 'hora', 'ubicacion', 'cupos', 'imagen', 'precio',
+                  'metodo_pago', 'pago_enlace', 'pago_en_estudio', 'link_pago']
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título'}),
+            'mostrar_en_web': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción', 'rows': 3}),
             'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'hora': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ubicación'}),
             'cupos': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Cupos'}),
             'imagen': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio'}),
-            'pago_enlace': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'pago_en_estudio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'link_pago': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Link de pago'}),
-            'mostrar_en_web': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-
+            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio', 'id': 'id_precio'}),
+            # Ocultamos los campos reales de método de pago
+            'pago_enlace': forms.HiddenInput(attrs={'class': 'form-check-input', 'style': 'display:none;'}),
+            'pago_en_estudio': forms.HiddenInput(attrs={'class': 'form-check-input', 'style': 'display:none;'}),
+            # Quitar el style inline para "link_pago"
+            'link_pago': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Link de pago', 'id': 'id_link_pago'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(EventoForm, self).__init__(*args, **kwargs)
+        # Si estamos en edición, pre-cargamos el método de pago
+        if self.instance and self.instance.pk:
+            if self.instance.pago_en_estudio:
+                self.fields['metodo_pago'].initial = 'estudio'
+            elif self.instance.pago_enlace:
+                self.fields['metodo_pago'].initial = 'enlace'
+            else:
+                self.fields['metodo_pago'].initial = ''
 
     def clean(self):
         cleaned_data = super().clean()
-        fecha = cleaned_data.get('fecha')
-        hora = cleaned_data.get('hora')
+        precio = cleaned_data.get('precio')
+        metodo = cleaned_data.get('metodo_pago')
+        link_pago = cleaned_data.get('link_pago')
 
-        if fecha and hora:
-            evento_datetime = datetime.combine(fecha, hora)
-            if evento_datetime < datetime.now():
-                raise forms.ValidationError("La fecha y hora no pueden ser anteriores a la actual.")
-
-        if cleaned_data.get('pago_enlace') and cleaned_data.get('pago_en_estudio'):
-            raise forms.ValidationError("Solo una forma de pago puede estar activa.")
-
+        # Si el precio es mayor a 0, se debe seleccionar un método
+        if precio and precio > 0:
+            if not metodo:
+                raise ValidationError("Seleccioná al menos un método de pago.")
+            if metodo == 'enlace' and not link_pago:
+                self.add_error('link_pago', 'Debés ingresar el enlace de pago.')
+            # Asignamos los valores a los campos reales según la opción elegida:
+            if metodo == 'estudio':
+                cleaned_data['pago_en_estudio'] = True
+                cleaned_data['pago_enlace'] = ''  # Limpiamos el campo de enlace
+                cleaned_data['link_pago'] = ''
+            elif metodo == 'enlace':
+                cleaned_data['pago_en_estudio'] = False
+                # En vez de asignar True, asignamos el link proporcionado
+                cleaned_data['pago_enlace'] = link_pago.strip() if link_pago else ''
+                # Opcional: podrías dejar link_pago o limpiar ese campo, según cómo quieras almacenar el dato
+        else:
+            # Si el precio es 0 o no se define, se desactivan las opciones de pago
+            cleaned_data['pago_en_estudio'] = False
+            cleaned_data['pago_enlace'] = ''
+            cleaned_data['link_pago'] = ''
+            cleaned_data['metodo_pago'] = ''
         return cleaned_data
-
-    def clean_titulo(self):
-        return self._validar_letras('titulo')
 
     def _validar_letras(self, campo):
         valor = self.cleaned_data.get(campo)

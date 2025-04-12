@@ -38,6 +38,7 @@ def crear_evento(request):
             form.save()
             return redirect('eventos_admin:lista_eventos')
         else:
+            print(form.errors)  # Esto te ayudará a ver qué validación falla
             return render(request, 'eventos/evento_form.html', {'form': form})
     else:
         form = EventoForm()

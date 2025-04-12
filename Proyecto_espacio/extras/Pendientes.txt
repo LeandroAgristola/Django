@@ -86,10 +86,7 @@ Orden	Aplicación	Motivo
 Eventos 
 
 Crear un nuevo evento:
-    Si el costo es 0 no se muestran las opciones de pago
-    Las opciones de pago deberian estar encerradas en un select en el cual seleccionamos uno de los dos
-        si seleccionamos "pago en el estudio" solo se muestrra esa opcion
-        si seleccionamos "pago enlase" se abre un input "link de pago" en donde colocamos el link de pago
+
 Incribir un cliente a un evento:
     Primero y principal tenemos q tener una select que diga "cliente cargado" o "nuevo cliente" 
         si es cliente cargado seleccionamos de la lista que le pasamos a la vista (luego sera de la base de datos de clientes)

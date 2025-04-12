@@ -3,7 +3,7 @@ import os
 from django.core.exceptions import ValidationError
 
 class Evento(models.Model):
-    titulo = models.CharField(max_length=50)
+    titulo = models.TextField(max_length=50)
     descripcion = models.TextField(max_length=100)
     fecha = models.DateField(null=False, blank=False)
     hora = models.TimeField(null=False, blank=False)
@@ -24,11 +24,13 @@ class Evento(models.Model):
     
     def clean(self):
         super().clean()
-        if self.pago_enlace and self.pago_en_estudio:
-            raise ValidationError("Solo podés seleccionar un método de pago: enlace o en estudio.")
-        if not self.pago_enlace and not self.pago_en_estudio:
-            raise ValidationError("Debés seleccionar al menos un método de pago.")
-
+        # Solo validar métodos de pago si el evento tiene costo mayor a 0.
+        if self.precio > 0:
+            if self.pago_enlace and self.pago_en_estudio:
+                raise ValidationError("Solo podés seleccionar un método de pago: enlace o en estudio.")
+            if not self.pago_enlace and not self.pago_en_estudio:
+                raise ValidationError("Debés seleccionar al menos un método de pago.")
+            
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
