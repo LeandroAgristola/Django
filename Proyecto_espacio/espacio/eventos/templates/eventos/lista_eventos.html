@@ -11,7 +11,8 @@
                 <th>Titulo</th>
                 <th>Fecha y hora</th>
                 <th>Ubicacion</th>
-                <th>Cupos Disponibles</th>
+                <th>Cupos</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -19,14 +20,15 @@
             {% for evento in eventos %}
             <tr>
                 <td>{{ evento.titulo }}</td>
-                <td>{{ evento.fecha }} {{ evento.hora }}</td>
+                <td>{{ evento.fecha }} - {{ evento.hora }} hs </td>
                 <td>{{ evento.ubicacion }}</td> 
                 <td>{{ evento.cupos}}</td>
+                <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
-                    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver</a>
-                    <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-sm btn-success">Inscribir</a>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">Eliminar</button>
+                    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-sm btn-info"><strong>Ver detalle</strong></a>
+                    <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-sm btn-primary"><strong>Editar</strong></a>
+                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-sm btn-success"><strong>Inscribir</strong></a>
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}"><strong>X</strong></button>
                 </td>
             </tr>
 
@@ -68,6 +70,7 @@
                 <th>Titulo</th>
                 <th>Fecha y hora</th>
                 <th>Ubicacion</th>
+                <th>Cupos</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -76,15 +79,16 @@
             {% for evento in papelera %}
             <tr>
                 <td>{{ evento.titulo }}</td>
-                <td>{{ evento.fecha }} {{ evento.hora }}</td>
+                <td>{{ evento.fecha }} - {{ evento.hora }} hs </td>
                 <td>{{ evento.ubicacion }}</td> 
-                <td>{{ evento.estado }}</td>
+                <td>{{ evento.cupos}}</td>
+                <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
                     <!-- Botón Reactivar -->
-                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ evento.id }}">Reactivar</button>
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ evento.id }}"><strong>Reactivar</strong></button>
                     
                     <!-- Botón Eliminar Permanente -->
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ evento.id }}">Eliminar</button>
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ evento.id }}"><strong>X</strong></button>
                 </td>
             </tr>
 

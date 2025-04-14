@@ -103,12 +103,17 @@ def eliminar_evento(request, pk):
 @login_required
 def inscribir_cliente(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
-    clientes = [("Juan Pérez", "Juan Pérez"), ("Ana López", "Ana López"), ("Carlos Gómez", "Carlos Gómez")]  # Simulación de clientes, deberías obtenerlos de tu base de datos
+    clientes_regulares = [
+        {'nombre': 'Ana Gómez', 'email': 'ana@example.com', 'telefono': '123456789'},
+        {'nombre': 'Carlos Pérez', 'email': 'carlos@example.com', 'telefono': '987654321'},
+        {'nombre': 'Lucía Martínez', 'email': 'lucia@example.com', 'telefono': '111222333'},
+    ]  # Simulación de clientes, deberías obtenerlos de tu base de datos
     #clientes = Cliente.objects.all().values_list('id', 'nombre')
 
     if request.method == 'POST':    
         if evento.cupos <= 0:
-            return HttpResponse("No hay cupos disponibles para este evento.")
+            messages.error(request, "No hay cupos disponibles para este evento.")
+            return redirect('eventos_admin:inscribir_cliente', pk=pk)
         form = InscripcionForm(request.POST)
         if form.is_valid():
             inscripcion = form.save(commit=False)
@@ -123,7 +128,7 @@ def inscribir_cliente(request, pk):
     return render(request, 'eventos/inscribir_cliente.html', {
         'form': form,
         'evento': evento,
-        'clientes': clientes
+        'clientes': clientes_regulares
     })
 
 @require_POST
@@ -135,3 +140,16 @@ def eliminar_inscripcion(request, insc_id):
     evento.cupos += 1
     evento.save()
     return redirect('eventos_admin:detalle_eventos', pk=evento.pk)
+
+@require_POST
+@login_required
+def confirmar_pago(request, insc_id):
+    inscripcion = get_object_or_404(InscripcionEvento, id=insc_id)
+    # Se muestra el botón de confirmar solo para inscripciones pendientes y eventos pagados.
+    if inscripcion.estado == 'pendiente' and inscripcion.evento.precio > 0:
+         inscripcion.estado = 'confirmado'
+         inscripcion.save()
+         messages.success(request, "Pago confirmado.")
+    else:
+         messages.info(request, "No es necesario confirmar este pago.")
+    return redirect('eventos_admin:detalle_eventos', pk=inscripcion.evento.pk)

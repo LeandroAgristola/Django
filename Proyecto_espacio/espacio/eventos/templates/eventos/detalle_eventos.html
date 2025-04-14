@@ -3,8 +3,12 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6">
-      <p><strong>Título:</strong> {{ evento.titulo }}</p>
-      <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+      <p><strong>Título:</strong> {{ evento.titulo }} </p>
+      <p><strong>Fecha y hora: </strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
+      <p><strong>Ubicacion:</strong> {{ evento.ubicacion }} </p>
+      <p><strong>Cupos:</strong> {{ evento.cupos }}</p>
+      <p><strong>Estado:</strong> {% if evento.estado == False %}Finalizado{% else %}Activo{% endif %} </p>
+      <p><strong>Descripcion:</strong> {{ evento.descripcion }} </p>
       <!-- más campos -->
     </div>
     <div class="col-md-6">
@@ -29,16 +33,18 @@
         <td>{{ inscripcion.nombre }}</td>
         <td>{{ inscripcion.telefono }}</td>
         <td>
-          {% if not inscripcion.estado and evento.precio > 0 %}
+          {% if inscripcion.estado == 'pendiente' and evento.precio > 0 %}
             <form method="post" action="{% url 'confirmar_pago' inscripcion.id %}">
               {% csrf_token %}
               <button class="btn btn-success btn-sm">Confirmar</button>
             </form>
           {% endif %}
+          {% if not inscripcion.cliente_id %}
           <form method="post" action="{% url 'eventos_admin:eliminar_inscripcion' inscripcion.id %}">
             {% csrf_token %}
             <button class="btn btn-danger btn-sm">Eliminar</button>
           </form>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}

@@ -51,6 +51,8 @@ class InscripcionEvento(models.Model):
     )
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    email = models.EmailField()
     telefono = models.CharField(max_length=20)
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
     cliente_id = models.IntegerField(blank=True, null=True)  # Simulación por ahora

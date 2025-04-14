@@ -101,13 +101,27 @@ class EventoForm(forms.ModelForm):
             raise ValidationError('El número de cupos debe ser mayor o igual a cero.')
         return cupos
 
+TIPO_CLIENTE_CHOICES = (
+    ('cargado', 'Cliente cargado'),
+    ('nuevo', 'Nuevo cliente'),
+)
+
 class InscripcionForm(forms.ModelForm):
+    tipo_cliente = forms.ChoiceField(
+        choices=TIPO_CLIENTE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        required=True,
+        label="Tipo de cliente"
+    )
+    
     class Meta:
         model = InscripcionEvento
-        fields = ['nombre', 'telefono', 'estado', 'cliente_id']
+        fields = ['tipo_cliente', 'nombre', 'apellido', 'email', 'telefono', 'estado', 'cliente_id']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
             'estado': forms.Select(attrs={'class': 'form-select'}),
-            'cliente_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'cliente_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ID del cliente (para cliente cargado)'}),
         }
