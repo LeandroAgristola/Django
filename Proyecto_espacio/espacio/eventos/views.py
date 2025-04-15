@@ -69,8 +69,21 @@ def editar_evento(request, pk):
 @login_required
 def desactivar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
+
+    # Contar inscripciones actuales
+    inscripciones = InscripcionEvento.objects.filter(evento=evento)
+    cantidad_inscripciones = inscripciones.count()
+
+    # Restaurar cupos al original sumando inscripciones eliminadas
+    evento.cupos += cantidad_inscripciones
+
+    # Eliminar inscripciones
+    inscripciones.delete()
+
+    # Cambiar estado
     evento.estado = False
     evento.save()
+
     return redirect('eventos_admin:lista_eventos')
 
 @require_POST
@@ -78,20 +91,33 @@ def desactivar_evento(request, pk):
 def reactivar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     new_fecha_str = request.POST.get('fecha_alta')
+    new_hora_str = request.POST.get('hora_alta')
+
     try:
         new_fecha = datetime.strptime(new_fecha_str, '%Y-%m-%d').date()
+        new_hora = datetime.strptime(new_hora_str, '%H:%M').time()
     except ValueError:
-        messages.error(request, "Formato de fecha incorrecto.")
+        messages.error(request, "Formato de fecha u hora incorrecto.")
         return redirect('eventos_admin:lista_eventos')
 
-    if new_fecha == evento.fecha:
-        messages.error(request, "La nueva fecha debe ser distinta a la actual.")
+    nueva_fecha_hora = datetime.combine(new_fecha, new_hora)
+    actual_fecha_hora = datetime.combine(evento.fecha, evento.hora)
+    ahora = datetime.now().replace(second=0, microsecond=0)
+
+    if nueva_fecha_hora == actual_fecha_hora:
+        messages.error(request, "La nueva fecha y hora deben ser distintas a la actual.")
+        return redirect('eventos_admin:lista_eventos')
+
+    if nueva_fecha_hora < ahora:
+        messages.error(request, "La nueva fecha y hora no pueden ser anteriores al momento actual.")
         return redirect('eventos_admin:lista_eventos')
 
     evento.fecha = new_fecha
+    evento.hora = new_hora
     evento.estado = True
     evento.save()
     return redirect('eventos_admin:lista_eventos')
+
 
 @require_POST
 @login_required

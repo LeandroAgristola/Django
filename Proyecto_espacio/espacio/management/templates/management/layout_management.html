@@ -41,9 +41,18 @@
                 <a href="{% url 'logout' %}" class="nav-link logout"><i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión</a>
             </nav>
         </aside>
-
         <main class="col" style="margin:20px"> 
+            <!--Bloque para mostrar msj de error (cualquier sea)-->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2" role="alert">
+                    <strong>{{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
             {% block content %}
+
             {% endblock %}
         </main>
     </div>

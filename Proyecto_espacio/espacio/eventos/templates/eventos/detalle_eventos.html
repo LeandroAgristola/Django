@@ -7,6 +7,7 @@
       <p><strong>Fecha y hora: </strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
       <p><strong>Ubicacion:</strong> {{ evento.ubicacion }} </p>
       <p><strong>Cupos:</strong> {{ evento.cupos }}</p>
+      <p><strong>Precio:</strong> {% if evento.precio == 0 %}Gratis{% else %}{{evento.precio}}{% endif %} </p>
       <p><strong>Estado:</strong> {% if evento.estado == False %}Finalizado{% else %}Activo{% endif %} </p>
       <p><strong>Descripcion:</strong> {{ evento.descripcion }} </p>
       <!-- más campos -->
@@ -34,7 +35,7 @@
         <td>{{ inscripcion.telefono }}</td>
         <td>
           {% if inscripcion.estado == 'pendiente' and evento.precio > 0 %}
-            <form method="post" action="{% url 'confirmar_pago' inscripcion.id %}">
+          <form method="post" action="{% url 'eventos_admin:confirmar_pago' inscripcion.id %}">
               {% csrf_token %}
               <button class="btn btn-success btn-sm">Confirmar</button>
             </form>
