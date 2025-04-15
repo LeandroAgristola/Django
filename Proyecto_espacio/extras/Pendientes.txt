@@ -69,6 +69,16 @@ calendario (Para la administración de horarios)
         Cada dia debe tener color segun disponibilidad
         Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
 
+crear app de configuracion :
+    Datos de Contacto:
+        telefono
+        instagram
+        Celular
+        mail
+        direccion
+        opcional google maps
+    luego de esto configurar msj automaticos, etc
+
 
         
 🔁 Recomendación de orden:
