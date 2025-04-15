@@ -12,25 +12,41 @@
 
           <div class="row">
             {% for evento in eventos %}
-            <div class="col-12 col-md-6 mb-4">
-                <!--style="background-image: url('{{ evento.imagen.url }}');"--> <!-- Cambiar cuando se agreguen los modelos en eventos--> 
-                <div class="card-evento p-3 h-100 text-start" style="--imagen-evento: url('/media/{{ evento.imagen }}');">
-                <h5 class="titulo-evento">{{ evento.nombre }}</h5>
-                <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
-                <p><strong>Hora:</strong> {{ evento.hora }}</p>
-                <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
-                <p><strong>Costo:</strong> 
-                  {% if evento.costo == "0" %}Sin costo{% else %}$ {{ evento.costo }}{% endif %}
-                </p>
-                <p><strong>Cupos disponibles:</strong> {{ evento.cupos_disponibles }}</p>
-
-                {% if evento.cupos_disponibles|add:"0" > 0 %}
-                  <button class="btn-custom">Inscribirme</button>
-                {% else %}
-                  <button class="btn-custom" id="btn-Nodisponible" disabled>No disponible</button>
-                {% endif %}
+              <div class="col-12 col-md-6 mb-4">
+                <div class="card-evento p-3 h-100 d-flex flex-column text-start" style="--imagen-evento: url('/media/{{ evento.imagen }}');">
+                  <h5 class="titulo-evento">{{ evento.titulo}}</h5>
+                  <p><strong>Fecha y hora:</strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
+                  <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+                  <p><strong>Descripcion:</strong> {{ evento.descripcion}}</p>
+                  <p><strong>Cupos disponibles:</strong> {{ evento.cupos }}</p>
+                  <p><strong>Costo:</strong> 
+                    {% if evento.precio == 0 %}
+                      Sin costo
+                    {% else %}
+                      ${{ evento.precio }}
+                    {% endif %}
+                  </p>
+          
+                  {% if evento.precio > 0 %}
+                    <p><strong>Método de pago:</strong>
+                      {% if evento.pago_enlace %}
+                        <a href="{{ evento.pago_enlace }}" target="_blank">Pagar evento</a>
+                      {% else %}
+                        Pago en efectivo
+                      {% endif %}
+                    </p>
+                  {% endif %}
+          
+                  <!-- Botón alineado abajo -->
+                  <div class="mt-auto">
+                    {% if evento.cupos|add:"0" > 0 %}
+                      <button class="btn-custom">Inscribirme</button>
+                    {% else %}
+                      <button class="btn-custom" id="btn-Nodisponible" disabled>No disponible</button>
+                    {% endif %}
+                  </div>
+                </div>
               </div>
-            </div>
             {% endfor %}
           </div>
 

@@ -1,0 +1,109 @@
+{% extends "management/layout_management.html" %}
+{% load static %}
+
+{% block content %}
+  <form method="POST" class="modo-cliente-form">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="id_tipo_cliente" class="form-label">Tipo de cliente</label>
+      {{ form.tipo_cliente }}
+    </div>
+
+    <!-- Cliente cargado -->
+    <div class="mb-3" id="cliente-cargado" style="display: none;">
+      <label for="cliente_id" class="form-label">Seleccionar cliente</label>
+      <select class="form-select mt-2" name="cliente_id" id="cliente_id" required>
+        <option value="">-- Seleccionar cliente --</option>
+        {% for cliente in clientes %}
+          <option 
+            value="{{ cliente.email }}"
+            data-nombre="{{ cliente.nombre }}"
+            data-apellido="{{ cliente.apellido }}"
+            data-telefono="{{ cliente.telefono }}"
+          >
+            {{ cliente.nombre }} {{ cliente.apellido }} - {{ cliente.email }} - {{ cliente.telefono }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div class="mt-3">
+        {{ form.estado.label_tag }}
+        {{ form.estado }}
+      </div>
+    </div>
+
+    <!-- Cliente nuevo -->
+    <div id="cliente-nuevo" style="display: none;">
+      {{ form.nombre.label_tag }}
+      {{ form.nombre }}
+
+      {{ form.apellido.label_tag }}
+      {{ form.apellido }}
+
+      {{ form.email.label_tag }}
+      {{ form.email }}
+
+      {{ form.telefono.label_tag }}
+      {{ form.telefono }}
+
+      {{ form.estado.label_tag }}
+      {{ form.estado }}
+    </div>
+
+    {% if evento.cupos <= 0 %}
+      <button type="submit" class="btn btn-success mt-3" disabled>No hay cupos disponibles</button>
+    {% else %}
+      <button type="submit" class="btn btn-success mt-3">Inscribir</button>
+    {% endif %}
+    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-secondary mt-3">Cancelar</a>
+  </form>
+
+  {% block scripts %}
+    <!-- jQuery y Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+        // Inicializar Select2
+        $('#cliente_id').select2({
+          placeholder: "-- Seleccionar cliente --",
+          width: '100%'
+        });
+
+        // Mostrar y activar campos según el tipo de cliente
+        function toggleCampos() {
+          const tipo = $('#id_tipo_cliente').val();
+          const cargado = $('#cliente-cargado');
+          const nuevo = $('#cliente-nuevo');
+
+          cargado.toggle(tipo === 'cargado');
+          nuevo.toggle(tipo === 'nuevo');
+
+          // Activar/desactivar campos
+          cargado.find('select, input').prop('disabled', tipo !== 'cargado');
+          nuevo.find('input, select').prop('disabled', tipo !== 'nuevo');
+        }
+
+        $('#id_tipo_cliente').on('change', toggleCampos);
+        $(window).on('load', toggleCampos);
+
+        // Autocompletar campos según cliente seleccionado
+        $('#cliente_id').on('change', function () {
+          const selected = $(this).find(':selected');
+          const nombre = selected.data('nombre') || '';
+          const apellido = selected.data('apellido') || '';
+          const email = selected.val() || '';
+          const telefono = selected.data('telefono') || '';
+
+          $('#id_nombre').val(nombre);
+          $('#id_apellido').val(apellido);
+          $('#id_email').val(email);
+          $('#id_telefono').val(telefono);
+        });
+      });
+    </script>
+  {% endblock %}
+{% endblock %}

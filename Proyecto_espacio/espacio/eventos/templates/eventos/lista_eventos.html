@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container-fluid" id="listaEventos">
-    <h2 class="mb-4">Lista de Eventos</h2>
+    <h2 class="mb-4">Lista de <strong>Eventos</strong></h2>
     <a href="{% url 'eventos_admin:crear_evento' %}" class="btn btn-success mb-3">Nuevo Evento</a>
 
     <table class="table table-bordered table-striped">
@@ -25,9 +25,9 @@
                 <td>{{ evento.cupos}}</td>
                 <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
+                    <a href="#" class="btn btn-sm btn-success">Inscribir</a>
                     <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver detalle</a>
                     <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-sm btn-success">Inscribir</a>
                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
                 </td>
             </tr>
@@ -103,16 +103,6 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-            
-                                {% if messages %}
-                                  {% for message in messages %}
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                      {{ message }}
-                                      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                    </div>
-                                  {% endfor %}
-                                {% endif %}
-            
                                 ¿Querés reactivar el evento <strong>{{ evento.titulo }}</strong>?
                                 <div class="mt-3">
                                     <label for="fecha_alta{{ evento.id }}" class="form-label">Nueva fecha</label>

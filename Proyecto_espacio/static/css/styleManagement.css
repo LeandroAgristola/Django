@@ -155,9 +155,10 @@ label {
     margin: auto;
 }
 
-/*Estilo para emplados*/
+/*Estilos para listados y formularios*/
 
-#formsEmplados{
+#formsEmplados,
+#formsEventos {
     background-color: #e3e5d7;
     width: 800px;
     border-radius: 10px;
@@ -166,7 +167,8 @@ label {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-#listaEmpleados {  
+#listaEmpleados,
+#listaEventos {  
     background-color: #e3e5d7;
     border-radius: 10px;
     padding: 20px;
@@ -175,12 +177,7 @@ label {
 
 }
 
-#listaEmpleados td .btn{
-    border: none;
-    width: 100px;
-    border-radius: 10px;
-    color: white;
-}
+/*Estilo para emplados*/
 
 #tarjetaEmpleado{
     background-color: #e3e5d7;
@@ -212,5 +209,26 @@ label {
     border-radius: 20px;
     padding: 10px;
     border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/*Estilo para eventos*/
+
+#detalleEvento{
+    background-color: #e3e5d7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#detalleEvento .col-md-6{
+    width: 50%;
+}
+
+#detalleEvento .col-md-6 img{
+    width: 50%;
+    height: auto;
+    border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }

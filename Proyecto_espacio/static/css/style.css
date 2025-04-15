@@ -740,6 +740,7 @@ footer {
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+    height: 450px !important;
 }
 
 .card-evento:hover {
@@ -762,7 +763,14 @@ footer {
     width: 100%;
 }
 
-#btn-Nodisponible {
+#eventosTemplate #btn-Nodisponible {
     background-color: #f8d7da;
     color: #842029;
 }
+
+#eventosTemplate a {
+    background-color: #bdd6d2;
+    border-radius: 10px;
+    padding: 5px;  
+}
+

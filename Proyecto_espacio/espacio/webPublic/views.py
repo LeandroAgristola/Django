@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from empleados.models import Empleado
+from eventos.models import Evento
 
 def home(request):
         planes = [
@@ -16,42 +17,7 @@ def home(request):
         return render(request, 'webPublic/home.html', {'planes': planes, 'empleados': empleados})
 
 def eventos(request):
-    eventos = [
-        {
-            "nombre": "Clase",
-            "fecha": "10/03/2025",
-            "hora": "10:00 hs",
-            "ubicacion": "Estudio",
-            "costo": "0",
-            "cupos_disponibles": 20,
-            "imagen": "imgEventos/ImgEvento01.png"
-        },
-        {
-            "nombre": "Clase",
-            "fecha": "10/05/2025",
-            "hora": "10:00 hs",
-            "ubicacion": "Estudio",
-            "costo": "25000",
-            "cupos_disponibles": 20,
-            "imagen": "imgEventos/ImgEvento02.png"
-        },
-        {
-            "nombre": "Clase",
-            "fecha": "10/08/2025",
-            "hora": "09:00 hs",
-            "ubicacion": "Estudio",
-            "costo": "18000",
-            "cupos_disponibles": 20,
-            "imagen": "imgEventos/ImgEvento03.png"
-        },
-        {
-            "nombre": "Clase",
-            "fecha": "10/10/2025",
-            "hora": "18:00 hs",
-            "ubicacion": "Estudio",
-            "costo": "35000",
-            "cupos_disponibles": 0,
-            "imagen": "imgEventos/ImgEvento04.png"
-        },	
-    ]
+    eventos = Evento.objects.filter(mostrar_en_web=True, estado=True).values(
+        'titulo', 'fecha' ,'descripcion' , 'hora' , 'ubicacion', 'precio', 'cupos', 'imagen', 'pago_enlace', 'link_pago')
+
     return render(request, 'webPublic/eventos.html', {'eventos': eventos})

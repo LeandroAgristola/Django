@@ -1,54 +1,53 @@
 {% extends "management/layout_management.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-      <p><strong>Título:</strong> {{ evento.titulo }} </p>
-      <p><strong>Fecha y hora: </strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
-      <p><strong>Ubicacion:</strong> {{ evento.ubicacion }} </p>
-      <p><strong>Cupos:</strong> {{ evento.cupos }}</p>
-      <p><strong>Precio:</strong> {% if evento.precio == 0 %}Gratis{% else %}{{evento.precio}}{% endif %} </p>
-      <p><strong>Estado:</strong> {% if evento.estado == False %}Finalizado{% else %}Activo{% endif %} </p>
-      <p><strong>Descripcion:</strong> {{ evento.descripcion }} </p>
-      <!-- más campos -->
-    </div>
-    <div class="col-md-6">
-      {% if evento.imagen %}
-        <img src="{{ evento.imagen.url }}" alt="Imagen del evento" class="img-fluid">
-      {% endif %}
-    </div>
-</div>
-  
+<div id="detalleEvento" class="container-fluid">
+  <h2 class="mb-4">Detalles del evento <strong>{{ evento.titulo }}</strong></h2>
+  <div class="row">
+      <div class="col-md-6">
+        <p><strong>Fecha y hora: </strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
+        <p><strong>Ubicacion:</strong> {{ evento.ubicacion }} </p>
+        <p><strong>Cupos:</strong> {{ evento.cupos }}</p>
+        <p><strong>Precio:</strong> {% if evento.precio == 0 %}Gratis{% else %} $ {{evento.precio}}{% endif %} </p>
+        <p><strong>Estado:</strong> {% if evento.estado == False %}Finalizado{% else %}Activo{% endif %} </p>
+        <p><strong>Descripcion:</strong> {{ evento.descripcion }} </p>
+        <!-- más campos -->
+      </div>
+      <div class="col-md-6">
+        {% if evento.imagen %}
+          <img src="{{ evento.imagen.url }}" alt="Imagen del evento" class="img-fluid">
+        {% endif %}
+      </div>
+  </div>
+  <hr>
   <h3>Clientes inscriptos</h3>
-  <table class="table">
+  <table class="table table-bordered table-striped mt-3"">
     <thead>
       <tr>
-        <th>Nombre</th>
+        <th>Nombre y Apellido</th>
+        <th>Email</th>
         <th>Teléfono</th>
+        <th>Tipo</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      {% for inscripcion in evento.inscripcionevento_set.all %}
+    {% for inscripcion in evento.inscripcionevento_set.all %}
       <tr>
-        <td>{{ inscripcion.nombre }}</td>
+        <td>{{ inscripcion.nombre }} {{ inscripcion.apellido }}</td>
+        <td>{{ inscripcion.email }}</td>
         <td>{{ inscripcion.telefono }}</td>
+        <td>{{ inscripcion.tipo }}</td>
         <td>
-          {% if inscripcion.estado == 'pendiente' and evento.precio > 0 %}
-          <form method="post" action="{% url 'eventos_admin:confirmar_pago' inscripcion.id %}">
-              {% csrf_token %}
-              <button class="btn btn-success btn-sm">Confirmar</button>
-            </form>
-          {% endif %}
-          {% if not inscripcion.cliente_id %}
-          <form method="post" action="{% url 'eventos_admin:eliminar_inscripcion' inscripcion.id %}">
-            {% csrf_token %}
-            <button class="btn btn-danger btn-sm">Eliminar</button>
-          </form>
-          {% endif %}
-        </td>
+          <!-- Botón confirma pago-->
+          <button class="btn btn-success btn-sm">Confirma pago</button>
+          
+          <!-- Botón Eliminar -->
+          <button class="btn btn-danger btn-sm">X</button>
+      </td>
       </tr>
-      {% endfor %}
+    {% endfor %}
     </tbody>
   </table>
+</div>
 {% endblock %}
