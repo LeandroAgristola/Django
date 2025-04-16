@@ -4,6 +4,8 @@ from .models import Evento
 from django.utils import timezone
 from datetime import datetime
 import re
+from clientes.models import Cliente
+from eventos.models import InscripcionEvento
 
 
 # Validaciones generales
@@ -113,3 +115,34 @@ TIPO_CLIENTE_CHOICES = (
     ('cargado', 'Cliente cargado'),
     ('nuevo', 'Nuevo cliente'),
 )
+
+
+class InscribirClienteForm(forms.Form):
+    tipo_cliente = forms.ChoiceField(
+        choices=TIPO_CLIENTE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_tipo_cliente'})
+    )
+
+    # Comunes
+    estado = forms.ChoiceField(
+        choices=InscripcionEvento.ESTADOS,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
+    # Solo para nuevo cliente
+    nombre = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    apellido = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+    )
+    telefono = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )

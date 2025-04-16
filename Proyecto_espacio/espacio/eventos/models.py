@@ -1,6 +1,7 @@
 from django.db import models
 import os
 from django.core.exceptions import ValidationError
+from clientes.models import Cliente
 
 class Evento(models.Model):
     titulo = models.TextField(max_length=50)
@@ -63,5 +64,5 @@ class InscripcionEvento(models.Model):
     email = models.EmailField()
     telefono = models.CharField(max_length=20)
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
-    cliente_id = models.IntegerField(blank=True, null=True)  # Simulación por ahora
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL)
     creado_en = models.DateTimeField(auto_now_add=True)

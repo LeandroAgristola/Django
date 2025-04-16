@@ -25,14 +25,14 @@
                 <td>{{ evento.cupos}}</td>
                 <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
-                    <a href="#" class="btn btn-outline-success btn-sm">+ cliente</a>
+                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-outline-success btn-sm">+ cliente</a>
                     <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-outline-info btn-sm ">Ver detalle</a>
                     <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-outline-primary btn-sm ">Editar</a>
                     <button class="btn btn-outline-danger btn-sm " data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
                 </td>
             </tr>
 
-            <!-- Modal de eliminación por evento -->
+            <!-- Modal de deactivar por evento -->
             <div class="modal fade" id="modalDesactivar{{ evento.id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

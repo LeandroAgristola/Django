@@ -4,8 +4,9 @@ from django.utils import timezone
 from datetime import datetime, time
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-from .forms import EventoForm
-from .models import Evento
+from .forms import EventoForm, InscribirClienteForm
+from .models import InscripcionEvento, Evento
+from clientes.models import Cliente
 
 @login_required
 def lista_eventos(request):
@@ -110,3 +111,53 @@ def eliminar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
     evento.delete()
     return redirect('eventos_admin:lista_eventos')
+
+@login_required
+def inscribir_cliente(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    clientes = Cliente.objects.all()
+    
+    if request.method == 'POST':
+        form = InscribirClienteForm(request.POST)
+        if form.is_valid():
+            tipo_cliente = form.cleaned_data['tipo_cliente']
+            estado = form.cleaned_data['estado']
+
+            if tipo_cliente == 'cargado':
+                email = request.POST.get('cliente_id')
+                cliente = Cliente.objects.get(mail=email)
+
+            else:  # nuevo
+                cliente = Cliente.objects.create(
+                    nombre=form.cleaned_data['nombre'],
+                    apellido=form.cleaned_data['apellido'],
+                    dni=int(datetime.now().timestamp()),  # temporal, o generá uno por formulario
+                    mail=form.cleaned_data['email'],
+                    plan=None,
+                    tipo='eventual',
+                    estado=estado,
+                    activo=True,
+                )
+
+            inscripcion = InscripcionEvento.objects.create(
+                evento=evento,
+                nombre=cliente.nombre,
+                apellido=cliente.apellido,
+                email=cliente.mail,
+                telefono=form.cleaned_data['telefono'],
+                estado=estado,
+                cliente=cliente
+            )
+
+            messages.success(request, "Cliente inscrito correctamente.")
+            return redirect('eventos_admin:detalle_eventos', pk=evento.id)
+        else:
+            messages.error(request, "Error al inscribir cliente.")
+    else:
+        form = InscribirClienteForm()
+
+    return render(request, 'eventos/inscribir_cliente.html', {
+        'form': form,
+        'evento': evento,
+        'clientes': clientes
+    })

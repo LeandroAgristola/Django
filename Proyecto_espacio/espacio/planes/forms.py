@@ -10,7 +10,7 @@ class PlanForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del plan'}),
             'detalle': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción del plan', 'rows': 3}),
             'cantidad_dias': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Entre 1 y 7'}),
-            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio en ARS'}),
+            'precio': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Precio'}),
             'mostrar_en_web': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 

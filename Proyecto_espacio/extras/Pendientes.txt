@@ -85,143 +85,27 @@ crear app de configuracion :
 
 Orden	Aplicación	Motivo
 
-1️⃣	planes	Independiente. Base para todo lo demás.
-2️⃣	eventos	Ya podés usar los planes cargados.
 3️⃣	clientes	Ya podés asignar plan, evento, y preparar la lógica de pago/estado.
 4️⃣	calendario	Tenés clientes cargados, podés manejar turnos, cupos, y validaciones. 
 
 
-Eventos 
+Pendientes de clientes cuando tengamos calendario: 
 
-Crear un nuevo evento:
+    los dias y hora se marcan en el calendario segun disponibilidad
+    Lo dias que podemos marcar estan dados por la cantidad de dias en el plan
 
-Incribir un cliente a un evento:
-    Primero y principal tenemos q tener una select que diga "cliente cargado" o "nuevo cliente" 
-        si es cliente cargado seleccionamos de la lista que le pasamos a la vista (luego sera de la base de datos de clientes)
-        si es nuevo cliente (se habilitan los datos para cargar un cliente especifico para el evento)
-    Si el evento no tiene mas cupos se desactiva el boton de incribir y no se puede agregar personas
+Eventos pendientes:
 
-Al editar un formulario no nos debe dejar poner fechas anteriores 
+    los clientes al cargarlos no decrementa la cantidad
+    al apretar en confirmar_pago no se confirmado
+    la confirmacion de pago de evento deberia ser diferente que la de regular?
+    al elimianr un cliente del listado, se debe limpiar su inscripcion no eliminar por completo
+    al enviar un evento a la papelerea (desactivar) se debe limpiar el registro de inscriptos
+    dar la opcion de exportar en pdf el listade de inscriptos
+    el boton de +cliente no debe tener funcionalidad si no hay cupos
+    los eventos finalizados por fecha deben estar sombreados en rojo .resaltado-rojo
 
-Clientes: 
-    cuando creeemos el modelo de clientes englobar todos los clientes en base a este modelo tanto lo clientes reguales como los clientes a evento
-    Cuando incribimos un cliente nuevo desde la seccion de "eventos" se autocomplete el tipo de cliente como "cliente evento", 
-    en cambio cuando cargamos un cliente desde "agregar un cliente desde la app de clientes el tipo de cliente sera "cliente regular" 
-    Esto no permitira en un futuro tener filtrados los clientes a eventos y los clientes regulares. 
-
-models.py
-        def delete(self, *args, **kwargs):
-        InscripcionEvento.objects.filter(evento=self).delete()
-        if self.imagen and os.path.isfile(self.imagen.path):
-            os.remove(self.imagen.path)
-        super().delete(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.titulo} - {self.fecha.strftime('%d/%m/%Y')}"
-
-        class Cliente(models.Model):
-    TIPO_CHOICES = [
-        ('eventual', 'Eventual'),
-        ('regular', 'Regular'),
-    ]
-
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    telefono = models.CharField(max_length=20)
-    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='eventual')
-    plan = models.CharField(max_length=100, default='evento')  # en el futuro será FK
-    creado_en = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.nombre} {self.apellido} ({self.tipo})"
-
-urls.py:
-
-    path('eventos/<int:pk>/inscribir/', views.inscribir_cliente, name='inscribir_cliente'),
-    path('eliminar_inscripcion/<int:insc_id>/', views.eliminar_inscripcion, name='eliminar_inscripcion'),
-    path('confirmar_pago/<int:insc_id>/', views.confirmar_pago, name='confirmar_pago'),
-
-vistas:
+Clientes pendientes:
 
 
-@login_required
-def inscribir_cliente(request, pk):
-    evento = get_object_or_404(Evento, pk=pk)
-    # Clientes regulares (simulados)
-    clientes_regulares = [
-        {'nombre': 'Ana ', 'apellido': 'Gómez', 'email': 'ana@example.com', 'telefono': '123456789'},
-        {'nombre': 'Carlos ', 'apellido': 'Pérez', 'email': 'carlos@example.com', 'telefono': '987654321'},
-        {'nombre': 'Lucía ', 'apellido': 'Martínez' , 'email': 'lucia@example.com', 'telefono': '111222333'},
-    ]
 
-    # Clientes de eventos pasados (de la base de datos)
-    clientes_inscriptos = InscripcionEvento.objects.values('nombre', 'apellido' , 'email', 'telefono').distinct()
-
-    # Combinar ambos
-    clientes_evento = list(clientes_regulares) + list(clientes_inscriptos)
-
-    if request.method == 'POST':    
-        if evento.cupos <= 0:
-            messages.error(request, "No hay cupos disponibles para este evento.")
-            return redirect('eventos_admin:inscribir_cliente', pk=pk)
-        form = InscripcionForm(request.POST)
-        if form.is_valid():
-            inscripcion = form.save(commit=False)
-            inscripcion.evento = evento
-            inscripcion.save()
-            evento.cupos -= 1
-            evento.save()
-            return redirect('eventos_admin:detalle_eventos', pk=pk)
-    else:
-        form = InscripcionForm()
-
-    return render(request, 'eventos/inscribir_cliente.html', {
-        'form': form,
-        'evento': evento,
-        'clientes': clientes_evento
-    })
-
-@require_POST
-@login_required
-def eliminar_inscripcion(request, insc_id):
-    inscripcion = get_object_or_404(InscripcionEvento, id=insc_id)
-    evento = inscripcion.evento
-    inscripcion.delete()
-    evento.cupos += 1
-    evento.save()
-    return redirect('eventos_admin:detalle_eventos', pk=evento.pk)
-
-@require_POST
-@login_required
-def confirmar_pago(request, insc_id):
-    inscripcion = get_object_or_404(InscripcionEvento, id=insc_id)
-    # Se muestra el botón de confirmar solo para inscripciones pendientes y eventos pagados.
-    if inscripcion.estado == 'pendiente' and inscripcion.evento.precio > 0:
-         inscripcion.estado = 'confirmado'
-         inscripcion.save()
-         messages.success(request, "Pago confirmado.")
-    else:
-         messages.info(request, "No es necesario confirmar este pago.")
-    return redirect('eventos_admin:detalle_eventos', pk=inscripcion.evento.pk)
-
-form:
-
-class InscripcionForm(forms.ModelForm):
-    tipo_cliente = forms.ChoiceField(
-        choices=TIPO_CLIENTE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'}),
-        required=True,
-        label="Tipo de cliente"
-    )
-    
-    class Meta:
-        model = InscripcionEvento
-        fields = ['tipo_cliente', 'nombre', 'apellido', 'email', 'telefono', 'estado', 'cliente_id']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
-            'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
-            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
-            'estado': forms.Select(attrs={'class': 'form-select'}),
-        }

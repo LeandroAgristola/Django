@@ -159,7 +159,8 @@ label {
 
 #formsEmplados,
 #formsEventos,
-#formPlanes {
+#formPlanes,
+#formscliente {
     background-color: #e3e5d7;
     width: 800px;
     border-radius: 10px;
@@ -170,7 +171,8 @@ label {
 
 #listaEmpleados,
 #listaEventos,
-#listaPlanes {  
+#listaPlanes,
+#listaClientes {  
     background-color: #e3e5d7;
     border-radius: 10px;
     padding: 20px;
@@ -178,6 +180,10 @@ label {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
 }
+
+.resaltado-rojo td {
+    background-color: rgb(255, 240, 240) !important;
+  }
 
 /*Estilo para emplados*/
 
@@ -229,7 +235,7 @@ label {
 }
 
 #detalleEvento .col-md-6 img{
-    width: 50%;
+    width: 400px;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
