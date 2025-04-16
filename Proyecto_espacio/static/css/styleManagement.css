@@ -158,7 +158,8 @@ label {
 /*Estilos para listados y formularios*/
 
 #formsEmplados,
-#formsEventos {
+#formsEventos,
+#formPlanes {
     background-color: #e3e5d7;
     width: 800px;
     border-radius: 10px;
@@ -168,7 +169,8 @@ label {
 }
 
 #listaEmpleados,
-#listaEventos {  
+#listaEventos,
+#listaPlanes {  
     background-color: #e3e5d7;
     border-radius: 10px;
     padding: 20px;

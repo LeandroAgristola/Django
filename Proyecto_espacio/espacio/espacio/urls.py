@@ -9,6 +9,7 @@ urlpatterns = [
     path('management/empleados/', include('empleados.urls')),
     path('management/', include('management.urls')),
     path('management/eventos/', include('eventos.urls', namespace='eventos_admin')),
+    path('management/planes/', include('planes.urls')),
 ]
 
 if settings.DEBUG:

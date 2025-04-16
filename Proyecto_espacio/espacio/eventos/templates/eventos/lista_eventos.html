@@ -25,10 +25,10 @@
                 <td>{{ evento.cupos}}</td>
                 <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
-                    <a href="#" class="btn btn-sm btn-success">Inscribir</a>
-                    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-sm btn-info">Ver detalle</a>
-                    <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
+                    <a href="#" class="btn btn-outline-success btn-sm">+ cliente</a>
+                    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-outline-info btn-sm ">Ver detalle</a>
+                    <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-outline-primary btn-sm ">Editar</a>
+                    <button class="btn btn-outline-danger btn-sm " data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
                 </td>
             </tr>
 
@@ -55,7 +55,7 @@
             </div>
 
             {% empty %}
-            <tr><td colspan="5">No hay eventos cargados.</td></tr>
+            <tr><td colspan="6">No hay eventos cargados.</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -85,10 +85,10 @@
                 <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
                     <!-- Botón Reactivar -->
-                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ evento.id }}">Reactivar</button>
+                    <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReactivar{{ evento.id }}">Reactivar</button>
                     
                     <!-- Botón Eliminar Permanente -->
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ evento.id }}">X</button>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarPermanente{{ evento.id }}">X</button>
                 </td>
             </tr>
 
@@ -144,6 +144,8 @@
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <tr><td colspan="6">No hay eventos inactivos.</td></tr>
             {% endfor %}
         </tbody>
     </table>

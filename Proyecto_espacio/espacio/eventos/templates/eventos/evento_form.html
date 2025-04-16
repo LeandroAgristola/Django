@@ -58,17 +58,16 @@
       </div>
     </div>
 
-    <!-- Ubicación -->
-    <div class="mb-3">
-      <label for="{{ form.ubicacion.id_for_label }}" class="form-label">Ubicación</label>
-      {{ form.ubicacion }}
-      {% if form.ubicacion.errors %}
-        <div class="text-danger small">{{ form.ubicacion.errors|striptags }}</div>
-      {% endif %}
-    </div>
-
-    <!-- Cupos y Imagen -->
+ 
+    <!-- Cupos y Ubicación -->
     <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="{{ form.ubicacion.id_for_label }}" class="form-label">Ubicación</label>
+        {{ form.ubicacion }}
+        {% if form.ubicacion.errors %}
+          <div class="text-danger small">{{ form.ubicacion.errors|striptags }}</div>
+        {% endif %}
+      </div>
       <div class="col-md-6 mb-3">
         <label for="{{ form.cupos.id_for_label }}" class="form-label">Cupos</label>
         {{ form.cupos }}
@@ -76,13 +75,15 @@
           <div class="text-danger small">{{ form.cupos.errors|striptags }}</div>
         {% endif %}
       </div>
-      <div class="col-md-6 mb-3">
-        <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen</label>
-        {{ form.imagen }}
-        {% if form.imagen.errors %}
-          <div class="text-danger small">{{ form.imagen.errors|striptags }}</div>
-        {% endif %}
-      </div>
+    </div>
+
+      <!--Imagen -  -->
+      <div class="mb-3">
+      <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen</label>
+      {{ form.imagen }}
+      {% if form.imagen.errors %}
+        <div class="text-danger small">{{ form.imagen.errors|striptags }}</div>
+      {% endif %}
     </div>
 
     <!-- Precio -->

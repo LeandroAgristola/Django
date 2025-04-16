@@ -10,18 +10,24 @@ class Evento(models.Model):
     ubicacion = models.CharField(max_length=100, null=False, blank=False)
     cupos = models.IntegerField(default=0, null=False, blank=False)
     imagen = models.ImageField(upload_to='eventos/', blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.BooleanField(default=True)
     mostrar_en_web = models.BooleanField(default=False)
     pago_enlace = models.URLField(blank=True, null=True)
     pago_en_estudio = models.BooleanField(default=False)
     link_pago = models.URLField(blank=True, null=True)
 
+    #Establecemos un formateo en el precio para mostrarlo en la web ejemplo: 1.000,00
+    @property
+    def precio_formateado(self):
+        return f"{self.precio:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
     class Meta:
         verbose_name = "Evento"
         verbose_name_plural = "Eventos"
         ordering = ['-fecha', '-hora']
-    
+
+    # Validación para asegurarse de que la imagen sea un archivo de imagen
     def clean(self):
         super().clean()
         # Solo validar métodos de pago si el evento tiene costo mayor a 0.
@@ -30,11 +36,12 @@ class Evento(models.Model):
                 raise ValidationError("Solo podés seleccionar un método de pago: enlace o en estudio.")
             if not self.pago_enlace and not self.pago_en_estudio:
                 raise ValidationError("Debés seleccionar al menos un método de pago.")
-            
+  
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
 
+    # Validación para asegurarse de que la imagen sea un archivo de imagen
     def delete(self, *args, **kwargs):
         InscripcionEvento.objects.filter(evento=self).delete()
         if self.imagen and os.path.isfile(self.imagen.path):
@@ -43,6 +50,7 @@ class Evento(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.fecha.strftime('%d/%m/%Y')}"
+    
 
 class InscripcionEvento(models.Model):
     ESTADOS = (

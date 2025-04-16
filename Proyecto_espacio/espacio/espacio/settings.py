@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'management',
     'empleados',
     'eventos',
+    'planes',
 ]
 
 MIDDLEWARE = [
