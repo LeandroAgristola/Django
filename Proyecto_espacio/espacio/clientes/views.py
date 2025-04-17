@@ -77,7 +77,16 @@ def crear_cliente(request):
 @login_required
 def editar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    return crear_cliente(request) if request.method == 'POST' else render(request, 'clientes/forms_cliente.html', {'form': ClienteForm(instance=cliente)})
+
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('clientes:lista_clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+
+    return render(request, 'clientes/forms_cliente.html', {'form': form})
 
 @login_required
 def desactivar_cliente(request, cliente_id):

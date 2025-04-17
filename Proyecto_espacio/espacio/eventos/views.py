@@ -7,6 +7,21 @@ from django.views.decorators.http import require_POST
 from .forms import EventoForm, InscribirClienteForm
 from .models import InscripcionEvento, Evento
 from clientes.models import Cliente
+from django.http import HttpResponse
+from django.conf import settings
+from datetime import date
+#importaciones para exportar pdf
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from django.templatetags.static import static
+import os
+from reportlab.pdfgen import canvas # exportar_pdf
+
+
 
 @login_required
 def lista_eventos(request):
@@ -15,6 +30,7 @@ def lista_eventos(request):
     form = EventoForm()
     return render(request, 'eventos/lista_eventos.html', {
         'eventos': eventos,
+        'hoy': date.today(),
         'papelera': papelera,
         'form': form,
     })
@@ -69,8 +85,19 @@ def editar_evento(request, pk):
 @login_required
 def desactivar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
+
+    # Contar cuántos inscriptos tenía
+    cantidad_inscriptos = InscripcionEvento.objects.filter(evento=evento).count()
+
+    # Eliminar inscripciones
+    InscripcionEvento.objects.filter(evento=evento).delete()
+
+    # Restaurar cupos
+    evento.cupos += cantidad_inscriptos
     evento.estado = False
     evento.save()
+
+    messages.success(request, f"Evento desactivado. Se restauraron {cantidad_inscriptos} cupos.")
     return redirect('eventos_admin:lista_eventos')
 
 @require_POST
@@ -138,19 +165,26 @@ def inscribir_cliente(request, evento_id):
                     estado=estado,
                     activo=True,
                 )
+            if InscripcionEvento.objects.filter(evento=evento, cliente=cliente).exists():
+                messages.warning(request, "Este cliente ya está inscripto en el evento.")
+                return redirect('eventos_admin:inscribir_cliente', evento_id=evento.id)
+
+            evento.cupos = max(0, evento.cupos - 1)  # no baja de 0
+            evento.save()
 
             inscripcion = InscripcionEvento.objects.create(
                 evento=evento,
                 nombre=cliente.nombre,
                 apellido=cliente.apellido,
                 email=cliente.mail,
-                telefono=form.cleaned_data['telefono'],
+                telefono=cliente.telefono,
                 estado=estado,
                 cliente=cliente
             )
 
             messages.success(request, "Cliente inscrito correctamente.")
             return redirect('eventos_admin:detalle_eventos', pk=evento.id)
+        
         else:
             messages.error(request, "Error al inscribir cliente.")
     else:
@@ -161,3 +195,87 @@ def inscribir_cliente(request, evento_id):
         'evento': evento,
         'clientes': clientes
     })
+
+@require_POST
+@login_required
+def confirmar_pago_evento(request, inscripcion_id):
+    inscripcion = get_object_or_404(InscripcionEvento, id=inscripcion_id)
+    inscripcion.estado = 'confirmado'
+    inscripcion.save()
+    messages.success(request, "Pago confirmado.")
+    return redirect('eventos_admin:detalle_eventos', pk=inscripcion.evento.id)
+
+@require_POST
+@login_required
+def eliminar_inscripcion(request, inscripcion_id):
+    inscripcion = get_object_or_404(InscripcionEvento, id=inscripcion_id)
+    evento = inscripcion.evento
+
+    # Liberamos el cupo
+    evento.cupos += 1
+    evento.save()
+
+    # Eliminamos solo la inscripción, no el cliente
+    inscripcion.delete()
+    messages.success(request, "Inscripción eliminada y cupo liberado.")
+    return redirect('eventos_admin:detalle_eventos', pk=evento.id)
+
+# Vista para exportar inscriptos a PDF
+
+@login_required
+def exportar_inscriptos_pdf(request, evento_id):
+    evento = get_object_or_404(Evento, id=evento_id)
+    inscripciones = evento.inscripcionevento_set.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="inscriptos_{evento.titulo}.pdf"'
+
+    c = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    # Logo
+    logo_path = 'C:/Users/Leandro/Documents/ReposGit/Django/Proyecto_espacio/static/logo/logo.png'
+    if os.path.exists(logo_path):
+        x = 15 * cm
+        y = height - 5 * cm  # un poquito más abajo
+        c.drawImage(logo_path, x, y, width=4*cm, height=4*cm, preserveAspectRatio=True, mask='auto')
+
+    # Título
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(1*cm, height - 2*cm, "Listado de Inscriptos")
+
+    # Datos del evento
+    c.setFont("Helvetica", 10)
+    c.drawString(1*cm, height - 3*cm, f"Evento: {evento.titulo}")
+    c.drawString(1*cm, height - 3.6*cm, f"Fecha: {evento.fecha.strftime('%d/%m/%Y')} - Hora: {evento.hora.strftime('%H:%M')} hs")
+
+    # Datos de tabla
+    data = [["Nombre y Apellido", "Email", "Teléfono", "Estado"]]
+    for ins in inscripciones:
+        data.append([
+            f"{ins.nombre} {ins.apellido}",
+            ins.email,
+            ins.telefono,
+            ins.get_estado_display()
+        ])
+
+    # Tabla
+    table = Table(data, colWidths=[6*cm, 6*cm, 3*cm, 3*cm])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.black),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+        ('BOTTOMPADDING', (0,0), (-1,0), 6),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.whitesmoke, colors.lightyellow])
+    ]))
+
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 1*cm, height - 5.5*cm - len(data)*0.5*cm)
+
+    c.showPage()
+    c.save()
+
+    return response

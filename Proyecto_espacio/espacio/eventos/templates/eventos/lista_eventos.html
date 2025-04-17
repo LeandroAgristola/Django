@@ -18,17 +18,21 @@
         </thead>
         <tbody>
             {% for evento in eventos %}
-            <tr>
+            <tr class="{% if evento.fecha <= hoy %}resaltado-rojo{% endif %}"> <!-- Resaltado si la fecha es menor a hoy -->
                 <td>{{ evento.titulo }}</td>
                 <td>{{ evento.fecha }} - {{ evento.hora }} hs </td>
                 <td>{{ evento.ubicacion }}</td> 
-                <td>{{ evento.cupos}}</td>
+                <td>{% if evento.cupos == 0 %}Completo{% else %}{{ evento.cupos}}{% endif %}</td>
                 <td>{% if evento.estado == False %}Finalizado{% else %}Activo{% endif %}</td>
                 <td>
-                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-outline-success btn-sm">+ cliente</a>
+                    {% if evento.cupos > 0 %}
+                    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-outline-success btn-sm"><strong>+</strong> cliente</a>
+                    {% else %}
+                    <button class="btn btn-outline-secondary btn-sm" disabled>+ cliente</button>
+                    {% endif %}
                     <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-outline-info btn-sm ">Ver detalle</a>
                     <a href="{% url 'eventos_admin:editar_evento' evento.pk %}" class="btn btn-outline-primary btn-sm ">Editar</a>
-                    <button class="btn btn-outline-danger btn-sm " data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ evento.id }}">X</button>
                 </td>
             </tr>
 

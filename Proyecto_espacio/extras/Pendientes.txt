@@ -85,7 +85,6 @@ crear app de configuracion :
 
 Orden	Aplicación	Motivo
 
-3️⃣	clientes	Ya podés asignar plan, evento, y preparar la lógica de pago/estado.
 4️⃣	calendario	Tenés clientes cargados, podés manejar turnos, cupos, y validaciones. 
 
 
@@ -96,14 +95,8 @@ Pendientes de clientes cuando tengamos calendario:
 
 Eventos pendientes:
 
-    los clientes al cargarlos no decrementa la cantidad
-    al apretar en confirmar_pago no se confirmado
-    la confirmacion de pago de evento deberia ser diferente que la de regular?
-    al elimianr un cliente del listado, se debe limpiar su inscripcion no eliminar por completo
-    al enviar un evento a la papelerea (desactivar) se debe limpiar el registro de inscriptos
-    dar la opcion de exportar en pdf el listade de inscriptos
-    el boton de +cliente no debe tener funcionalidad si no hay cupos
-    los eventos finalizados por fecha deben estar sombreados en rojo .resaltado-rojo
+    No aparece el logo en el PDF
+    la fecha y hora pueden ser igual a la actual pero no si ya paso
 
 Clientes pendientes:
 

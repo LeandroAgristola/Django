@@ -8,8 +8,8 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     dni = models.IntegerField(unique=True)
-    telefono = models.CharField(max_length=20, null=True, blank=True)
-    mail = models.EmailField(blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    mail = models.EmailField(unique=True)
     plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
     dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
     hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
