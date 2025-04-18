@@ -95,10 +95,11 @@ Pendientes de clientes cuando tengamos calendario:
 
 Eventos pendientes:
 
-    No aparece el logo en el PDF
-    la fecha y hora pueden ser igual a la actual pero no si ya paso
 
 Clientes pendientes:
 
+configuracion pendientes:
+
+    cambiar la visual totalmente
 
 
