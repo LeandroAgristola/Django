@@ -14,13 +14,21 @@ class ConfiguracionForm(forms.ModelForm):
                 'placeholder': 'Dirección',
                 'class': 'form-control'
             }),
-            'horario_semana': forms.TextInput(attrs={
-                'placeholder': 'Lunes a Viernes de 8 a 21 hs.',
-                'class': 'form-control'
+            'horario_semana_inicio': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
             }),
-            'horario_sabado': forms.TextInput(attrs={
-                'placeholder': 'Sábados de 9 a 13 hs.',
-                'class': 'form-control'
+            'horario_semana_fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horario_sabado_inicio': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horario_sabado_fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
             }),
             'maps': forms.TextInput(attrs={
                 'placeholder': 'https://maps.google.com/...',
@@ -59,6 +67,20 @@ class ConfiguracionForm(forms.ModelForm):
                 'placeholder': 'CUIT',
                 'class': 'form-control'
             }),
-
-            
         }
+
+    def clean(self): # Validacion de horarios
+        cleaned_data = super().clean()
+
+        semana_inicio = cleaned_data.get("horario_semana_inicio")
+        semana_fin = cleaned_data.get("horario_semana_fin")
+        sabado_inicio = cleaned_data.get("horario_sabado_inicio")
+        sabado_fin = cleaned_data.get("horario_sabado_fin")
+
+        if semana_inicio and semana_fin:
+            if semana_inicio >= semana_fin:
+                self.add_error("horario_semana_fin", "El horario de fin debe ser mayor al de inicio.")
+
+        if sabado_inicio and sabado_fin:
+            if sabado_inicio >= sabado_fin:
+                self.add_error("horario_sabado_fin", "El horario de fin debe ser mayor al de inicio.")

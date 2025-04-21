@@ -68,6 +68,9 @@ calendario (Para la administración de horarios)
         Calendario con colores segun horarios disponibles Rojo horario no disponible verde disponible
         Cada dia debe tener color segun disponibilidad
         Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
+        disponibilidad por hora 6 personas
+        Rango horario lo definimos en configuracion.
+            Debemos agregar en el modelo de configuracion la forma de marcar un rango de horario para lunes a viernes y sabados
 
 crear app de configuracion :
     Datos de Contacto:
@@ -81,11 +84,18 @@ crear app de configuracion :
 
 
         
-🔁 Recomendación de orden:
+Bien continuando con mi proyecto de djnago del estudio de pilates en el cual tenemos las aplicaciones:
+clientes: Maneja el alta y baja de clientes
+configuracion: Maneja la cargar y edicion de datos del espacio
+empleados: maneja el alta y baja de empleados
+eventos: maneja la carga y gestion de Eventos
+management: engloba toda las aplicacion de administracion
+planes: maneja la carga y edicion de planes regulares
+webPublic: muestra la informacion del espacio al publico
+calendario: gestion de horarios de los clientes 
 
-Orden	Aplicación	Motivo
 
-4️⃣	calendario	Tenés clientes cargados, podés manejar turnos, cupos, y validaciones. 
+
 
 
 Pendientes de clientes cuando tengamos calendario: 
