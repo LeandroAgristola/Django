@@ -26,7 +26,7 @@
 		integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
 		crossorigin="anonymous" referrerpolicy="no-referrer" /> 
 		
-		<title>{% block title %}Espacio{% endblock %}</title> <!-- Page title with a block for dynamic content -->
+		<title>{% block title %} {{ configuracion.nombre_estudio }} {% endblock %}</title> <!-- Page title with a block for dynamic content -->
 	</head>
 	
 	<body>
@@ -38,13 +38,13 @@
 				<div class="row align-items-center py-2">
 					<!-- Iconos sociales -->
 					<div class="col-md-3 social-icons">
-						<a href="https://www.instagram.com/" target="_blank">
+						<a href="{{ configuracion.instagram }}" target="_blank">
 							<i class="fab fa-instagram fa-lg mx-2"></i>
 						</a>
-						<a href="https://www.facebook.com/" target="_blank">
+						<a href="{{ configuracion.facebook }}" target="_blank">
 							<i class="fab fa-facebook-f fa-lg mx-2"></i>
 						</a>
-						<a href="https://www.youtube.com/" target="_blank">
+						<a href="{{ configuracion.youtube }}" target="_blank">
 							<i class="fab fa-youtube fa-lg mx-2"></i>
 						</a>
 					</div>
@@ -52,7 +52,7 @@
 					<!-- Logo centrado -->
 					<div class="col-md-6 text-center">
 						<a href="{% url 'home' %}" class="d-flex flex-row align-items-center justify-content-center">
-							<h1 class="logo-title mb-0">Estudio</h1>
+							<h1 class="logo-title mb-0"> {{ configuracion.nombre_estudio }} </h1>
 							<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-2"> 
 						</a>
 					</div>
@@ -79,14 +79,14 @@
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#planesHorarios">Planes</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'eventos' %}#eventos">Eventos</a></li>
 									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#staff">Staff</a></li>
-									<li class="nav-item mx-2"><a class="nav-link" href="https://api.whatsapp.com/send?phone=541143214321" target="_blank">Consultar</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" target="_blank">Consultar</a></li>
 								</ul>
 
 								<!-- Iconos sociales dentro del menú en móvil -->
 								<div class="menu-social-icons d-md-none">
-									<a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram"></i></a>
-									<a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-									<a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
+									<a href="{{ configuracion.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
+									<a href="{{ configuracion.facebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+									<a href="{{ configuracion.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
 								</div>
 							</div>
 						</nav>
@@ -114,12 +114,12 @@
 							</a>
 						</div>
 						<div class="footer-social">
-							<a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram"></i></a>
-							<a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook"></i></a>
+							<a href="{{ configuracion.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
+							<a href="{{ configuracion.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>
 							<a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank"><i class="fab fa-whatsapp"></i></a>
-							<a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube"></i></a>
-							<a href="mailto:consultas@estudio.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
-							<a href="https://maps.app.goo.gl/LoB8tj5ncvL6voqg6" target="_blank"><i class="fa-solid fa-location-dot"></i></a>
+							<a href="{{ configuracion.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
+							<a href="mailto:{{ configuracion.email }}" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+							<a href="{{ configuracion.maps }}" target="_blank"><i class="fa-solid fa-location-dot"></i></a>
 						</div>
 						<p class="mt-2">14 Nro 12, La Plata, Buenos Aires</p>
 					</div>
@@ -127,14 +127,14 @@
 					<!-- Columna 2: Información legal -->
 					<div class="col-md-6 text-center text-md-end mt-4 mt-md-0">
 						<p class="mb-1">&copy; Copyright 2024 | Todos los derechos reservados</p>
-						<p class="mb-0">CUIT 30-12345678-0 | 14 Nro 12, La Plata, Argentina</p>
+						<p class="mb-0">CUIT {{ configuracion.cuit }} | {{ configuracion.direccion }}</p>
 					</div>
 				</div>
 			</div>
 		</footer>
 		
 		<!-- Boton de whatsapp -->
-		<a href="https://api.whatsapp.com/send?phone=541143214321" 
+		<a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" 
 			class="whatsapp-float" 
 			target="_blank" 
 			aria-label="Chatea con nosotros por WhatsApp">

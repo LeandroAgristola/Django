@@ -13,19 +13,24 @@ label {
     color: #3c4750;
 }
 
-.admin-wrapper {
-    display: flex;
-    height: 100vh;
-}
-
 .btn {
     border-radius: 10px;
 }
 
+.admin-wrapper {
+    display: flex; /* Usamos flexbox para el layout */
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1; /* Ocupa el espacio restante */
+    padding: 40px;
+}
+
 .sidebar {
+    display: flex;
     width: 250px;
     background-color: #f6eddc;
-    display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 30px;
@@ -98,10 +103,6 @@ label {
     background-color: #e74c3c;
 }
 
-.main-content {
-    flex-grow: 1;
-    padding: 40px;
-}
 
 /*Estilo para login*/
 
@@ -160,7 +161,8 @@ label {
 #formsEmplados,
 #formsEventos,
 #formPlanes,
-#formscliente {
+#formscliente,
+#formConfig {
     background-color: #e3e5d7;
     width: 800px;
     border-radius: 10px;
@@ -172,7 +174,8 @@ label {
 #listaEmpleados,
 #listaEventos,
 #listaPlanes,
-#listaClientes {  
+#listaClientes,
+#listaDatos {  
     background-color: #e3e5d7;
     border-radius: 10px;
     padding: 20px;

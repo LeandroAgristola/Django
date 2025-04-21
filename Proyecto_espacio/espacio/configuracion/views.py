@@ -4,48 +4,21 @@ from .models import Configuracion
 from .forms import ConfiguracionForm
 from django.contrib.auth.decorators import login_required
 
-@require_POST
-@login_required
-def actualizar_campo(request, campo):
+def panel_config(request):
     configuracion = Configuracion.objects.first()
-    nuevo_valor = request.POST.get("valor", "").strip()
+    return render(request, "configuracion/panel_config.html", {"configuracion": configuracion})
 
-    if hasattr(configuracion, campo):
-        setattr(configuracion, campo, nuevo_valor)
-        configuracion.save()
-    
-    return redirect('panel_configuracion')
+def editar_datos(request):
+    configuracion = Configuracion.objects.first()
+    if not configuracion:
+        configuracion = Configuracion.objects.create()
 
-@login_required
-def panel_configuracion(request):
-    configuracion, created = Configuracion.objects.get_or_create(id=1)
-    campos = {
-        'nombre_estudio': configuracion.nombre_estudio,
-        'direccion': configuracion.direccion,
-        'telefono': configuracion.telefono,
-        'email': configuracion.email,
-        'instagram': configuracion.instagram,
-        'facebook': configuracion.facebook,
-        'youtube': configuracion.youtube,
-        'whatsapp': configuracion.whatsapp,
-        'horario_semana': configuracion.horario_semana,
-        'horario_sabado': configuracion.horario_sabado,
-    }
+    if request.method == "POST":
+        form = ConfiguracionForm(request.POST, instance=configuracion)
+        if form.is_valid():
+            form.save()
+            return redirect("configuracion:panel_config")
+    else:
+        form = ConfiguracionForm(instance=configuracion)
 
-    iconos = {
-        'nombre_estudio': 'building',
-        'direccion': 'location-dot',
-        'telefono': 'phone',
-        'email': 'envelope',
-        'instagram': 'instagram',
-        'facebook': 'facebook',
-        'youtube': 'youtube',
-        'whatsapp': 'whatsapp',
-        'horario_semana': 'clock',
-        'horario_sabado': 'clock',
-    }
-
-    return render(request, 'configuracion/panel_configuracion.html', {
-        'configuracion': campos,
-        'iconos': iconos
-    })
+    return render(request, "configuracion/forms_config.html", {"form": form})

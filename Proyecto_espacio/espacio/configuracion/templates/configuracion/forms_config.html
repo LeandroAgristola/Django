@@ -1,0 +1,54 @@
+{% extends "management/layout_management.html" %}
+{% block content %}
+
+<div class="container my-4" id="formConfig">
+  <h2 class="mb-4">
+      Editar Configuración
+  </h2>
+
+  <form id="configForm" method="post">
+    {% csrf_token %}
+
+    <!-- Campos de texto -->
+    {% for field in form %}
+      {% if field.name != 'mostrar_en_web' %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">
+        Guardar
+      </button>
+      <a href="{% url 'configuracion:panel_config' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Confirmar cambios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que querés guardar los cambios? Los datos se verán reflejados en la página principal.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success" form="configForm">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

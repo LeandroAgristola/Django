@@ -103,3 +103,6 @@ configuracion pendientes:
     cambiar la visual totalmente
 
 
+Pendientes web Public: 
+
+    crear auto msj de consula

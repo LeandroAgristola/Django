@@ -7,7 +7,7 @@
     <div class="container-fluid d-flex align-items-center justify-content-center">   
         <div class="row">
             <div class="col-md-6 d-flex justify-content-center align-items-center fade-in text-center">
-                <p id="Textohero">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus esse deleniti numquam.</p>
+                <p id="Textohero"> {{ configuracion.texto_hero }}</p>
             </div>
             
             <div class="col-md-6 d-flex justify-content-center align-items-center fade-in">
@@ -72,7 +72,7 @@
               </div>
               {% endfor %}
             </div>
-            <p class="card-text">Abierto de lunes a viernes de 8 a 21 hs. Sábados de 9 a 13 hs.</p>
+            <p class="card-text">Abierto de {{ configuracion.horario_semana }}. Sábados de {{ configuracion.horario_sabado }}.</p>
   
           </div>
         </div>
