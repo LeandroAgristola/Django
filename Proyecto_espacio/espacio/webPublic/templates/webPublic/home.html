@@ -67,7 +67,7 @@
                   <h5 class="titulo-plan">{{ plan.nombre }}</h5>
                   <p class="detalle-plan">{{ plan.detalle }}</p>
                   <p class="precio-plan">$ {{ plan.precio_formateado }}</p>
-                  <a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank"><button class="btn-custom ">Consultar</button></a>
+                  <a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}&text={{ configuracion.mensaje_whatsapp_plan }} {{ plan.nombre }}" target="_blank"><button class="btn-custom ">Consultar</button></a>
                 </div>
               </div>
               {% endfor %}

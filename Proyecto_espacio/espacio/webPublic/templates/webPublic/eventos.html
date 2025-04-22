@@ -14,7 +14,7 @@
             {% for evento in eventos %}
               <div class="col-12 col-md-6 mb-4">
                 <div class="card-evento p-3 d-flex flex-column text-start" style="--imagen-evento: url('/media/{{ evento.imagen }}');">
-                  <h5 class="titulo-evento">{{ evento.titulo}}</h5>
+                  <h5 class="titulo-evento">{{ evento.titulo }}</h5>
                   <p><strong>Fecha y hora:</strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
                   <p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
                   <p><strong>Descripcion:</strong> {{ evento.descripcion}}</p>
@@ -30,7 +30,7 @@
                   {% if evento.precio > 0 %}
                     <p><strong>Método de pago:</strong>
                       {% if evento.pago_enlace %}
-                        <a href="{{ evento.pago_enlace }}" target="_blank">Pagar evento</a>
+                        <a href="{{ evento.pago_enlace }}" target="_blank" class="linkPago">Pagar evento</a>
                       {% else %}
                         Pago en efectivo
                       {% endif %}
@@ -40,7 +40,7 @@
                   <!-- Botón alineado abajo -->
                   <div class="mt-auto">
                     {% if evento.cupos|add:"0" > 0 %}
-                      <button class="btn-custom">Inscribirme</button>
+                      <a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}&text={{ configuracion.mensaje_whatsapp_evento }} {{ evento.titulo }} del día {{ evento.fecha }} " target="_blank"><button class="btn-custom">Inscribirme</button></a>
                     {% else %}
                       <button class="btn-custom" id="btn-Nodisponible" disabled>No disponible</button>
                     {% endif %}

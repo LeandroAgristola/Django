@@ -768,7 +768,7 @@ footer {
     color: #842029;
 }
 
-#eventosTemplate a {
+#eventosTemplate .linkPago {
     background-color: #bdd6d2;
     border-radius: 10px;
     padding: 5px;  

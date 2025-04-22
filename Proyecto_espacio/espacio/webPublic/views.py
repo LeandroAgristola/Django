@@ -23,7 +23,3 @@ def eventos(request):
         'eventos': eventos,
         'configuracion': configuracion
     })
-
-def eventos(request):
-    eventos = Evento.objects.filter(mostrar_en_web=True, estado=True)
-    return render(request, 'webPublic/eventos.html', {'eventos': eventos})

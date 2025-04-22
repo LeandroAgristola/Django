@@ -160,6 +160,7 @@ def inscribir_cliente(request, evento_id):
                     apellido=form.cleaned_data['apellido'],
                     dni=int(datetime.now().timestamp()),  # temporal, o generá uno por formulario
                     mail=form.cleaned_data['email'],
+                    telefono=form.cleaned_data['telefono'],  
                     plan=None,
                     tipo='eventual',
                     estado=estado,

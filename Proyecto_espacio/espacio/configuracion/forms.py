@@ -67,6 +67,15 @@ class ConfiguracionForm(forms.ModelForm):
                 'placeholder': 'CUIT',
                 'class': 'form-control'
             }),
+                'mensaje_whatsapp_plan': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Hola, quería consultar por el plan '
+            }),
+            'mensaje_whatsapp_evento': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Hola, quería consultar por el evento '
+            }),
+
         }
 
     def clean(self): # Validacion de horarios

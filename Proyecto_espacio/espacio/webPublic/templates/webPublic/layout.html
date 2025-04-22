@@ -116,12 +116,12 @@
 						<div class="footer-social">
 							<a href="{{ configuracion.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
 							<a href="{{ configuracion.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>
-							<a href="https://api.whatsapp.com/send?phone=541143214321" target="_blank"><i class="fab fa-whatsapp"></i></a>
+							<a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" target="_blank"><i class="fab fa-whatsapp"></i></a>
 							<a href="{{ configuracion.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
 							<a href="mailto:{{ configuracion.email }}" target="_blank"><i class="fa-solid fa-envelope"></i></a>
 							<a href="{{ configuracion.maps }}" target="_blank"><i class="fa-solid fa-location-dot"></i></a>
 						</div>
-						<p class="mt-2">14 Nro 12, La Plata, Buenos Aires</p>
+						<p class="mt-2"> {{ configuracion.direccion }} </p>
 					</div>
 
 					<!-- Columna 2: Información legal -->
