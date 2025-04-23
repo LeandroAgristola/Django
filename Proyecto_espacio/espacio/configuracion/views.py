@@ -4,10 +4,12 @@ from .models import Configuracion
 from .forms import ConfiguracionForm
 from django.contrib.auth.decorators import login_required
 
+@login_required
 def panel_config(request):
     configuracion = Configuracion.objects.first()
     return render(request, "configuracion/panel_config.html", {"configuracion": configuracion})
 
+@login_required
 def editar_datos(request):
     configuracion = Configuracion.objects.first()
     if not configuracion:

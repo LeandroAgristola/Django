@@ -19,26 +19,18 @@ web (Para la parte pública del sitio)
 
 calendario (Para la administración de horarios)
 
-    Gestión de horarios disponibles
-    Inscripción y visualización de clientes por turno
-    Exportación de calendario a Drive   
-    Calendario grande 
-    Calendario dinamico:
-        Calendario con colores segun horarios disponibles Rojo horario no disponible verde disponible
-        Cada dia debe tener color segun disponibilidad
-        Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
-        disponibilidad por hora 6 personas
-        Rango horario lo definimos en configuracion, en base a este rango mostramos los horarios que se pueden utilizar
+    no reconoce el plan desde el select
        
 Pendientes de clientes cuando tengamos calendario: 
 
     los dias y hora se marcan en el calendario segun disponibilidad
     Lo dias que podemos marcar estan dados por la cantidad de dias en el plan
 
-Eventos pendientes:
+
+
+
 
 Clientes pendientes:
-
 
 Bien continuando con mi proyecto de djnago del estudio de pilates en el cual tenemos las aplicaciones:
 clientes: Maneja el alta y baja de clientes
@@ -46,11 +38,114 @@ configuracion: Maneja la cargar y edicion de datos del espacio
 empleados: maneja el alta y baja de empleados
 eventos: maneja la carga y gestion de Eventos
 management: engloba toda las aplicacion de administracion
-planes: maneja la carga y edicion de planes regulares
-webPublic: muestra la informacion del espacio al publico
-calendario: gestion de horarios de los clientes 
+planes: maneja la carga y edición de planes regulares 
+webPublic: muestra la información del espacio al publico 
+calendario: gestión de horarios de los clientes 
 
-Error eventos:
+Bien ya que tenemos todos los datos necesarios para poder avanzar en una de las últimas etapas por fin vamos a empezar con la app calendario
 
-IntegrityError at /management/eventos/inscribir/4/
-NOT NULL constraint failed: eventos_inscripcionevento.telefono
+
+Esta app tiene las siguiente funcionalidades:
+
+    Calendario grande vista por dias
+    Gestión de horarios disponibles
+    Inscripción y visualización de clientes por turno
+    Exportación de calendario en excel a Drive    
+
+    Calendario dinamico:
+        Calendario con colores segun horarios disponibles Rojo horario no disponible verde disponible
+        Cada dia debe tener color según disponibilidad 
+        Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
+        Disponibilidad por hora 6 personas 
+        Rango horario lo definimos en configuración, en base a este rango mostramos los horarios que se pueden utilizar
+El rango de horarios que podemos asignaro horarios esta dado por el modelo de la app configuracion: 
+
+    horario_semana_inicio = models.TimeField(blank=True, null=True)
+    horario_semana_fin = models.TimeField(blank=True, null=True)
+    horario_sabado_inicio = models.TimeField(blank=True, null=True)
+    horario_sabado_fin = models.TimeField(blank=True, null=True)
+
+por otro lado los días que podremos asignarle a un cliente está dado por los días del plan (app planes) que eligió: cantidad_dias = models.PositiveIntegerField()
+
+Deberemos modificar algunas cosas en el modelo de la app de clientes, ya que al crearlo deberemos asignarle un plan de la app de planes y en base a ese plan los 
+dias y horarios que permita ese plan: 
+
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
+    dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
+    hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
+
+Resumen: el calendario muestra días al apretar en el dia nos muestra los horarios disponibles (máximos 6 por hora) según la banda horaria que especificamos en configuración.
+ Al crear un cliente nuevo en app planes vamos a asignarle dias y horarios segun los dias que permite el plan. 
+
+Fase 1: Preparación de modelos y datos
+
+1.1. Revisión y ajustes de modelos
+
+✅ Cliente debe tener relación con Plan, y sus días/horarios deben depender de los atributos del plan.
+
+✅ Configuracion define la banda horaria (semana/sábado).
+
+✅ Cada cliente elige qué días exactos (ej: lunes/miércoles/viernes)
+
+1.2. Nuevo modelo para los turnos
+Vamos a necesitar un modelo como este para registrar las inscripciones por horario:
+
+    calendario/models.py
+    class Turno(models.Model):
+    fecha = models.DateField()
+    hora = models.TimeField()
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+Luego se podrá calcular cuántos turnos hay en una hora para marcar si está disponible o no.
+
+🧠 Fase 2: Generación dinámica del calendario
+
+2.1. Cargar calendario en la vista (por día)
+
+El calendario se arma por frontend (JS) o backend (Django Template).
+
+✅ Necesitamos mostrar por día si está completo o no (colores).
+
+✅ Librería en mente para el calendario dinámico FullCalendar.
+
+2.2. Reglas para marcar colores
+
+Cada hora admite hasta 6 personas.
+
+Se consultan los Turnos de esa fecha/hora → si hay <6 es verde, si hay 6 es rojo.
+
+Esto lo podemos cargar desde la vista como JSON para JS.
+
+🧠 Fase 3: Vista por día - Mostrar horarios
+Al apretar un día, mostramos una lista con todos los horarios habilitados para ese día.
+
+3.1. Lógica para generar los horarios:
+
+Los sabados se asignan segun el horario especificado en configuracion 
+
+Se toma el rango desde Configuracion.
+
+Se divide en bloques de 1 hora .
+
+Cada horario se muestra con su disponibilidad (clientes anotados <6).
+
+3.2. Inscripción:
+
+El usuario puede elegir un horario y se crea un Turno.
+
+El admin crea el turno cuando inscribe el cliente desde la app cliente: 
+
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
+    dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
+    hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
+
+🧠 Fase 4: Exportación a Excel
+
+Exportar todos los turnos del mes o semana a un Excel y subir a Drive.
+
+Usamos pandas o openpyxl para generar Excel.
+
+Para subir a Google Drive: necesitas autenticar una cuenta (OAuth2) y usar pydrive o google-api-python-client.
+
+No tengo configurada una cuenta de Drive con credenciales para esto, ya que estamos en desarrollo y no tenemos datos del cliente.
+

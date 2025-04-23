@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Cliente, Plan
+from calendario.models import Turno
+from planes.models import Plan
+from configuracion.models import Configuracion
 from .forms import ClienteForm
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from datetime import datetime, timedelta
+from django.contrib import messages
 
 @login_required
 def lista_clientes(request):
@@ -119,3 +124,55 @@ def confirmar_pago(request, cliente_id):
     cliente.estado = 'confirmado'
     cliente.save()
     return redirect('clientes:lista_clientes')
+
+@login_required
+def asignar_turnos(request):
+    plan_id = request.GET.get('plan_id')
+    if not plan_id:
+        messages.error(request, "No se especificó ningún plan")
+        return redirect('clientes:crear_cliente')
+
+    plan = Plan.objects.get(id=plan_id)
+    config = Configuracion.objects.first()
+
+    if request.method == 'POST':
+        # Obtener los datos seleccionados desde el form oculto
+        dias = request.POST.getlist('fechas[]')
+        horas = request.POST.getlist('horas[]')
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        dni = request.POST.get('dni')
+        telefono = request.POST.get('telefono')
+        mail = request.POST.get('mail')
+        estado = request.POST.get('estado')
+
+        if len(dias) != plan.cantidad_dias:
+            messages.error(request, f"El plan {plan.nombre} requiere exactamente {plan.cantidad_dias} días. Seleccionaste {len(dias)}.")
+            return redirect(request.path + f"?plan_id={plan_id}")
+
+        # Crear cliente y turnos
+        cliente = Cliente.objects.create(
+            nombre=nombre,
+            apellido=apellido,
+            dni=dni,
+            telefono=telefono,
+            mail=mail,
+            plan=plan,
+            dias=", ".join(dias),
+            hora=", ".join(horas),
+            tipo='regular',
+            estado=estado
+        )
+
+        for fecha_str, hora_str in zip(dias, horas):
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            hora = datetime.strptime(hora_str, "%H:%M").time()
+            Turno.objects.create(fecha=fecha, hora=hora, cliente=cliente)
+
+        messages.success(request, "Cliente y turnos asignados correctamente.")
+        return redirect('clientes:lista_clientes')
+
+    return render(request, 'clientes/asignar_turnos.html', {
+        'plan': plan,
+        'config': config,
+    })

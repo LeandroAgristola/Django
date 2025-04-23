@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'planes',
     'clientes',
     'configuracion',
+    'calendario',
 ]
 
 MIDDLEWARE = [

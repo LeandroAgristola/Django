@@ -55,19 +55,8 @@
     </div>
 
     <div class="row mb-3">
-      <div class="col-md-6">
-        {{ form.dias.label_tag }}
-        {{ form.dias }}
-        {% if form.dias.errors %}
-        <div class="text-danger small">{{ form.dias.errors|striptags }}</div>
-        {% endif %}
-      </div>
-      <div class="col-md-6">
-        {{ form.hora.label_tag }}
-        {{ form.hora }}
-        {% if form.hora.errors %}
-        <div class="text-danger small">{{ form.hora.errors|striptags }}</div>
-        {% endif %}
+      <div class="mb-3">
+        <a class="btn btn-primary" href="#" onclick="redirigirAsignacion()">Asignar turnos</a>
       </div>
     </div>
 
@@ -85,4 +74,29 @@
     </div>
   </form>
 </div>
+{% block scripts %}
+    <script>
+      function redirigirAsignacion() {
+        const form = document.querySelector("form");
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        for (const pair of formData.entries()) {
+          params.append(pair[0], pair[1]);
+        }
+
+        // Obtener el valor del select directamente
+        const planSelect = document.querySelector('[name="plan"]');
+        const planId = planSelect ? planSelect.value : null;
+
+        if (!planId) {
+          alert("Por favor, seleccioná un plan antes de asignar turnos.");
+          return;
+        }
+
+        // Redirigir a la vista de asignación
+        window.location.href = `/management/clientes/asignar-turnos/?${params.toString()}`;
+      }
+    </script>
+  {% endblock %}
 {% endblock %}

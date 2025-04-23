@@ -1,0 +1,115 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <h3>Asignar turnos para el plan: <strong>{{ plan.nombre }}</strong></h3>
+  <p>Seleccioná <strong>{{ plan.cantidad_dias }}</strong> turnos disponibles en el calendario.</p>
+
+  <div id="calendar" class="mb-4"></div>
+  <div id="horarios" class="mb-4"></div>
+
+  <form method="post" id="formTurnos">
+    {% csrf_token %}
+    <!-- Campos ocultos con datos del cliente -->
+    <input type="hidden" name="nombre" value="{{ request.GET.nombre }}">
+    <input type="hidden" name="apellido" value="{{ request.GET.apellido }}">
+    <input type="hidden" name="dni" value="{{ request.GET.dni }}">
+    <input type="hidden" name="telefono" value="{{ request.GET.telefono }}">
+    <input type="hidden" name="mail" value="{{ request.GET.mail }}">
+    <input type="hidden" name="estado" value="{{ request.GET.estado }}">
+
+    <!-- Aquí se insertan dinámicamente los días y horas -->
+    <div id="turnosSeleccionados" class="mb-3"></div>
+
+    <button type="submit" class="btn btn-success d-none" id="btnConfirmar">Confirmar y guardar cliente</button>
+    <a href="{% url 'clientes:crear_cliente' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.min.css" rel="stylesheet">
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const maxTurnos = {{ plan.cantidad_dias }};
+    const seleccionados = [];
+    const form = document.getElementById('formTurnos');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    const divTurnos = document.getElementById('turnosSeleccionados');
+
+    var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+      initialView: 'dayGridMonth',
+      locale: 'es',
+      events: '/management/calendario/disponibilidad/',
+      eventClick: function(info) {
+        const fecha = info.event.startStr;
+        fetch(`/management/calendario/horarios/?fecha=${fecha}`)
+          .then(res => res.json())
+          .then(data => {
+            let html = `<h5>Horarios para ${fecha}</h5><div class="list-group">`;
+            data.forEach(h => {
+              const btnClass = h.completo ? 'disabled btn-outline-secondary' : 'btn-outline-success';
+              html += `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  ${h.hora} - ${h.disponibles} lugares
+                  <button type="button" class="btn btn-sm ${btnClass}" onclick="seleccionarTurno('${fecha}', '${h.hora}', this)" ${h.completo ? 'disabled' : ''}>
+                    Seleccionar
+                  </button>
+                </div>`;
+            });
+            html += '</div>';
+            document.getElementById('horarios').innerHTML = html;
+          });
+      }
+    });
+
+    calendar.render();
+
+    window.seleccionarTurno = function(fecha, hora, btn) {
+      if (seleccionados.length >= maxTurnos) {
+        alert(`Solo podés seleccionar ${maxTurnos} turnos para este plan.`);
+        return;
+      }
+
+      const yaSeleccionado = seleccionados.find(s => s.fecha === fecha);
+      if (yaSeleccionado) {
+        alert(`Ya seleccionaste un turno para el día ${fecha}.`);
+        return;
+      }
+
+      // Marcar como usado
+      btn.classList.remove('btn-outline-success');
+      btn.classList.add('btn-secondary');
+      btn.disabled = true;
+
+      // Agregar al array y al DOM
+      seleccionados.push({ fecha, hora });
+
+      // Crear inputs ocultos
+      const inputFecha = document.createElement('input');
+      inputFecha.type = 'hidden';
+      inputFecha.name = 'fechas[]';
+      inputFecha.value = fecha;
+
+      const inputHora = document.createElement('input');
+      inputHora.type = 'hidden';
+      inputHora.name = 'horas[]';
+      inputHora.value = hora;
+
+      form.appendChild(inputFecha);
+      form.appendChild(inputHora);
+
+      const li = document.createElement('div');
+      li.className = 'alert alert-success mb-2 p-2';
+      li.innerText = `✔ ${fecha} - ${hora}`;
+      divTurnos.appendChild(li);
+
+      if (seleccionados.length === maxTurnos) {
+        btnConfirmar.classList.remove('d-none');
+      }
+    };
+  });
+</script>
+{% endblock %}

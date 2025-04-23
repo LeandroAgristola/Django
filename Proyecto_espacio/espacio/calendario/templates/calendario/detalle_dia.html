@@ -1,0 +1,28 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container">
+  <h3>Detalle de turnos para el día {{ fecha }}</h3>
+  <a href="{% url 'calendario:vista_calendario' %}" class="btn btn-secondary">← Volver al calendario</a>
+
+  {% for bloque in grilla %}
+    <div class="card my-3">
+      <div class="card-header bg-light fw-bold">{{ bloque.hora }}</div>
+      <ul class="list-group list-group-flush">
+        {% for turno in bloque.turnos %}
+          {% if turno.nombre %}
+            <li class="list-group-item">
+              Turno {{ turno.numero }} — {{ turno.nombre }} {{ turno.apellido }} ({{ turno.telefono }})
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted">
+              Turno {{ turno.numero }} — <em>Vacío</em>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+  <a href="{% url 'calendario:vista_calendario' %}" class="btn btn-secondary">← Volver al calendario</a>
+</div>
+{% endblock %}
