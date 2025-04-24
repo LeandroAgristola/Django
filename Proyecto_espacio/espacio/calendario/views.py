@@ -11,34 +11,41 @@ from calendar import monthrange
 def vista_calendario(request):
     return render(request, 'calendario/calendario.html')
 
+#Esta vista genera eventos para el calendario, indicando la disponibilidad de horarios por día.
+#Lógica clave:
+#Calcula los días desde hoy hasta el final del mes siguiente.
+#Determina los horarios disponibles por día basándose en la configuración (Configuracion) y los turnos ya ocupados.
+#Asigna un color (#dc3545 para no disponible y #28a745 para disponible) y un título con la cantidad de horarios disponibles.
 @login_required
 def disponibilidad_por_dia(request):
-    hoy = date.today()
-
-    # Primer día del mes siguiente
-    proximo_mes = (hoy.replace(day=28) + timedelta(days=4)).replace(day=1)
-    _, dias_mes_siguiente = monthrange(proximo_mes.year, proximo_mes.month)
-
-    # Último día del mes siguiente
-    fin = proximo_mes.replace(day=dias_mes_siguiente)
-    dias = (fin - hoy).days + 1
-
     config = Configuracion.objects.first()
     eventos = []
 
-    for i in range(dias):
-        dia_actual = hoy + timedelta(days=i)
-        es_sabado = dia_actual.weekday() == 5
-        inicio = config.horario_sabado_inicio if es_sabado else config.horario_semana_inicio
-        fin_hora = config.horario_sabado_fin if es_sabado else config.horario_semana_fin
+    # Intenta obtener el rango del calendario (usado por FullCalendar)
+    inicio_str = request.GET.get('start')
+    fin_str = request.GET.get('end')
 
-        if not (inicio and fin_hora):
+    try:
+        inicio = datetime.strptime(inicio_str[:10], "%Y-%m-%d").date() if inicio_str else date.today()
+        fin = datetime.strptime(fin_str[:10], "%Y-%m-%d").date() if fin_str else (inicio.replace(day=28) + timedelta(days=4)).replace(day=1)
+    except ValueError:
+        return JsonResponse({'error': 'Fechas inválidas'}, status=400)
+
+    dias = (fin - inicio).days + 1
+
+    for i in range(dias):
+        dia_actual = inicio + timedelta(days=i)
+        es_sabado = dia_actual.weekday() == 5
+        hora_inicio = config.horario_sabado_inicio if es_sabado else config.horario_semana_inicio
+        hora_fin = config.horario_sabado_fin if es_sabado else config.horario_semana_fin
+
+        if not (hora_inicio and hora_fin):
             continue
 
-        hora_actual = inicio
         total_disponible = 0
+        hora_actual = hora_inicio
 
-        while hora_actual < fin_hora:
+        while hora_actual < hora_fin:
             cantidad = Turno.objects.filter(fecha=dia_actual, hora=hora_actual).count()
             if cantidad < 6:
                 total_disponible += 1
@@ -53,6 +60,11 @@ def disponibilidad_por_dia(request):
 
     return JsonResponse(eventos, safe=False)
 
+#Esta vista devuelve los horarios disponibles para un día específico.
+#Lógica clave:
+#Obtiene la fecha desde los parámetros GET.
+#Calcula los horarios disponibles basándose en la configuración (Configuracion) y los turnos ya ocupados.
+#Devuelve un JSON con los horarios, indicando cuántos espacios están disponibles y si el horario está completo.
 @login_required
 def horarios_por_dia(request):
     fecha_str = request.GET.get('fecha')  # Esperamos formato YYYY-MM-DD
@@ -81,6 +93,12 @@ def horarios_por_dia(request):
 
     return JsonResponse(horarios, safe=False)
 
+
+#Esta vista muestra un desglose detallado de los turnos para un día específico.
+#Lógica clave:
+#Obtiene la fecha desde los parámetros GET.
+#Genera una grilla con los turnos ocupados y los espacios disponibles para cada hora.
+#Devuelve un template con la información detallada.
 @login_required
 def detalle_dia(request):
     fecha_str = request.GET.get('fecha')

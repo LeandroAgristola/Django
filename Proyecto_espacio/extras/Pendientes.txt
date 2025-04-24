@@ -13,18 +13,9 @@ web (Para la parte pública del sitio)
     Home:
 
     Planes.html:
-        Funcionalidad al apretar el boton debe abrir whatsapp y  rellenar una msj de este estilo:
-            "hola queria consultar por el plan {}"
 
-
-calendario (Para la administración de horarios)
-
-    no reconoce el plan desde el select
-       
-Pendientes de clientes cuando tengamos calendario: 
-
-    los dias y hora se marcan en el calendario segun disponibilidad
-    Lo dias que podemos marcar estan dados por la cantidad de dias en el plan
+Pendientes generales:
+    mover todos los JS a la carpeta JS y linkear sus nombres
 
 
 
@@ -42,102 +33,15 @@ planes: maneja la carga y edición de planes regulares
 webPublic: muestra la información del espacio al publico 
 calendario: gestión de horarios de los clientes 
 
-Bien ya que tenemos todos los datos necesarios para poder avanzar en una de las últimas etapas por fin vamos a empezar con la app calendario
+Pendientes calendario/clientes:
+
+    El calendario no refleja los turnos que cargamos en clientes
+    Cuando seleccionamos un turno en clientes el calendario deberia abrir el dia en otra vista y o mostrar un calendario mas pequeño y en grande la grilla del dia para que sea visualmente mas intuitivo
+    La seleccion de dias deberia ser semanal del estilo "martes y jueves" ya que el cliente no selecciona solo un turno, sino se le asigna un dia o dos o los que permita el plan pero semanalmente
+    Crear un template de detalle del cliente Regular para mostrar el detalle de dia y horarios que viene al espacio.
 
 
-Esta app tiene las siguiente funcionalidades:
 
-    Calendario grande vista por dias
-    Gestión de horarios disponibles
-    Inscripción y visualización de clientes por turno
-    Exportación de calendario en excel a Drive    
-
-    Calendario dinamico:
-        Calendario con colores segun horarios disponibles Rojo horario no disponible verde disponible
-        Cada dia debe tener color según disponibilidad 
-        Cada dia al apretar en el tiene que tener un listado de horas con colores segun disponibilidad
-        Disponibilidad por hora 6 personas 
-        Rango horario lo definimos en configuración, en base a este rango mostramos los horarios que se pueden utilizar
-El rango de horarios que podemos asignaro horarios esta dado por el modelo de la app configuracion: 
-
-    horario_semana_inicio = models.TimeField(blank=True, null=True)
-    horario_semana_fin = models.TimeField(blank=True, null=True)
-    horario_sabado_inicio = models.TimeField(blank=True, null=True)
-    horario_sabado_fin = models.TimeField(blank=True, null=True)
-
-por otro lado los días que podremos asignarle a un cliente está dado por los días del plan (app planes) que eligió: cantidad_dias = models.PositiveIntegerField()
-
-Deberemos modificar algunas cosas en el modelo de la app de clientes, ya que al crearlo deberemos asignarle un plan de la app de planes y en base a ese plan los 
-dias y horarios que permita ese plan: 
-
-    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
-    dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
-    hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
-
-Resumen: el calendario muestra días al apretar en el dia nos muestra los horarios disponibles (máximos 6 por hora) según la banda horaria que especificamos en configuración.
- Al crear un cliente nuevo en app planes vamos a asignarle dias y horarios segun los dias que permite el plan. 
-
-Fase 1: Preparación de modelos y datos
-
-1.1. Revisión y ajustes de modelos
-
-✅ Cliente debe tener relación con Plan, y sus días/horarios deben depender de los atributos del plan.
-
-✅ Configuracion define la banda horaria (semana/sábado).
-
-✅ Cada cliente elige qué días exactos (ej: lunes/miércoles/viernes)
-
-1.2. Nuevo modelo para los turnos
-Vamos a necesitar un modelo como este para registrar las inscripciones por horario:
-
-    calendario/models.py
-    class Turno(models.Model):
-    fecha = models.DateField()
-    hora = models.TimeField()
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-
-Luego se podrá calcular cuántos turnos hay en una hora para marcar si está disponible o no.
-
-🧠 Fase 2: Generación dinámica del calendario
-
-2.1. Cargar calendario en la vista (por día)
-
-El calendario se arma por frontend (JS) o backend (Django Template).
-
-✅ Necesitamos mostrar por día si está completo o no (colores).
-
-✅ Librería en mente para el calendario dinámico FullCalendar.
-
-2.2. Reglas para marcar colores
-
-Cada hora admite hasta 6 personas.
-
-Se consultan los Turnos de esa fecha/hora → si hay <6 es verde, si hay 6 es rojo.
-
-Esto lo podemos cargar desde la vista como JSON para JS.
-
-🧠 Fase 3: Vista por día - Mostrar horarios
-Al apretar un día, mostramos una lista con todos los horarios habilitados para ese día.
-
-3.1. Lógica para generar los horarios:
-
-Los sabados se asignan segun el horario especificado en configuracion 
-
-Se toma el rango desde Configuracion.
-
-Se divide en bloques de 1 hora .
-
-Cada horario se muestra con su disponibilidad (clientes anotados <6).
-
-3.2. Inscripción:
-
-El usuario puede elegir un horario y se crea un Turno.
-
-El admin crea el turno cuando inscribe el cliente desde la app cliente: 
-
-    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
-    dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
-    hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
 
 🧠 Fase 4: Exportación a Excel
 

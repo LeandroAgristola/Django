@@ -10,6 +10,9 @@
 
   <form method="post" id="formTurnos">
     {% csrf_token %}
+    <!-- Campo oculto para enviar el plan_id -->
+    <input type="hidden" name="plan_id" value="{{ plan.id }}">
+
     <!-- Campos ocultos con datos del cliente -->
     <input type="hidden" name="nombre" value="{{ request.GET.nombre }}">
     <input type="hidden" name="apellido" value="{{ request.GET.apellido }}">

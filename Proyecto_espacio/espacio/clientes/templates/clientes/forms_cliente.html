@@ -12,6 +12,10 @@
   <form method="post" novalidate>
     {% csrf_token %}
 
+    {% if form.instance.pk %}
+      <input type="hidden" name="cliente_id" value="{{ form.instance.pk }}">
+    {% endif %}
+
     <div class="row mb-3">
       <div class="col-md-6">
         {{ form.nombre.label_tag }}
@@ -30,7 +34,6 @@
       <div class="col-md-6">
         {{ form.dni.label_tag }}
         {{ form.dni }}
-
       </div>
       <div class="col-md-6">
         {{ form.telefono.label_tag }}
@@ -74,29 +77,32 @@
     </div>
   </form>
 </div>
-{% block scripts %}
-    <script>
-      function redirigirAsignacion() {
-        const form = document.querySelector("form");
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
 
-        for (const pair of formData.entries()) {
+  {% block scripts %}
+  <script>
+    function redirigirAsignacion() {
+      const form = document.querySelector("form");
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+
+      const planSelect = document.querySelector('[name="plan"]');
+      const planId = planSelect ? planSelect.value : null;
+
+      if (!planId) {
+        alert("Por favor, seleccioná un plan antes de asignar turnos.");
+        return;
+      }
+
+      params.append('plan_id', planId);
+
+      for (const pair of formData.entries()) {
+        if (pair[0] !== 'plan') {
           params.append(pair[0], pair[1]);
         }
-
-        // Obtener el valor del select directamente
-        const planSelect = document.querySelector('[name="plan"]');
-        const planId = planSelect ? planSelect.value : null;
-
-        if (!planId) {
-          alert("Por favor, seleccioná un plan antes de asignar turnos.");
-          return;
-        }
-
-        // Redirigir a la vista de asignación
-        window.location.href = `/management/clientes/asignar-turnos/?${params.toString()}`;
       }
-    </script>
+
+      window.location.href = `/management/clientes/asignar-turnos/?${params.toString()}`;
+    }
+  </script>
   {% endblock %}
 {% endblock %}

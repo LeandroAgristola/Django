@@ -127,7 +127,7 @@ def confirmar_pago(request, cliente_id):
 
 @login_required
 def asignar_turnos(request):
-    plan_id = request.GET.get('plan_id')
+    plan_id = request.GET.get('plan_id') or request.POST.get('plan_id')
     if not plan_id:
         messages.error(request, "No se especificó ningún plan")
         return redirect('clientes:crear_cliente')
@@ -136,7 +136,6 @@ def asignar_turnos(request):
     config = Configuracion.objects.first()
 
     if request.method == 'POST':
-        # Obtener los datos seleccionados desde el form oculto
         dias = request.POST.getlist('fechas[]')
         horas = request.POST.getlist('horas[]')
         nombre = request.POST.get('nombre')
@@ -145,24 +144,41 @@ def asignar_turnos(request):
         telefono = request.POST.get('telefono')
         mail = request.POST.get('mail')
         estado = request.POST.get('estado')
+        cliente_id = request.POST.get('cliente_id')
 
         if len(dias) != plan.cantidad_dias:
             messages.error(request, f"El plan {plan.nombre} requiere exactamente {plan.cantidad_dias} días. Seleccionaste {len(dias)}.")
             return redirect(request.path + f"?plan_id={plan_id}")
 
-        # Crear cliente y turnos
-        cliente = Cliente.objects.create(
-            nombre=nombre,
-            apellido=apellido,
-            dni=dni,
-            telefono=telefono,
-            mail=mail,
-            plan=plan,
-            dias=", ".join(dias),
-            hora=", ".join(horas),
-            tipo='regular',
-            estado=estado
-        )
+        if cliente_id:
+            cliente = Cliente.objects.get(id=cliente_id)
+            cliente.nombre = nombre
+            cliente.apellido = apellido
+            cliente.dni = dni
+            cliente.telefono = telefono
+            cliente.mail = mail
+            cliente.plan = plan
+            cliente.dias = ", ".join(dias)
+            cliente.hora = ", ".join(horas)
+            cliente.tipo = 'regular'
+            cliente.estado = estado
+            cliente.save()
+
+            # Borrar turnos anteriores
+            Turno.objects.filter(cliente=cliente).delete()
+        else:
+            cliente = Cliente.objects.create(
+                nombre=nombre,
+                apellido=apellido,
+                dni=dni,
+                telefono=telefono,
+                mail=mail,
+                plan=plan,
+                dias=", ".join(dias),
+                hora=", ".join(horas),
+                tipo='regular',
+                estado=estado
+            )
 
         for fecha_str, hora_str in zip(dias, horas):
             fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
