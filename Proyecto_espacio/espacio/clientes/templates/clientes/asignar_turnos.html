@@ -5,12 +5,22 @@
   <h3>Asignar turnos para el plan: <strong>{{ plan.nombre }}</strong></h3>
   <p>Seleccioná <strong>{{ plan.cantidad_dias }}</strong> turnos disponibles en el calendario.</p>
 
-  <div id="calendar" class="mb-4"></div>
-  <div id="horarios" class="mb-4"></div>
+  <div class="row">
+    <!-- Calendario pequeño -->
+    <div class="col-md-6">
+      <div id="calendar"></div>
+    </div>
+
+    <!-- Grilla de turnos -->
+    <div class="col-md-4">
+      <div id="horarios">
+        <h5>Seleccioná un día en el calendario para ver los turnos disponibles</h5>
+      </div>
+    </div>
+  </div>
 
   <form method="post" id="formTurnos">
     {% csrf_token %}
-    <!-- Campo oculto para enviar el plan_id -->
     <input type="hidden" name="plan_id" value="{{ plan.id }}">
 
     <!-- Campos ocultos con datos del cliente -->
@@ -21,7 +31,7 @@
     <input type="hidden" name="mail" value="{{ request.GET.mail }}">
     <input type="hidden" name="estado" value="{{ request.GET.estado }}">
 
-    <!-- Aquí se insertan dinámicamente los días y horas -->
+    <!-- Turnos seleccionados -->
     <div id="turnosSeleccionados" class="mb-3"></div>
 
     <button type="submit" class="btn btn-success d-none" id="btnConfirmar">Confirmar y guardar cliente</button>
@@ -42,12 +52,15 @@
     const btnConfirmar = document.getElementById('btnConfirmar');
     const divTurnos = document.getElementById('turnosSeleccionados');
 
+    // Inicializar el calendario
     var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
       initialView: 'dayGridMonth',
       locale: 'es',
       events: '/management/calendario/disponibilidad/',
       eventClick: function(info) {
         const fecha = info.event.startStr;
+
+        // Cargar turnos disponibles para el día seleccionado
         fetch(`/management/calendario/horarios/?fecha=${fecha}`)
           .then(res => res.json())
           .then(data => {
@@ -70,6 +83,7 @@
 
     calendar.render();
 
+    // Función para seleccionar un turno
     window.seleccionarTurno = function(fecha, hora, btn) {
       if (seleccionados.length >= maxTurnos) {
         alert(`Solo podés seleccionar ${maxTurnos} turnos para este plan.`);

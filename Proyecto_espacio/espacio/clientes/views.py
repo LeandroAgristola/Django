@@ -144,19 +144,33 @@ def asignar_turnos(request):
         telefono = request.POST.get('telefono')
         mail = request.POST.get('mail')
         estado = request.POST.get('estado')
-        cliente_id = request.POST.get('cliente_id')
 
         if len(dias) != plan.cantidad_dias:
             messages.error(request, f"El plan {plan.nombre} requiere exactamente {plan.cantidad_dias} días. Seleccionaste {len(dias)}.")
             return redirect(request.path + f"?plan_id={plan_id}")
 
-        if cliente_id:
-            cliente = Cliente.objects.get(id=cliente_id)
+        # Verificar si el cliente ya existe por su mail
+        cliente, creado = Cliente.objects.get_or_create(
+            mail=mail,
+            defaults={
+                'nombre': nombre,
+                'apellido': apellido,
+                'dni': dni,
+                'telefono': telefono,
+                'plan': plan,
+                'dias': ", ".join(dias),
+                'hora': ", ".join(horas),
+                'tipo': 'regular',
+                'estado': estado
+            }
+        )
+
+        if not creado:
+            # Si ya existe, actualizamos los campos
             cliente.nombre = nombre
             cliente.apellido = apellido
             cliente.dni = dni
             cliente.telefono = telefono
-            cliente.mail = mail
             cliente.plan = plan
             cliente.dias = ", ".join(dias)
             cliente.hora = ", ".join(horas)
@@ -164,22 +178,10 @@ def asignar_turnos(request):
             cliente.estado = estado
             cliente.save()
 
-            # Borrar turnos anteriores
-            Turno.objects.filter(cliente=cliente).delete()
-        else:
-            cliente = Cliente.objects.create(
-                nombre=nombre,
-                apellido=apellido,
-                dni=dni,
-                telefono=telefono,
-                mail=mail,
-                plan=plan,
-                dias=", ".join(dias),
-                hora=", ".join(horas),
-                tipo='regular',
-                estado=estado
-            )
+            # Borramos turnos anteriores para evitar duplicados
+            cliente.turnos.all().delete()
 
+        # Crear nuevos turnos
         for fecha_str, hora_str in zip(dias, horas):
             fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
             hora = datetime.strptime(hora_str, "%H:%M").time()

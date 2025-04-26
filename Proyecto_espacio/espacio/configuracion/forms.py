@@ -1,5 +1,7 @@
 from django import forms
+from multiselectfield.forms.fields import MultiSelectFormField
 from .models import Configuracion
+
 
 class ConfiguracionForm(forms.ModelForm):
     class Meta:
@@ -14,6 +16,9 @@ class ConfiguracionForm(forms.ModelForm):
                 'placeholder': 'Dirección',
                 'class': 'form-control'
             }),
+            'dias_habilitados': forms.CheckboxSelectMultiple(attrs={
+                'class': 'form-check-input'
+            }),          
             'horario_semana_inicio': forms.TimeInput(attrs={
                 'class': 'form-control',
                 'type': 'time'
@@ -27,6 +32,14 @@ class ConfiguracionForm(forms.ModelForm):
                 'type': 'time'
             }),
             'horario_sabado_fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horario_domingo_inicio': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horario_domingo_fin': forms.TimeInput(attrs={
                 'class': 'form-control',
                 'type': 'time'
             }),
@@ -78,18 +91,18 @@ class ConfiguracionForm(forms.ModelForm):
 
         }
 
-    def clean(self): # Validacion de horarios
+    def clean(self):  # Validacion de horarios
         cleaned_data = super().clean()
 
         semana_inicio = cleaned_data.get("horario_semana_inicio")
         semana_fin = cleaned_data.get("horario_semana_fin")
         sabado_inicio = cleaned_data.get("horario_sabado_inicio")
         sabado_fin = cleaned_data.get("horario_sabado_fin")
+        dias = cleaned_data.get("dias_habilitados")
 
-        if semana_inicio and semana_fin:
-            if semana_inicio >= semana_fin:
-                self.add_error("horario_semana_fin", "El horario de fin debe ser mayor al de inicio.")
-
-        if sabado_inicio and sabado_fin:
-            if sabado_inicio >= sabado_fin:
-                self.add_error("horario_sabado_fin", "El horario de fin debe ser mayor al de inicio.")
+        if semana_inicio and semana_fin and semana_inicio >= semana_fin:
+            self.add_error("horario_semana_fin", "El horario de fin debe ser mayor al de inicio.")
+        if sabado_inicio and sabado_fin and sabado_inicio >= sabado_fin:
+            self.add_error("horario_sabado_fin", "El horario de fin debe ser mayor al de inicio.")
+        if not dias:
+            self.add_error("dias_habilitados", "Debés seleccionar al menos un día de apertura.")

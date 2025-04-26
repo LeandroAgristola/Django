@@ -15,6 +15,7 @@
         <p><i class="fas fa-map me-2"></i><strong>Google Maps:</strong> {{ configuracion.maps }}</p>
         <p><i class="fab fa-whatsapp me-2"></i><strong>WhatsApp:</strong> {{ configuracion.whatsapp }}</p>
         <p><i class="fas fa-phone me-2"></i><strong>Teléfono:</strong> {{ configuracion.telefono }}</p>
+        <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ configuracion.email }}</p>
       </div>
     </div>
 
@@ -24,11 +25,19 @@
         <p><i class="fab fa-instagram me-2"></i><strong>Instagram:</strong> {{ configuracion.instagram }}</p>
         <p><i class="fab fa-facebook me-2"></i><strong>Facebook:</strong> {{ configuracion.facebook }}</p>
         <p><i class="fab fa-youtube me-2"></i><strong>Youtube:</strong> {{ configuracion.youtube }}</p>
-        <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ configuracion.email }}</p>
-        <p><i class="fas fa-calendar-week me-2"></i><strong>Horario Semana:</strong> 
-          {{ configuracion.horario_semana_inicio|default:"-" }} a {{ configuracion.horario_semana_fin|default:"-" }}</p>
+        <p><i class="fas fa-calendar-week me-2"></i><strong>Horario Lunes a Viernes:</strong> 
+          {{ configuracion.horario_semana_inicio|default:"-" }} a {{ configuracion.horario_semana_fin|default:"-" }}
+        </p>
         <p><i class="fas fa-calendar-day me-2"></i><strong>Horario Sábado:</strong> 
-          {{ configuracion.horario_sabado_inicio|default:"-" }} a {{ configuracion.horario_sabado_fin|default:"-" }}</p>         
+          {{ configuracion.horario_sabado_inicio|default:"-" }} a {{ configuracion.horario_sabado_fin|default:"-" }}
+        </p>
+        <p><i class="fas fa-calendar-day me-2"></i><strong>Horario Domingo:</strong>
+          {% if 'domingo' in configuracion.dias_habilitados %}
+            {{ configuracion.horario_domingo_inicio|default:"-" }} a {{ configuracion.horario_domingo_fin|default:"-" }}
+          {% else %}
+            Día no disponible
+          {% endif %}
+        </p>  
       </div>
     </div>
 

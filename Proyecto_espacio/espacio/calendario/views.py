@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from calendar import monthrange
 
-
 @login_required
 def vista_calendario(request):
     return render(request, 'calendario/calendario.html')
@@ -18,45 +17,74 @@ def vista_calendario(request):
 #Asigna un color (#dc3545 para no disponible y #28a745 para disponible) y un título con la cantidad de horarios disponibles.
 @login_required
 def disponibilidad_por_dia(request):
+    hoy = date.today()
+    fin = hoy + timedelta(days=60)  # Mostrar 2 meses
+
     config = Configuracion.objects.first()
+    if not config:
+        return JsonResponse({'error': 'Configuración no encontrada'}, status=400)
+
     eventos = []
+    actual = hoy
 
-    # Intenta obtener el rango del calendario (usado por FullCalendar)
-    inicio_str = request.GET.get('start')
-    fin_str = request.GET.get('end')
+    traduccion_dias = {
+        'monday': 'lunes',
+        'tuesday': 'martes',
+        'wednesday': 'miercoles',
+        'thursday': 'jueves',
+        'friday': 'viernes',
+        'saturday': 'sabado',
+        'sunday': 'domingo',
+    }
 
-    try:
-        inicio = datetime.strptime(inicio_str[:10], "%Y-%m-%d").date() if inicio_str else date.today()
-        fin = datetime.strptime(fin_str[:10], "%Y-%m-%d").date() if fin_str else (inicio.replace(day=28) + timedelta(days=4)).replace(day=1)
-    except ValueError:
-        return JsonResponse({'error': 'Fechas inválidas'}, status=400)
+    while actual <= fin:
+        dia_semana = traduccion_dias[actual.strftime('%A').lower()]
 
-    dias = (fin - inicio).days + 1
-
-    for i in range(dias):
-        dia_actual = inicio + timedelta(days=i)
-        es_sabado = dia_actual.weekday() == 5
-        hora_inicio = config.horario_sabado_inicio if es_sabado else config.horario_semana_inicio
-        hora_fin = config.horario_sabado_fin if es_sabado else config.horario_semana_fin
-
-        if not (hora_inicio and hora_fin):
+        # Si el día no está habilitado, pasamos al siguiente
+        if dia_semana not in config.dias_habilitados:
+            actual += timedelta(days=1)
             continue
 
-        total_disponible = 0
-        hora_actual = hora_inicio
+        # Obtener horarios según el día
+        if dia_semana == 'sabado':
+            inicio = config.horario_sabado_inicio
+            fin_horario = config.horario_sabado_fin
+        elif dia_semana == 'domingo':
+            inicio = config.horario_domingo_inicio
+            fin_horario = config.horario_domingo_fin
+        else:
+            inicio = config.horario_semana_inicio
+            fin_horario = config.horario_semana_fin
 
-        while hora_actual < hora_fin:
-            cantidad = Turno.objects.filter(fecha=dia_actual, hora=hora_actual).count()
-            if cantidad < 6:
-                total_disponible += 1
-            hora_actual = (datetime.combine(date.today(), hora_actual) + timedelta(hours=1)).time()
+        # Calcular turnos disponibles por hora
+        total_turnos_disponibles = 0
+        hora_actual = inicio
 
-        color = '#dc3545' if total_disponible == 0 else '#28a745'
+        while hora_actual < fin_horario:
+            # Total de turnos por hora (6 por hora)
+            turnos_por_hora = 6
+
+            # Turnos ocupados en esta hora
+            turnos_ocupados = Turno.objects.filter(fecha=actual, hora=hora_actual).count()
+
+            # Turnos disponibles en esta hora
+            turnos_disponibles = turnos_por_hora - turnos_ocupados
+            total_turnos_disponibles += turnos_disponibles
+
+            # Avanzar a la siguiente hora
+            hora_actual = (datetime.combine(actual, hora_actual) + timedelta(hours=1)).time()
+
+        # Determinar el color del evento
+        color = '#28a745' if total_turnos_disponibles > 0 else '#dc3545'
+
+        # Crear el evento
         eventos.append({
-            'title': f"{total_disponible} horarios",
-            'start': dia_actual.isoformat(),
+            'title': f'{total_turnos_disponibles} turnos disponibles' if total_turnos_disponibles > 0 else 'Sin turnos disponibles',
+            'start': actual.isoformat(),
             'color': color,
         })
+
+        actual += timedelta(days=1)
 
     return JsonResponse(eventos, safe=False)
 

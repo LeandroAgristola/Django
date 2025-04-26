@@ -72,8 +72,18 @@
               </div>
               {% endfor %}
             </div>
-            <p class="card-text">Abierto de Lunes a viernes de {{ configuracion.horario_semana_inicio }} a {{ configuracion.horario_semana_fin }} hs.
-                Sábados de {{ configuracion.horario_sabado_inicio }} a {{ configuracion.horario_sabado_fin }} hs.</p>
+                <p class="card-text">
+                    Abierto 
+                    {% if 'lunes' in configuracion.dias_habilitados and 'viernes' in configuracion.dias_habilitados %}
+                        de lunes a viernes, de {{ configuracion.horario_semana_inicio }} a {{ configuracion.horario_semana_fin }} hs.
+                    {% endif %}
+                    {% if 'sabado' in configuracion.dias_habilitados %}
+                        Sábados {{ configuracion.horario_sabado_inicio }} a {{ configuracion.horario_sabado_fin }} hs.
+                    {% endif %}
+                    {% if 'domingo' in configuracion.dias_habilitados %}
+                        Domingo {{ configuracion.horario_domingo_inicio }} a {{ configuracion.horario_domingo_fin }} hs.
+                    {% endif %}
+                </p>
           </div>
         </div>
       </div>
