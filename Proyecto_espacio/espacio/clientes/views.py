@@ -96,11 +96,12 @@ def editar_cliente(request, cliente_id):
 @login_required
 def desactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    cliente.activo = False
-    cliente.estado = 'pendiente'
-    cliente.fecha_baja = timezone.now()
-    cliente.save()
-    return redirect('clientes:lista_clientes')
+    if request.method == 'POST':
+        fecha_baja = request.POST.get('fecha_baja')
+        cliente.activo = False
+        cliente.fecha_baja = fecha_baja
+        cliente.save()
+        return redirect('clientes:lista_clientes')
 
 @login_required
 def reactivar_cliente(request, cliente_id):
@@ -128,6 +129,9 @@ def confirmar_pago(request, cliente_id):
 @login_required
 def asignar_turnos(request):
     plan_id = request.GET.get('plan_id') or request.POST.get('plan_id')
+    configuracion = Configuracion.objects.first()
+    dias_habilitados = configuracion.dias_habilitados if configuracion else []
+
     if not plan_id:
         messages.error(request, "No se especificó ningún plan")
         return redirect('clientes:crear_cliente')
@@ -136,7 +140,7 @@ def asignar_turnos(request):
     config = Configuracion.objects.first()
 
     if request.method == 'POST':
-        dias = request.POST.getlist('fechas[]')
+        dias = request.POST.getlist('dias[]')
         horas = request.POST.getlist('horas[]')
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
@@ -145,11 +149,10 @@ def asignar_turnos(request):
         mail = request.POST.get('mail')
         estado = request.POST.get('estado')
 
-        if len(dias) != plan.cantidad_dias:
-            messages.error(request, f"El plan {plan.nombre} requiere exactamente {plan.cantidad_dias} días. Seleccionaste {len(dias)}.")
+        if not dias or not horas:
+            messages.error(request, "Debés seleccionar días y horarios.")
             return redirect(request.path + f"?plan_id={plan_id}")
 
-        # Verificar si el cliente ya existe por su mail
         cliente, creado = Cliente.objects.get_or_create(
             mail=mail,
             defaults={
@@ -161,12 +164,12 @@ def asignar_turnos(request):
                 'dias': ", ".join(dias),
                 'hora': ", ".join(horas),
                 'tipo': 'regular',
-                'estado': estado
+                'estado': estado,
+                'fecha_alta': datetime.today().date()
             }
         )
 
         if not creado:
-            # Si ya existe, actualizamos los campos
             cliente.nombre = nombre
             cliente.apellido = apellido
             cliente.dni = dni
@@ -176,16 +179,12 @@ def asignar_turnos(request):
             cliente.hora = ", ".join(horas)
             cliente.tipo = 'regular'
             cliente.estado = estado
+            cliente.fecha_alta = datetime.today().date()
             cliente.save()
-
-            # Borramos turnos anteriores para evitar duplicados
             cliente.turnos.all().delete()
 
-        # Crear nuevos turnos
-        for fecha_str, hora_str in zip(dias, horas):
-            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            hora = datetime.strptime(hora_str, "%H:%M").time()
-            Turno.objects.create(fecha=fecha, hora=hora, cliente=cliente)
+        # ➔ Generar los turnos automáticos hacia el futuro
+        generar_turnos_futuros(cliente)
 
         messages.success(request, "Cliente y turnos asignados correctamente.")
         return redirect('clientes:lista_clientes')
@@ -193,4 +192,21 @@ def asignar_turnos(request):
     return render(request, 'clientes/asignar_turnos.html', {
         'plan': plan,
         'config': config,
+        'dias_semana': dias_habilitados,  # Pasamos los días habilitados desde la configuración
     })
+
+def generar_turnos_futuros(cliente):
+    dias_seleccionados = cliente.dias.split(", ")
+    horas_seleccionadas = cliente.hora.split(", ")
+    fecha_actual = cliente.fecha_alta
+    fecha_limite = fecha_actual + timedelta(days=180)  # Generamos 6 meses de turnos
+
+    while fecha_actual <= fecha_limite:
+        dia_nombre = fecha_actual.strftime('%A').lower()
+
+        if dia_nombre in dias_seleccionados:
+            for hora in horas_seleccionadas:
+                hora_dt = datetime.strptime(hora, "%H:%M").time()
+                Turno.objects.create(fecha=fecha_actual, hora=hora_dt, cliente=cliente)
+
+        fecha_actual += timedelta(days=1)

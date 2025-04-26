@@ -108,19 +108,26 @@
         <!-- Modal Desactivar -->
         <div class="modal fade" id="desactivarClienteModal{{ cliente.id }}" tabindex="-1">
           <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Desactivar Cliente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              <div class="modal-content">
+                  <form method="post" action="{% url 'clientes:desactivar_cliente' cliente.id %}">
+                      {% csrf_token %}
+                      <div class="modal-header">
+                          <h5 class="modal-title">Desactivar Cliente</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                          ¿Estás seguro que querés desactivar a <strong>{{ cliente.nombre }} {{ cliente.apellido }}</strong>?
+                          <div class="mt-3">
+                              <label for="fecha_baja{{ cliente.id }}" class="form-label">Fecha de baja</label>
+                              <input type="date" name="fecha_baja" id="fecha_baja{{ cliente.id }}" class="form-control" required>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" class="btn btn-warning">Desactivar</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      </div>
+                  </form>
               </div>
-              <div class="modal-body">
-                ¿Estás seguro que querés desactivar a <strong>{{ cliente.nombre }} {{ cliente.apellido }}</strong>?
-              </div>
-              <div class="modal-footer">
-                <a href="{% url 'clientes:desactivar_cliente' cliente.id %}" class="btn btn-warning">Desactivar</a>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              </div>
-            </div>
           </div>
         </div>
 
