@@ -37,11 +37,8 @@ Pendientes calendario/clientes:
 
     Ajustar la vista del calendario para que sea igual o parecida a asignar turno
     Cambiar el msj de error de la cantidad de dias seleccionado para un plan  en un modal
-    Cuando cancelamos la edicion de un clente nos muestra el formulari ode "nuevo cliente" deberia seguir mostrando el de editar
-    En asignar turno se deben mostrar solo los dias que estan seteados en configuraciones
-    No carga el listado de turnos disponibles
-    agregar fecha de alta en reactivar
-    al reactivar el cliente debemos cargar nuevamente los datos del plan y dias de redirigirAsignacio
+    Cuando cancelamos la edicion de un clente nos muestra el formulario de "nuevo cliente" deberia seguir mostrando el de editar
+    El dia domingo no toma la franja horaria configurada a la hora de asignar turnos
     Crear un template de detalle del cliente Regular para mostrar el detalle de dia y horarios que viene al espacio.
 
 

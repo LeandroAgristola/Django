@@ -83,7 +83,6 @@ def disponibilidad_por_dia(request):
 
     return JsonResponse(eventos, safe=False)
 
-
 @login_required
 def horarios_por_dia(request):
     fecha_str = request.GET.get('fecha')  # Esperamos formato YYYY-MM-DD

@@ -12,7 +12,8 @@ urlpatterns = [
     path('management/planes/', include('planes.urls')),
     path('management/clientes/', include('clientes.urls')),
     path('management/configuracion', include('configuracion.urls')),
-    path('management/calendario/', include('calendario.urls')),
+    path('management/calendario/', include('calendario.urls', namespace='calendario')),
+
 
 ]
 

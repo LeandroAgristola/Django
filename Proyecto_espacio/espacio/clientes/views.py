@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta
 from django.contrib import messages
+import json
 
 @login_required
 def lista_clientes(request):
@@ -102,14 +103,27 @@ def desactivar_cliente(request, cliente_id):
         cliente.fecha_baja = fecha_baja
         cliente.save()
         return redirect('clientes:lista_clientes')
+    return redirect('clientes:lista_clientes')
 
 @login_required
 def reactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    cliente.activo = True
-    cliente.fecha_alta = timezone.now()
-    cliente.fecha_baja = None
-    cliente.save()
+    
+    if request.method == 'POST':
+        # Solo preparamos el cliente para reactivación pero NO lo guardamos
+        cliente.activo = True
+        cliente.fecha_alta = request.POST.get('fecha_alta')
+        cliente.plan = None
+        cliente.estado = ''
+        
+        # Redirigir a la vista de edición con los datos precargados
+        form = ClienteForm(instance=cliente)
+        return render(request, 'clientes/forms_cliente.html', {
+            'form': form,
+            'reactivando': True,  # Flag para identificar que viene de una reactivación
+            'cliente_id': cliente.id
+        })
+    
     return redirect('clientes:lista_clientes')
 
 @login_required
@@ -192,7 +206,8 @@ def asignar_turnos(request):
     return render(request, 'clientes/asignar_turnos.html', {
         'plan': plan,
         'config': config,
-        'dias_semana': dias_habilitados,  # Pasamos los días habilitados desde la configuración
+        'dias_semana': dias_habilitados,         # para hacer el for en Django (normal)
+        'dias_semana_json': json.dumps(dias_habilitados), # para usar en JS como JSON
     })
 
 def generar_turnos_futuros(cliente):

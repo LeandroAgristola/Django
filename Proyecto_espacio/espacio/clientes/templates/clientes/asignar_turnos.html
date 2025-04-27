@@ -39,108 +39,88 @@
 
 {% endblock %}
 
+
 {% block scripts %}
+<script id="diasSemanaJSON" type="application/json">{{ dias_semana_json|safe }}</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const form = document.getElementById('formTurnos');
-  const btnConfirmar = document.getElementById('btnConfirmar');
-  const turnosSeleccionados = new Set();
-  const maxDias = {{ plan.cantidad_dias }};
-  
-  // Usamos los días habilitados pasados desde la vista
-  const diasSemana = {{ dias_semana|safe }};
+    const form         = document.getElementById('formTurnos');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    const seleccionados= new Set();
+    const maxDias      = {{ plan.cantidad_dias }};
+    const diasSemana   = JSON.parse(document.getElementById('diasSemanaJSON').textContent);
 
-  // Mapeo de días de la semana a índices (0 = lunes, 6 = domingo)
-  const diasIndices = {
-    lunes: 0,
-    martes: 1,
-    miercoles: 2,
-    jueves: 3,
-    viernes: 4,
-    sabado: 5,
-    domingo: 6
-  };
+    const diasIndices = { lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0 };
 
-  // Iteramos sobre los días habilitados
-  diasSemana.forEach(dia => {
-    // Calculamos la próxima fecha correspondiente al día habilitado
-    const hoy = new Date();
-    const diaActual = hoy.getDay(); // Índice del día actual (0 = domingo, 6 = sábado)
-    const diferencia = (diasIndices[dia] - diaActual + 7) % 7; // Diferencia en días
-    const fecha = new Date(hoy);
-    fecha.setDate(hoy.getDate() + diferencia); // Ajustamos la fecha al próximo día habilitado
+    diasSemana.forEach(dia => {
+      let hoy       = new Date();
+      let hoyIdx    = hoy.getDay();
+      let targetIdx = diasIndices[dia];
+      let diff      = (targetIdx - hoyIdx + 7) % 7;
+      let fecha     = new Date(hoy.setDate(hoy.getDate() + diff));
+      let fechaStr  = fecha.toISOString().slice(0,10);
 
-    // Formateamos la fecha en formato YYYY-MM-DD
-    const fechaStr = fecha.toISOString().split('T')[0];
-
-    // Llamamos al endpoint con la fecha calculada
-    fetch(`/management/calendario/horarios-por-dia/?fecha=${fechaStr}`)
-      .then(res => {
-        if (!res.ok) throw new Error(`Error al cargar horarios para el día ${dia}`);
-        return res.json();
-      })
-      .then(data => {
-        const contenedor = document.getElementById(`horarios-${dia}`);
-        contenedor.innerHTML = "";
-        if (data.length === 0) {
-          contenedor.innerHTML = '<span class="badge bg-danger">Sin horarios disponibles</span>';
-          return;
-        }
-
-        const fragment = document.createDocumentFragment(); // Optimización para evitar múltiples manipulaciones del DOM
-        data.forEach(hora => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = `btn btn-sm ${hora.completo ? 'btn-secondary disabled' : 'btn-outline-success'}`;
-          btn.innerText = `${hora.hora} (${hora.disponibles})`;
-          if (!hora.completo) {
-            btn.onclick = function() {
-              if (turnosSeleccionados.size >= maxDias && !this.classList.contains('active')) {
-                alert(`Solo podés seleccionar ${maxDias} días.`);
-                return;
-              }
-              this.classList.toggle('active');
-              if (this.classList.contains('active')) {
-                turnosSeleccionados.add(`${dia}|${hora.hora}`);
-                crearInputHidden(dia, hora.hora);
-              } else {
-                turnosSeleccionados.delete(`${dia}|${hora.hora}`);
-                eliminarInputHidden(dia, hora.hora);
-              }
-              btnConfirmar.classList.toggle('d-none', turnosSeleccionados.size !== maxDias);
-            };
+      fetch(`/management/calendario/horarios/?fecha=${fechaStr}`)
+        .then(r => {
+          if (!r.ok) throw new Error(`Error al cargar ${dia}`);
+          return r.json();
+        })
+        .then(data => {
+          let cont = document.getElementById(`horarios-${dia}`);
+          cont.innerHTML = '';
+          if (!data.length) {
+            cont.innerHTML = '<span class="badge bg-danger">Sin horarios</span>';
+            return;
           }
-          fragment.appendChild(btn);
+          data.forEach(h => {
+            let btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `btn btn-sm ${h.completo ? 'btn-secondary disabled' : 'btn-outline-success'}`;
+            btn.innerText  = `${h.hora} (${h.disponibles})`;
+            if (!h.completo) {
+              btn.onclick = () => {
+                if (seleccionados.size >= maxDias && !btn.classList.contains('active')) {
+                  alert(`Solo podés ${maxDias} turnos`);
+                  return;
+                }
+                btn.classList.toggle('active');
+                if (btn.classList.contains('active')) {
+                  seleccionados.add(`${dia}|${h.hora}`);
+                  crearInput(dia, h.hora, fechaStr);
+                } else {
+                  seleccionados.delete(`${dia}|${h.hora}`);
+                  eliminarInput(dia, h.hora);
+                }
+                btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
+              };
+            }
+            cont.appendChild(btn);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById(`horarios-${dia}`)
+            .innerHTML = '<span class="badge bg-danger">Error al cargar</span>';
         });
-        contenedor.appendChild(fragment); // Agregamos todos los botones al contenedor de una sola vez
-      })
-      .catch(err => {
-        console.error(err);
-        const contenedor = document.getElementById(`horarios-${dia}`);
-        contenedor.innerHTML = '<span class="badge bg-danger">Error al cargar horarios</span>';
-      });
-  });
+    });
 
-  function crearInputHidden(dia, hora) {
-    const inputDia = document.createElement('input');
-    inputDia.type = 'hidden';
-    inputDia.name = 'dias[]';
-    inputDia.value = dia;
-    inputDia.id = `dia-${dia}-${hora}`;
-    form.appendChild(inputDia);
+    function crearInput(dia, hora, fechaStr) {
+      let i1 = document.createElement('input');
+      i1.type = 'hidden';  i1.name = 'fechas[]'; i1.value = fechaStr;
+      i1.id = `dia-${dia}-${hora}`;
 
-    const inputHora = document.createElement('input');
-    inputHora.type = 'hidden';
-    inputHora.name = 'horas[]';
-    inputHora.value = hora;
-    inputHora.id = `hora-${dia}-${hora}`;
-    form.appendChild(inputHora);
-  }
+      let i2 = document.createElement('input');
+      i2.type = 'hidden';  i2.name = 'horas[]';  i2.value = hora;
+      i2.id = `hora-${dia}-${hora}`;
 
-  function eliminarInputHidden(dia, hora) {
-    document.getElementById(`dia-${dia}-${hora}`).remove();
-    document.getElementById(`hora-${dia}-${hora}`).remove();
-  }
+      form.append(i1, i2);
+    }
+
+    function eliminarInput(dia, hora) {
+      document.getElementById(`dia-${dia}-${hora}`)?.remove();
+      document.getElementById(`hora-${dia}-${hora}`)?.remove();
+    }
 });
 </script>
 {% endblock %}
