@@ -39,9 +39,31 @@
 
 {% endblock %}
 
-
 {% block scripts %}
 <script id="diasSemanaJSON" type="application/json">{{ dias_semana_json|safe }}</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formTurnos');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+  
+    form.addEventListener('submit', function(e) {
+      const seleccionados = document.querySelectorAll('input[name="dias[]"]');
+      const fechaAlta = new URLSearchParams(window.location.search).get('fecha_alta');
+  
+      if (seleccionados.length === 0) {
+        e.preventDefault();
+        alert("Debés seleccionar al menos un turno.");
+        return;
+      }
+  
+      if (!fechaAlta) {
+        e.preventDefault();
+        alert("Debés indicar una fecha de alta en el formulario anterior.");
+      }
+    });
+  });
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -107,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function crearInput(dia, hora, fechaStr) {
       let i1 = document.createElement('input');
-      i1.type = 'hidden';  i1.name = 'fechas[]'; i1.value = fechaStr;
+      i1.type = 'hidden';  i1.name = 'dias[]';  i1.value = dia; 
       i1.id = `dia-${dia}-${hora}`;
 
       let i2 = document.createElement('input');

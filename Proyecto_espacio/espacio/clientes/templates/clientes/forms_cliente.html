@@ -3,7 +3,9 @@
 {% block content %}
 <div class="container my-4" id="formsEventos">
     <h2 class="mb-4">
-      {% if form.instance.pk %}
+      {% if reactivando %}
+        Reactivar cliente
+      {% elif form.instance.pk %}
         Editar cliente
       {% else %}
         Nuevo cliente
@@ -11,7 +13,13 @@
     </h2>
   <form method="post" novalidate>
     {% csrf_token %}
-
+    {% if messages %}
+      <div class="mt-2">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
     {% if form.instance.pk %}
       <input type="hidden" name="cliente_id" value="{{ form.instance.pk }}">
     {% endif %}
@@ -40,28 +48,38 @@
         {{ form.telefono }}
       </div>
     </div>
-
-    <div class="mb-3">
-      {{ form.mail.label_tag }}
-      {{ form.mail }}
-      {% if form.mail.errors %} 
-      <div class="text-danger small">{{ form.mail.errors|striptags }}</div>
-      {% endif %}
-    </div>
-
-    <div class="mb-3">
-      {{ form.plan.label_tag }}
-      {{ form.plan }}
-      {% if form.plan.errors %}
-      <div class="text-danger small">{{ form.plan.errors|striptags }}</div>
-      {% endif %}
-    </div>
-
     <div class="row mb-3">
-      <div class="mb-3">
-        <a class="btn btn-primary" href="#" onclick="redirigirAsignacion()">Asignar turnos</a>
+      <div class="col-md-6">
+        {{ form.mail.label_tag }}
+        {{ form.mail }}
+        {% if form.mail.errors %} 
+        <div class="text-danger small">{{ form.mail.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        {{ form.fecha_alta.label_tag }}
+        {{ form.fecha_alta }}
+        {% if form.fecha_alta.errors %}
+        <div class="text-danger small">{{ form.fecha_alta.errors|striptags }}</div>
+        {% endif %}
       </div>
     </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        {{ form.plan.label_tag }}
+        {{ form.plan }}
+        {% if form.plan.errors %}
+        <div class="text-danger small">{{ form.plan.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        <br>
+        <a class="btn btn-secondary" href="#" onclick="redirigirAsignacion()" style="width:  100%;">Asignar turnos</a>
+      </div>
+    </div>
+
 
     <div class="mb-3">
       {{ form.estado.label_tag }}

@@ -13,10 +13,10 @@ class Cliente(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
     dias = models.CharField(max_length=100, blank=True, null=True)  # futuro: lista de días
     hora = models.CharField(max_length=100, blank=True, null=True)  # futuro: desde calendario
-    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
-    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES,)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     activo = models.BooleanField(default=True)
-    fecha_alta = models.DateTimeField(auto_now_add=True)
+    fecha_alta = models.DateTimeField(null=True, blank=True)
     fecha_baja = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

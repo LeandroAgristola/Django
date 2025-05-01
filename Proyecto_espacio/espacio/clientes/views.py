@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.contrib import messages
 import json
 
@@ -72,7 +72,18 @@ def crear_cliente(request):
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             cliente = form.save(commit=False)
-            cliente.tipo = 'regular'  # Setear automáticamente como regular
+            cliente.tipo = 'regular'
+
+            fecha_str = request.POST.get('fecha_alta')
+            if fecha_str:
+                try:
+                    # Convertimos string a datetime (a las 00:00 hs)
+                    cliente.fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d")
+                except ValueError:
+                    cliente.fecha_alta = datetime.today()
+            else:
+                cliente.fecha_alta = datetime.today()
+
             cliente.save()
             return redirect('clientes:lista_clientes')
     else:
@@ -92,7 +103,7 @@ def editar_cliente(request, cliente_id):
     else:
         form = ClienteForm(instance=cliente)
 
-    return render(request, 'clientes/forms_cliente.html', {'form': form})
+    return render(request, 'clientes/forms_cliente.html', {'form': form, 'editando': True})
 
 @login_required
 def desactivar_cliente(request, cliente_id):
@@ -100,8 +111,13 @@ def desactivar_cliente(request, cliente_id):
     if request.method == 'POST':
         fecha_baja = request.POST.get('fecha_baja')
         cliente.activo = False
+        cliente.estado = 'pendiente'
         cliente.fecha_baja = fecha_baja
         cliente.save()
+
+        # 👉 Eliminar turnos a partir de hoy
+        cliente.turnos.filter(fecha__gte=date.today()).delete()
+
         return redirect('clientes:lista_clientes')
     return redirect('clientes:lista_clientes')
 
@@ -112,9 +128,11 @@ def reactivar_cliente(request, cliente_id):
     if request.method == 'POST':
         # Solo preparamos el cliente para reactivación pero NO lo guardamos
         cliente.activo = True
-        cliente.fecha_alta = request.POST.get('fecha_alta')
+        fecha_str = request.POST.get('fecha_alta')
+        cliente.fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d") if fecha_str else datetime.today()
+        cliente.estado = 'pendiente'
         cliente.plan = None
-        cliente.estado = ''
+        cliente.save()
         
         # Redirigir a la vista de edición con los datos precargados
         form = ClienteForm(instance=cliente)
@@ -142,6 +160,8 @@ def confirmar_pago(request, cliente_id):
 
 @login_required
 def asignar_turnos(request):
+    print("TIPO DE USUARIO:", type(request.user))
+    print("ATRIBUTOS:", dir(request.user))
     plan_id = request.GET.get('plan_id') or request.POST.get('plan_id')
     configuracion = Configuracion.objects.first()
     dias_habilitados = configuracion.dias_habilitados if configuracion else []
@@ -163,6 +183,13 @@ def asignar_turnos(request):
         mail = request.POST.get('mail')
         estado = request.POST.get('estado')
 
+        # 👉 Intentamos recuperar la fecha de alta desde GET o POST
+        fecha_str = request.GET.get('fecha_alta') or request.POST.get('fecha_alta')
+        try:
+            fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d") if fecha_str else datetime.today()
+        except ValueError:
+            fecha_alta = datetime.today()
+
         if not dias or not horas:
             messages.error(request, "Debés seleccionar días y horarios.")
             return redirect(request.path + f"?plan_id={plan_id}")
@@ -179,7 +206,7 @@ def asignar_turnos(request):
                 'hora': ", ".join(horas),
                 'tipo': 'regular',
                 'estado': estado,
-                'fecha_alta': datetime.today().date()
+                'fecha_alta': fecha_alta
             }
         )
 
@@ -193,7 +220,7 @@ def asignar_turnos(request):
             cliente.hora = ", ".join(horas)
             cliente.tipo = 'regular'
             cliente.estado = estado
-            cliente.fecha_alta = datetime.today().date()
+            cliente.fecha_alta = fecha_alta
             cliente.save()
             cliente.turnos.all().delete()
 
@@ -206,22 +233,27 @@ def asignar_turnos(request):
     return render(request, 'clientes/asignar_turnos.html', {
         'plan': plan,
         'config': config,
-        'dias_semana': dias_habilitados,         # para hacer el for en Django (normal)
-        'dias_semana_json': json.dumps(dias_habilitados), # para usar en JS como JSON
+        'dias_semana': dias_habilitados,
+        'dias_semana_json': json.dumps(dias_habilitados),
     })
 
 def generar_turnos_futuros(cliente):
     dias_seleccionados = cliente.dias.split(", ")
     horas_seleccionadas = cliente.hora.split(", ")
-    fecha_actual = cliente.fecha_alta
-    fecha_limite = fecha_actual + timedelta(days=180)  # Generamos 6 meses de turnos
+    fecha_actual = cliente.fecha_alta or date.today()
+    fecha_limite = fecha_actual + timedelta(days=180)
+
+    dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 
     while fecha_actual <= fecha_limite:
-        dia_nombre = fecha_actual.strftime('%A').lower()
+        dia_en_espanol = dias_esp[fecha_actual.weekday()]
 
-        if dia_nombre in dias_seleccionados:
+        if dia_en_espanol in dias_seleccionados:
             for hora in horas_seleccionadas:
                 hora_dt = datetime.strptime(hora, "%H:%M").time()
-                Turno.objects.create(fecha=fecha_actual, hora=hora_dt, cliente=cliente)
+
+                # Verificar si ya existe el turno
+                if not Turno.objects.filter(fecha=fecha_actual, hora=hora_dt, cliente=cliente).exists():
+                    Turno.objects.create(fecha=fecha_actual, hora=hora_dt, cliente=cliente)
 
         fecha_actual += timedelta(days=1)

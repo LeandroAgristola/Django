@@ -36,12 +36,18 @@ calendario: gestión de horarios de los clientes
 Pendientes calendario/clientes:
 
     Ajustar la vista del calendario para que sea igual o parecida a asignar turno
-    Cambiar el msj de error de la cantidad de dias seleccionado para un plan  en un modal
     Cuando cancelamos la edicion de un clente nos muestra el formulario de "nuevo cliente" deberia seguir mostrando el de editar
-    El dia domingo no toma la franja horaria configurada a la hora de asignar turnos
     Crear un template de detalle del cliente Regular para mostrar el detalle de dia y horarios que viene al espacio.
+    Los errores deben mostrarse en modal o en el template
+    El formulario no debe enviarse si no se carga el turno
+    EL formulario no se debe enviar si no se carga la fecha
 
 
+
+Calendario muestra los turnos
+la grilla de turnos se decrementan correctamente
+si no hay turnos se muestra en 0 sin aplicacion
+El estado de "pendiente" debe estar por defecto al crear un cliente o reactivarlo
 
 
 🧠 Fase 4: Exportación a Excel

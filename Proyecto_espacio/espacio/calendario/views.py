@@ -35,12 +35,10 @@ def disponibilidad_por_dia(request):
     while actual <= fin:
         dia_semana = traduccion_dias[actual.strftime('%A').lower()]
 
-        # Si el día no está habilitado, pasamos al siguiente
         if dia_semana not in config.dias_habilitados:
             actual += timedelta(days=1)
             continue
 
-        # Obtener horarios según el día
         if dia_semana == 'sabado':
             inicio = config.horario_sabado_inicio
             fin_horario = config.horario_sabado_fin
@@ -51,28 +49,23 @@ def disponibilidad_por_dia(request):
             inicio = config.horario_semana_inicio
             fin_horario = config.horario_semana_fin
 
-        # Calcular turnos disponibles por hora
         total_turnos_disponibles = 0
         hora_actual = inicio
 
         while hora_actual < fin_horario:
-            # Total de turnos por hora (6 por hora)
-            turnos_por_hora = 6
+            ocupados = Turno.objects.filter(fecha=actual,
+                hora=hora_actual,
+                cliente__activo=True,
+                cliente__fecha_alta__lte=actual 
+                ).count()
 
-            # Turnos ocupados en esta hora
-            turnos_ocupados = Turno.objects.filter(fecha=actual, hora=hora_actual).count()
+            disponibles = 6 - ocupados
+            total_turnos_disponibles += disponibles
 
-            # Turnos disponibles en esta hora
-            turnos_disponibles = turnos_por_hora - turnos_ocupados
-            total_turnos_disponibles += turnos_disponibles
-
-            # Avanzar a la siguiente hora
             hora_actual = (datetime.combine(actual, hora_actual) + timedelta(hours=1)).time()
 
-        # Determinar el color del evento
         color = '#28a745' if total_turnos_disponibles > 0 else '#dc3545'
 
-        # Crear el evento
         eventos.append({
             'title': f'{total_turnos_disponibles} turnos disponibles' if total_turnos_disponibles > 0 else 'Sin turnos disponibles',
             'start': actual.isoformat(),
@@ -85,42 +78,58 @@ def disponibilidad_por_dia(request):
 
 @login_required
 def horarios_por_dia(request):
-    fecha_str = request.GET.get('fecha')  # Esperamos formato YYYY-MM-DD
+    fecha_str = request.GET.get('fecha')
+    cliente_id = request.GET.get('cliente_id')
+
     if not fecha_str:
         return JsonResponse({'error': 'Falta la fecha'}, status=400)
 
-    # Validar formato de la fecha
     try:
         fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
     except ValueError:
         return JsonResponse({'error': 'Formato de fecha inválido'}, status=400)
 
-    # Obtener configuración
     config = Configuracion.objects.first()
     if not config:
         return JsonResponse({'error': 'Configuración no encontrada'}, status=400)
 
-    # Determinar horarios según el día
-    es_sabado = fecha.weekday() == 5
-    inicio = config.horario_sabado_inicio if es_sabado else config.horario_semana_inicio
-    fin = config.horario_sabado_fin if es_sabado else config.horario_semana_fin
+    dia = fecha.weekday()
+    if dia == 5:
+        inicio = config.horario_sabado_inicio
+        fin = config.horario_sabado_fin
+    elif dia == 6:
+        inicio = config.horario_domingo_inicio
+        fin = config.horario_domingo_fin
+    else:
+        inicio = config.horario_semana_inicio
+        fin = config.horario_semana_fin
 
-    # Si no hay horarios configurados, devolver lista vacía
     if not inicio or not fin:
         return JsonResponse([], safe=False)
 
-    # Calcular horarios disponibles
     horarios = []
     hora_actual = inicio
 
     while hora_actual < fin:
-        cantidad = Turno.objects.filter(fecha=fecha, hora=hora_actual).count()
-        disponible = 6 - cantidad
+        turnos_qs = Turno.objects.filter(
+            fecha=fecha,
+            hora=hora_actual,
+            cliente__activo=True,
+            cliente__fecha_alta__lte=fecha  # 👈 solo clientes activos con fecha válida
+        )
+
+        if cliente_id:
+            turnos_qs = turnos_qs.exclude(cliente_id=cliente_id)
+
+        ocupados = turnos_qs.count()
+        disponibles = 6 - ocupados
+
         horarios.append({
             'hora': hora_actual.strftime('%H:%M'),
-            'disponibles': disponible,
-            'completo': disponible == 0
+            'disponibles': disponibles,
+            'completo': disponibles <= 0
         })
+
         hora_actual = (datetime.combine(fecha, hora_actual) + timedelta(hours=1)).time()
 
     return JsonResponse(horarios, safe=False)
@@ -132,10 +141,18 @@ def detalle_dia(request):
         return render(request, 'calendario/detalle_dia.html', {'error': 'Fecha no proporcionada'})
 
     fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
-    es_sabado = fecha.weekday() == 5
+    dia = fecha.weekday()
     config = Configuracion.objects.first()
-    inicio = config.horario_sabado_inicio if es_sabado else config.horario_semana_inicio
-    fin = config.horario_sabado_fin if es_sabado else config.horario_semana_fin
+
+    if dia == 5:
+        inicio = config.horario_sabado_inicio
+        fin = config.horario_sabado_fin
+    elif dia == 6:
+        inicio = config.horario_domingo_inicio
+        fin = config.horario_domingo_fin
+    else:
+        inicio = config.horario_semana_inicio
+        fin = config.horario_semana_fin
 
     grilla = []
     hora_actual = inicio
@@ -169,5 +186,3 @@ def detalle_dia(request):
         'fecha': fecha,
         'grilla': grilla
     })
-
-
