@@ -23,7 +23,7 @@
                 <td>{{ empleado.telefono }}</td>
                 <td>{{ empleado.fecha_alta }}</td>
                 <td>
-                    <a href="{% url 'detalle_empleado' empleado.pk %}" class="btn btn-outline-info btn-sm">Ver detalle</a>
+                    <a href="{% url 'detalle_empleado' empleado.pk %}" class="btn btn-outline-info btn-sm">Detalle</a>
                     <a href="{% url 'editar_empleado' empleado.pk %}" class="btn btn-outline-primary btn-sm">Editar</a>
                     <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ empleado.id }}">X</button>
                 </td>

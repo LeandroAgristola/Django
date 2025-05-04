@@ -188,18 +188,20 @@ label {
     background-color: rgb(255, 240, 240) !important;
   }
 
-/*Estilo para emplados*/
+/*Estilo para emplados y clientes*/
 
-#tarjetaEmpleado{
+#tarjetaEmpleado,
+#tarjetaCliente{
     background-color: #e3e5d7;
-    width: 500px;
+    width: 600px;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-#tarjetaEmpleado .btn{
+#tarjetaEmpleado,
+#tarjetaCliente .btn{
     border: none;
     width: 100%;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -212,7 +214,8 @@ label {
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-#tarjetaEmpleado .TextoEmpleado{
+#tarjetaEmpleado .TextoEmpleado,
+#tarjetaCliente .TextoCliente {
     font-size: 1rem;
     color: #3c4750;
     margin-bottom: 10px;
@@ -243,3 +246,11 @@ label {
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
+/*Estilo para el calendario*/
+
+#calendar {
+    background-color: #f6eddc;
+    padding: 20px;
+}
+

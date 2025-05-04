@@ -159,6 +159,20 @@ def confirmar_pago(request, cliente_id):
     return redirect('clientes:lista_clientes')
 
 @login_required
+def detalle_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    
+    dias = cliente.dias.split(',') if cliente.dias else []
+    horas = cliente.hora.split(',') if cliente.hora else []
+
+    turnos = zip(dias, horas)  # Creamos la lista de tuplas sin asignarla al objeto
+
+    return render(request, 'clientes/detalle_cliente.html', {
+        'cliente': cliente,
+        'turnos': turnos
+    })
+
+@login_required
 def asignar_turnos(request):
     print("TIPO DE USUARIO:", type(request.user))
     print("ATRIBUTOS:", dir(request.user))
@@ -183,7 +197,6 @@ def asignar_turnos(request):
         mail = request.POST.get('mail')
         estado = request.POST.get('estado')
 
-        # 👉 Intentamos recuperar la fecha de alta desde GET o POST
         fecha_str = request.GET.get('fecha_alta') or request.POST.get('fecha_alta')
         try:
             fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d") if fecha_str else datetime.today()
@@ -223,8 +236,7 @@ def asignar_turnos(request):
             cliente.fecha_alta = fecha_alta
             cliente.save()
             cliente.turnos.all().delete()
-
-        # ➔ Generar los turnos automáticos hacia el futuro
+            
         generar_turnos_futuros(cliente)
 
         messages.success(request, "Cliente y turnos asignados correctamente.")

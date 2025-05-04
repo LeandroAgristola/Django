@@ -71,8 +71,6 @@
         <tr>
           <th>Nombre y Apellido</th>
           <th>DNI</th>
-          <th>Telefono</th>
-          <th>Mail</th>
           <th>Tipo</th>
           <th>Plan</th>
           <th>Fecha Alta</th>
@@ -88,12 +86,11 @@
                         {% endif %}"><!-- Esta condicion consulta si el cliente es regular y si su estado es pendiente para sombrear -->
           <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
           <td>{{ cliente.dni }}</td>
-          <td>{{ cliente.telefono }}</td>
-          <td>{{ cliente.mail }}</td>
           <td>{{ cliente.get_tipo_display }}</td>
           <td>{{ cliente.plan }}</td>
           <td>{{ cliente.fecha_alta|date:"d/m/Y" }}</td> <!-- formateamos el campo a fecha_alta -->
           <td>
+            <a href="{% url 'clientes:detalle_cliente' cliente.id %}" class="btn btn-outline-info btn-sm">Detalle</a>
             <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-outline-primary btn-sm ">Editar</a>
             <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#desactivarClienteModal{{ cliente.id }}">X</button>
             {% if cliente.tipo == 'regular' and cliente.estado == 'pendiente' %}
@@ -132,7 +129,7 @@
         </div>
 
         {% empty %}
-        <tr><td colspan="8">No hay clientes cargados.</td></tr>
+        <tr><td colspan="6">No hay clientes cargados.</td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -146,8 +143,6 @@
         <tr>
           <th>Nombre y Apellido</th>
           <th>DNI</th>
-          <th>Telefono</th>
-          <th>Mail</th>
           <th>Tipo</th>
           <th>Plan</th>
           <th>Fecha Baja</th> 
@@ -158,8 +153,6 @@
         {% for cliente in clientes_inactivos %}
         <tr>
           <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
-          <td>{{ cliente.dni }}</td>
-          <td>{{ cliente.telefono }}</td>
           <td>{{ cliente.mail }}</td>
           <td>{{ cliente.get_tipo_display }}</td>
           <td>{{ cliente.plan }}</td>
@@ -219,7 +212,7 @@
           </div>
         </div>
         {% empty %}
-        <tr><td colspan="8">No hay clientes eliminados.</td></tr>
+        <tr><td colspan="6">No hay clientes eliminados.</td></tr>
         {% endfor %}
       </tbody>
     </table>

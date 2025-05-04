@@ -67,7 +67,7 @@ def disponibilidad_por_dia(request):
         color = '#28a745' if total_turnos_disponibles > 0 else '#dc3545'
 
         eventos.append({
-            'title': f'{total_turnos_disponibles} turnos disponibles' if total_turnos_disponibles > 0 else 'Sin turnos disponibles',
+            'title': f'{total_turnos_disponibles} Turnos' if total_turnos_disponibles > 0 else 'Sin turnos',
             'start': actual.isoformat(),
             'color': color,
         })

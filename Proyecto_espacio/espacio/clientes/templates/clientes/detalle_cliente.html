@@ -1,0 +1,29 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="tarjetaCliente">
+    <h2 class="text-center">Detalle del Cliente</h2>
+
+    <div class="card mt-3 p-3">
+        <p class="TextoCliente"><strong>Nombre:</strong> {{ cliente.nombre }} {{ cliente.apellido }}</p>
+        <p class="TextoCliente"><strong>DNI:</strong> {{ cliente.dni }}</p>
+        <p class="TextoCliente"><strong>Email:</strong> {{ cliente.mail }}</p>
+        <p class="TextoCliente"><strong>Teléfono:</strong> {{ cliente.telefono }}</p>
+        <p class="TextoCliente"><strong>Tipo:</strong> {{ cliente.get_tipo_display }}</p>
+        <p class="TextoCliente"><strong>Fecha de Alta:</strong> {{ cliente.fecha_alta|date:"d/m/Y" }}
+        <div class="TextoCliente">
+            <p><strong>Plan:</strong> {{ cliente.plan }}</p>
+            {% for dia, hora in turnos %}
+                <p>{{ dia|capfirst }} - {{ hora }} hs</p>
+            {% empty %}
+                <p>No tiene turnos asignados</p>
+            {% endfor %}
+        </div>
+
+
+        <div class="text-center mt-4">
+            <a href="{% url 'clientes:lista_clientes' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
