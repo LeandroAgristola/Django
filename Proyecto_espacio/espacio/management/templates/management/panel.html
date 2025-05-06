@@ -1,8 +1,61 @@
-{% extends 'management/layout_management.html' %}
+{% extends "management/layout_management.html" %}
+{% load static %}
 
 {% block content %}
-<div class="container">
-    <h2>Bienvenido al panel de administración</h2>
-    <p>Desde aquí podrás gestionar empleados, clientes, eventos y más.</p>
+<div class="container p-4">
+  <h2 class="text-2xl font-bold mb-4">Panel de Estadísticas</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Clientes: Altas vs Bajas -->
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h3 class="text-lg font-semibold mb-2">Clientes: Altas vs Bajas</h3>
+      <div class="flex gap-2 mb-2">
+        <button class="btn-range" data-range="1m">Último mes</button>
+        <button class="btn-range" data-range="3m">Últimos 3 meses</button>
+        <button class="btn-range" data-range="1y">Último año</button>
+      </div>
+      <canvas id="chartClientes"></canvas>
+      <p class="mt-2 text-sm text-gray-600" id="totalClientes">Total: --</p>
+    </div>
+
+    <!-- Calendario: Turnos ocupados por día -->
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h3 class="text-lg font-semibold mb-2">Calendario: Turnos por Día</h3>
+      <div class="flex gap-2 mb-2">
+        <button class="btn-range" data-range="1m">Último mes</button>
+        <button class="btn-range" data-range="3m">Últimos 3 meses</button>
+        <button class="btn-range" data-range="1y">Último año</button>
+      </div>
+      <canvas id="chartCalendario"></canvas>
+    </div>
+
+    <!-- Gente por Plan -->
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h3 class="text-lg font-semibold mb-2">Cantidad de Gente por Plan</h3>
+      <div class="flex gap-2 mb-2">
+        <button class="btn-range" data-range="1m">Último mes</button>
+        <button class="btn-range" data-range="3m">Últimos 3 meses</button>
+        <button class="btn-range" data-range="1y">Último año</button>
+      </div>
+      <canvas id="chartPlanes"></canvas>
+    </div>
+
+    <!-- Eventos: Cupos ocupados vs originales -->
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h3 class="text-lg font-semibold mb-2">Eventos: Participación</h3>
+      <div class="flex gap-2 mb-2">
+        <button class="btn-range" data-range="1m">Último mes</button>
+        <button class="btn-range" data-range="3m">Últimos 3 meses</button>
+        <button class="btn-range" data-range="1y">Último año</button>
+      </div>
+      <canvas id="chartEventos"></canvas>
+    </div>
+
+  </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'management/js/panel_estadisticas.js' %}"></script>
 {% endblock %}

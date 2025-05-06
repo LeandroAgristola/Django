@@ -24,3 +24,4 @@ def logout_view(request):
 @login_required(login_url='login')
 def panel(request):
     return render(request, 'management/panel.html')
+

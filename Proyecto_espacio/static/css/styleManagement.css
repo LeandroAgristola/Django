@@ -200,7 +200,7 @@ label {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-#tarjetaEmpleado,
+#tarjetaEmpleado .btn,
 #tarjetaCliente .btn{
     border: none;
     width: 100%;
@@ -254,3 +254,22 @@ label {
     padding: 20px;
 }
 
+/*Estilo para el panel de estadisticas*/
+
+.btn-range {
+    padding: 4px 10px;
+    background-color: #e2e8f0;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .btn-range:hover {
+    background-color: #cbd5e0;
+  }
+  
+  .btn-range.active {
+    background-color: #4ade80;
+    color: white;
+}

@@ -41,10 +41,6 @@ Pendientes calendario/clientes:
 
 
 
-Calendario muestra los turnos
-la grilla de turnos se decrementan correctamente
-si no hay turnos se muestra en 0 sin aplicacion
-El estado de "pendiente" debe estar por defecto al crear un cliente o reactivarlo
 
 
 🧠 Fase 4: Exportación a Excel

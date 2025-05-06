@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta, date
 from django.contrib import messages
 import json
+from django.http import JsonResponse
 
 @login_required
 def lista_clientes(request):
@@ -269,3 +270,26 @@ def generar_turnos_futuros(cliente):
                     Turno.objects.create(fecha=fecha_actual, hora=hora_dt, cliente=cliente)
 
         fecha_actual += timedelta(days=1)
+
+@login_required(login_url='login')
+def clientes_estadisticas(request):
+    rango = request.GET.get('rango', '1m')
+    hoy = datetime.now()
+
+    if rango == '3m':
+        desde = hoy - timedelta(days=90)
+    elif rango == '1y':
+        desde = hoy - timedelta(days=365)
+    else:
+        desde = hoy - timedelta(days=30)
+
+    altas = Cliente.objects.filter(fecha_alta__gte=desde).count()
+    bajas = Cliente.objects.filter(fecha_baja__gte=desde).count()
+    total_activos = Cliente.objects.filter(activo=True).count()
+
+    return JsonResponse({
+        'altas': altas,
+        'bajas': bajas,
+        'total_activos': total_activos,
+        'total_periodo': altas + bajas
+    })
