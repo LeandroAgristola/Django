@@ -5,6 +5,9 @@ from configuracion.models import Configuracion
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from calendar import monthrange
+from django.db.models import Count
+import calendar
+
 
 @login_required
 def vista_calendario(request):
@@ -185,4 +188,63 @@ def detalle_dia(request):
     return render(request, 'calendario/detalle_dia.html', {
         'fecha': fecha,
         'grilla': grilla
+    })
+
+
+@login_required
+def estadisticas_turnos(request):
+    hoy = date.today()
+    desde = hoy - timedelta(days=30)
+
+    config = Configuracion.objects.first()
+    if not config:
+        return JsonResponse({'error': 'No hay configuración'}, status=400)
+
+    dias_semana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
+    resultado = {dia.capitalize(): {'disponibles': 0, 'ocupados': 0} for dia in dias_semana}
+
+    total_disponibles = 0
+    total_ocupados = 0
+
+    for delta in range(30):
+        fecha = hoy - timedelta(days=delta)
+        dia_index = fecha.weekday()  # 0 = lunes
+        dia_nombre = dias_semana[dia_index]
+        
+        if dia_nombre not in config.dias_habilitados:
+            continue
+
+        # Obtener horario según el día
+        if dia_nombre == 'sabado':
+            inicio = config.horario_sabado_inicio
+            fin = config.horario_sabado_fin
+        elif dia_nombre == 'domingo':
+            inicio = config.horario_domingo_inicio
+            fin = config.horario_domingo_fin
+        else:
+            inicio = config.horario_semana_inicio
+            fin = config.horario_semana_fin
+
+        if not inicio or not fin:
+            continue
+
+        horas = int((datetime.combine(fecha, fin) - datetime.combine(fecha, inicio)).seconds / 3600)
+        posibles_turnos = horas * 6
+
+        ocupados = Turno.objects.filter(fecha=fecha).count()
+        disponibles = max(posibles_turnos - ocupados, 0)
+
+        dia_clave = dia_nombre.capitalize()
+        resultado[dia_clave]['ocupados'] += ocupados
+        resultado[dia_clave]['disponibles'] += disponibles
+
+        total_ocupados += ocupados
+        total_disponibles += disponibles
+
+    return JsonResponse({
+        'labels': list(resultado.keys()),
+        'ocupados': [resultado[d]['ocupados'] for d in resultado],
+        'disponibles': [resultado[d]['disponibles'] for d in resultado],
+        'total_ocupados': total_ocupados,
+        'total_disponibles': total_disponibles,
     })
