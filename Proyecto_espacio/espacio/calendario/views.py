@@ -190,61 +190,98 @@ def detalle_dia(request):
         'grilla': grilla
     })
 
-
 @login_required
 def estadisticas_turnos(request):
+    rango = request.GET.get('rango', 'actual')  # 'actual' o 'siguiente'
     hoy = date.today()
-    desde = hoy - timedelta(days=30)
+    
+    # Configuración de rangos de fechas
+    if rango == 'siguiente':
+        primer_dia_prox_mes = (hoy.replace(day=28) + timedelta(days=4))  # Ir al día 28+4=32 para asegurar próximo mes
+        fecha_inicio = primer_dia_prox_mes.replace(day=1)
+        ultimo_dia_prox_mes = ((fecha_inicio.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1))
+        fecha_fin = ultimo_dia_prox_mes
+    else:
+        fecha_inicio = hoy.replace(day=1)
+        ultimo_dia_mes = ((fecha_inicio.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1))
+        fecha_fin = ultimo_dia_mes
 
     config = Configuracion.objects.first()
     if not config:
         return JsonResponse({'error': 'No hay configuración'}, status=400)
 
-    dias_semana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
-    resultado = {dia.capitalize(): {'disponibles': 0, 'ocupados': 0} for dia in dias_semana}
+    # Mapeo de días en español (atención a tildes)
+    dias_semana_esp = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    dias_semana_config = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
+    
+    datos = {
+        'labels': [],
+        'ocupados': [],
+        'disponibles': [],
+        'maximos': []
+    }
 
-    total_disponibles = 0
-    total_ocupados = 0
-
-    for delta in range(30):
-        fecha = hoy - timedelta(days=delta)
-        dia_index = fecha.weekday()  # 0 = lunes
-        dia_nombre = dias_semana[dia_index]
-        
-        if dia_nombre not in config.dias_habilitados:
+    for i, (dia_esp, dia_config) in enumerate(zip(dias_semana_esp, dias_semana_config)):
+        if dia_config not in config.dias_habilitados:
             continue
 
-        # Obtener horario según el día
-        if dia_nombre == 'sabado':
-            inicio = config.horario_sabado_inicio
-            fin = config.horario_sabado_fin
-        elif dia_nombre == 'domingo':
-            inicio = config.horario_domingo_inicio
-            fin = config.horario_domingo_fin
+        # Obtener horario configurado
+        if dia_config == 'sabado':
+            hora_inicio = config.horario_sabado_inicio
+            hora_fin = config.horario_sabado_fin
+        elif dia_config == 'domingo':
+            hora_inicio = config.horario_domingo_inicio
+            hora_fin = config.horario_domingo_fin
         else:
-            inicio = config.horario_semana_inicio
-            fin = config.horario_semana_fin
+            hora_inicio = config.horario_semana_inicio
+            hora_fin = config.horario_semana_fin
 
-        if not inicio or not fin:
+        if not hora_inicio or not hora_fin:
             continue
 
-        horas = int((datetime.combine(fecha, fin) - datetime.combine(fecha, inicio)).seconds / 3600)
-        posibles_turnos = horas * 6
+        # Calcular turnos máximos teóricos
+        horas_apertura = (datetime.combine(hoy, hora_fin) - datetime.combine(hoy, hora_inicio)).seconds / 3600
+        turnos_maximos = int(horas_apertura) * 6  # 6 turnos por hora
 
-        ocupados = Turno.objects.filter(fecha=fecha).count()
-        disponibles = max(posibles_turnos - ocupados, 0)
+        # Calcular turnos ocupados REALES (no promedios)
+        turnos_ocupados = Turno.objects.filter(
+            fecha__gte=fecha_inicio,
+            fecha__lte=fecha_fin,
+            fecha__week_day=(i+2) if (i+2) <=7 else 1,  # Ajuste para semana Django (1=domingo)
+            cliente__activo=True
+        ).count()
 
-        dia_clave = dia_nombre.capitalize()
-        resultado[dia_clave]['ocupados'] += ocupados
-        resultado[dia_clave]['disponibles'] += disponibles
+        # Contar cuántas veces aparece este día en el rango
+        delta = fecha_fin - fecha_inicio
+        cantidad_dias = sum(1 for d in (fecha_inicio + timedelta(n) for n in range(delta.days + 1)) 
+                          if d.weekday() == i)
+        
+        if cantidad_dias == 0:
+            continue
 
-        total_ocupados += ocupados
-        total_disponibles += disponibles
+        # Calcular disponibilidad diaria promedio
+        ocupados_promedio = turnos_ocupados / cantidad_dias
+        disponibles_promedio = turnos_maximos - ocupados_promedio
+
+        datos['labels'].append(dia_esp)
+        datos['ocupados'].append(round(ocupados_promedio))
+        datos['disponibles'].append(round(disponibles_promedio))
+        datos['maximos'].append(turnos_maximos)
 
     return JsonResponse({
-        'labels': list(resultado.keys()),
-        'ocupados': [resultado[d]['ocupados'] for d in resultado],
-        'disponibles': [resultado[d]['disponibles'] for d in resultado],
-        'total_ocupados': total_ocupados,
-        'total_disponibles': total_disponibles,
+        'labels': datos['labels'],
+        'datasets': [
+            {
+                'label': 'Ocupados',
+                'data': datos['ocupados'],
+                'backgroundColor': '#3b82f6'
+            },
+            {
+                'label': 'Disponibles',
+                'data': datos['disponibles'],
+                'backgroundColor': '#10b981'
+            }
+        ],
+        'maximos': datos['maximos'],
+        'rango': f"{fecha_inicio.strftime('%d/%m/%Y')} - {fecha_fin.strftime('%d/%m/%Y')}"
     })

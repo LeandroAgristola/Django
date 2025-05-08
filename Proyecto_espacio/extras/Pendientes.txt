@@ -33,13 +33,15 @@ planes: maneja la carga y edición de planes regulares
 webPublic: muestra la información del espacio al publico 
 calendario: gestión de horarios de los clientes 
 
-Pendientes calendario/clientes:
+Pendientes 
 
+    Modificar estilo de seleccion de turnos.
+    El formulario de reactivacion no toma la fecha cargada en el modal
     Enviar JS a archivos externos
     El formulario no debe enviarse si no se carga el turno
     EL formulario no se debe enviar si no se carga la fecha
 
-
+Corregir error en timeZone
 
 
 

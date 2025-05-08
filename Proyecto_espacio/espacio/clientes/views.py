@@ -125,14 +125,9 @@ def desactivar_cliente(request, cliente_id):
 @login_required
 def reactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    
     if request.method == 'POST':
-        # Solo preparamos el cliente para reactivación pero NO lo guardamos
         cliente.activo = True
-        fecha_str = request.POST.get('fecha_alta')
-        cliente.fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d") if fecha_str else datetime.today()
-        cliente.estado = 'pendiente'
-        cliente.plan = None
+        cliente.fecha_baja = None  # Limpiamos la fecha de baja
         cliente.save()
         
         # Redirigir a la vista de edición con los datos precargados
@@ -271,25 +266,58 @@ def generar_turnos_futuros(cliente):
 
         fecha_actual += timedelta(days=1)
 
-@login_required(login_url='login')
+@login_required
 def clientes_estadisticas(request):
-    rango = request.GET.get('rango', '1m')
-    hoy = datetime.now()
-
-    if rango == '3m':
-        desde = hoy - timedelta(days=90)
-    elif rango == '1y':
-        desde = hoy - timedelta(days=365)
-    else:
-        desde = hoy - timedelta(days=30)
-
-    altas = Cliente.objects.filter(fecha_alta__gte=desde).count()
-    bajas = Cliente.objects.filter(fecha_baja__gte=desde).count()
-    total_activos = Cliente.objects.filter(activo=True).count()
+    hoy = timezone.now().date()
+    año_actual = hoy.year
+    
+    # Definimos el rango completo del año calendario
+    fecha_inicio = date(año_actual, 1, 1)
+    fecha_fin = date(año_actual, 12, 31)
+    
+    # Nombres de los meses en español
+    meses_espanol = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ]
+    
+    datos = []
+    for mes in range(1, 13):
+        mes_inicio = date(año_actual, mes, 1)
+        mes_fin = date(año_actual, mes+1, 1) if mes < 12 else date(año_actual+1, 1, 1)
+        
+        # Altas: nuevos clientes en el mes
+        altas_nuevos = Cliente.objects.filter(
+            fecha_alta__gte=mes_inicio, 
+            fecha_alta__lt=mes_fin
+        ).count()
+        
+        # Reactivaciones en el mes (usando el campo modificado como proxy)
+        reactivaciones = Cliente.objects.filter(
+            activo=True,
+            modificado__gte=mes_inicio,
+            modificado__lt=mes_fin,
+            fecha_baja__isnull=False
+        ).count()
+        
+        altas = altas_nuevos + reactivaciones
+        
+        # Bajas: desactivados + eliminados en el mes
+        bajas = Cliente.objects.filter(
+            Q(fecha_baja__gte=mes_inicio, fecha_baja__lt=mes_fin) |
+            Q(activo=False, modificado__gte=mes_inicio, modificado__lt=mes_fin)
+        ).distinct().count()
+        
+        datos.append({
+            'mes': meses_espanol[mes-1],
+            'altas': altas,
+            'bajas': bajas
+        })
 
     return JsonResponse({
-        'altas': altas,
-        'bajas': bajas,
-        'total_activos': total_activos,
-        'total_periodo': altas + bajas
+        'labels': [d['mes'] for d in datos],
+        'altas': [d['altas'] for d in datos],
+        'bajas': [d['bajas'] for d in datos],
+        'total_activos': Cliente.objects.filter(activo=True).count(),
+        'año': año_actual
     })

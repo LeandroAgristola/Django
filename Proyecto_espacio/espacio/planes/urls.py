@@ -10,4 +10,5 @@ urlpatterns = [
     path('desactivar/<int:pk>/', views.desactivar_plan, name='desactivar_plan'),
     path('reactivar/<int:pk>/', views.reactivar_plan, name='reactivar_plan'),
     path('eliminar/<int:pk>/', views.eliminar_plan, name='eliminar_plan'),
+    path('estadisticas/', views.estadisticas_planes, name='estadisticas_planes'),
 ]

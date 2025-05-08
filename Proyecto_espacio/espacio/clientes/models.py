@@ -1,5 +1,6 @@
 from django.db import models
 from planes.models import Plan
+from django.utils import timezone
 
 class Cliente(models.Model):
     TIPO_CHOICES = [('regular', 'Regular'), ('eventual', 'Eventual')]
@@ -16,8 +17,11 @@ class Cliente(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES,)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     activo = models.BooleanField(default=True)
-    fecha_alta = models.DateTimeField(null=True, blank=True)
+    fecha_alta = models.DateTimeField(default=timezone.now)
     fecha_baja = models.DateTimeField(null=True, blank=True)
+    modificado = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.dni})"
+    

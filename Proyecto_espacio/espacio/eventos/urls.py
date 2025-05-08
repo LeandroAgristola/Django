@@ -15,5 +15,6 @@ urlpatterns = [
     path('confirmar-pago/<int:inscripcion_id>/', views.confirmar_pago_evento, name='confirmar_pago_evento'),
     path('eliminar-inscripcion/<int:inscripcion_id>/', views.eliminar_inscripcion, name='eliminar_inscripcion'),
     path('exportar-inscriptos/<int:evento_id>/', views.exportar_inscriptos_pdf, name='exportar_inscriptos_pdf'),
+    path('estadisticas/', views.estadisticas_eventos, name='estadisticas_eventos'),
 
 ]

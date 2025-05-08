@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Plan
 from .forms import PlanForm
+from django.http import JsonResponse
 
 
 @login_required
@@ -60,3 +61,22 @@ def eliminar_plan(request, pk):
         plan.delete()
         return redirect('planes:lista_planes')
     return render(request, 'planes/confirmar_eliminar.html', {'plan': plan})
+
+@login_required
+def estadisticas_planes(request):
+    planes = Plan.objects.filter(activo=True)
+    datos = []
+    
+    for plan in planes:
+        count = plan.cliente_set.filter(activo=True).count()
+        if count > 0:  # Solo mostramos planes con clientes
+            datos.append({
+                'plan': plan.nombre,
+                'clientes': count
+            })
+    
+    return JsonResponse({
+        'labels': [d['plan'] for d in datos],
+        'data': [d['clientes'] for d in datos],
+        'total': sum([d['clientes'] for d in datos])
+    })

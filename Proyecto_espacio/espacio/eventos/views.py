@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from .forms import EventoForm, InscribirClienteForm
 from .models import InscripcionEvento, Evento
 from clientes.models import Cliente
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from datetime import date
 #importaciones para exportar pdf
@@ -280,3 +280,39 @@ def exportar_inscriptos_pdf(request, evento_id):
     c.save()
 
     return response
+
+@login_required
+def estadisticas_eventos(request):
+    rango = request.GET.get('rango', '3m')  # Por defecto últimos 3 meses
+    
+    hoy = timezone.now().date()
+    if rango == '1m':
+        desde = hoy - timedelta(days=30)
+    elif rango == '1y':
+        desde = hoy - timedelta(days=365)
+    else:  # 3m por defecto
+        desde = hoy - timedelta(days=90)
+
+    # Obtenemos eventos finalizados en el rango seleccionado
+    eventos = Evento.objects.filter(
+        fecha__gte=desde,
+        fecha__lte=hoy
+    ).order_by('-fecha')
+
+    data = {
+        'labels': [],
+        'cupos': [],
+        'inscriptos': [],
+        'porcentajes': []
+    }
+
+    for evento in eventos:
+        inscriptos = evento.inscripcionevento_set.count()
+        porcentaje = (inscriptos / evento.cupos) * 100 if evento.cupos > 0 else 0
+        
+        data['labels'].append(evento.titulo[:20] + ('...' if len(evento.titulo) > 20 else ''))
+        data['cupos'].append(evento.cupos)
+        data['inscriptos'].append(inscriptos)
+        data['porcentajes'].append(round(porcentaje))
+
+    return JsonResponse(data)
