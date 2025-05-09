@@ -283,36 +283,46 @@ def exportar_inscriptos_pdf(request, evento_id):
 
 @login_required
 def estadisticas_eventos(request):
-    rango = request.GET.get('rango', '3m')  # Por defecto últimos 3 meses
+    rango = request.GET.get('rango', '4')  # Por defecto últimos 4 eventos
     
     hoy = timezone.now().date()
-    if rango == '1m':
-        desde = hoy - timedelta(days=30)
-    elif rango == '1y':
-        desde = hoy - timedelta(days=365)
-    else:  # 3m por defecto
-        desde = hoy - timedelta(days=90)
-
-    # Obtenemos eventos finalizados en el rango seleccionado
+    
+    # Obtenemos eventos finalizados (incluyendo los desactivados)
     eventos = Evento.objects.filter(
-        fecha__gte=desde,
         fecha__lte=hoy
-    ).order_by('-fecha')
+    ).order_by('-fecha', '-hora')
+    
+    # Filtramos por cantidad de eventos según el rango
+    if rango.isdigit():
+        eventos = eventos[:int(rango)]
+    else:
+        eventos = eventos[:4]  # Valor por defecto
 
     data = {
         'labels': [],
         'cupos': [],
         'inscriptos': [],
-        'porcentajes': []
+        'porcentajes': [],
+        'promedio_ocupacion': 0,
+        'cancelados': 0
     }
 
+    total_porcentaje = 0
     for evento in eventos:
         inscriptos = evento.inscripcionevento_set.count()
         porcentaje = (inscriptos / evento.cupos) * 100 if evento.cupos > 0 else 0
+        total_porcentaje += porcentaje
         
         data['labels'].append(evento.titulo[:20] + ('...' if len(evento.titulo) > 20 else ''))
         data['cupos'].append(evento.cupos)
         data['inscriptos'].append(inscriptos)
         data['porcentajes'].append(round(porcentaje))
+        
+        if not evento.estado:
+            data['cancelados'] += 1
+
+    # Calculamos el promedio de ocupación
+    if eventos:
+        data['promedio_ocupacion'] = round(total_porcentaje / len(eventos))
 
     return JsonResponse(data)

@@ -34,9 +34,9 @@ webPublic: muestra la información del espacio al publico
 calendario: gestión de horarios de los clientes 
 
 Pendientes 
-
-    Modificar estilo de seleccion de turnos.
     El formulario de reactivacion no toma la fecha cargada en el modal
+    al editar no se toma la fecha de alta del cliente si o si hay q cargarla nuevamente
+    Al cancelar un formulario de edicion de cliente nos redireje a un formulario vacio de crear nuevo cliente
     Enviar JS a archivos externos
     El formulario no debe enviarse si no se carga el turno
     EL formulario no se debe enviar si no se carga la fecha

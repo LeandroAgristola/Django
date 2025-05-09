@@ -3,34 +3,43 @@
 
 <div class="container my-4">
   <h3>Asignar Turnos para <strong>{{ plan.nombre }}</strong></h3>
-  <p>Seleccioná <strong>{{ plan.cantidad_dias }}</strong> días de la semana para asignar turnos.</p>
+  <p>Seleccioná <strong>{{ plan.cantidad_dias }}</strong> días de la semana y sus horarios.</p>
 
   <form method="post" id="formTurnos">
     {% csrf_token %}
     <input type="hidden" name="plan_id" value="{{ plan.id }}">
-    <input type="hidden" name="nombre" value="{{ request.GET.nombre }}">
-    <input type="hidden" name="apellido" value="{{ request.GET.apellido }}">
-    <input type="hidden" name="dni" value="{{ request.GET.dni }}">
-    <input type="hidden" name="telefono" value="{{ request.GET.telefono }}">
-    <input type="hidden" name="mail" value="{{ request.GET.mail }}">
-    <input type="hidden" name="estado" value="{{ request.GET.estado }}">
+    <!-- otros campos ocultos... -->
 
-    <div class="row">
-      {% for dia in dias_semana %}
-      <div class="col-md-4 mb-3">
-        <div class="card h-100 text-center shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title text-capitalize">{{ dia }}</h5>
-            <div id="horarios-{{ dia }}" class="d-flex flex-column gap-2">
-              <small class="text-muted">Cargando horarios...</small>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
+    <div id="seleccionTurnos">
+      <!-- Aquí se agregarán dinámicamente los selects -->
     </div>
 
-    <div id="turnosSeleccionados" class="mt-4"></div>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <label for="selectDia" class="form-label">Día de la semana</label>
+        <select class="form-select" id="selectDia">
+          <option value="">Seleccionar día...</option>
+          {% for dia in dias_semana %}
+          <option value="{{ dia }}">{{ dia|title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="selectHora" class="form-label">Horario</label>
+        <select class="form-select" id="selectHora" disabled>
+          <option value="">Primero seleccione un día</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="button" id="btnAgregar" class="btn btn-primary mt-2" disabled>
+      Agregar Turno
+    </button>
+
+    <div id="turnosSeleccionados" class="mt-4">
+      <h5>Turnos seleccionados:</h5>
+      <ul class="list-group" id="listaTurnos"></ul>
+    </div>
 
     <button type="submit" class="btn btn-success mt-3 d-none" id="btnConfirmar">Confirmar Turnos</button>
     <a href="{% url 'clientes:crear_cliente' %}" class="btn btn-secondary mt-3">Cancelar</a>
@@ -44,82 +53,134 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form         = document.getElementById('formTurnos');
+    const form = document.getElementById('formTurnos');
+    const selectDia = document.getElementById('selectDia');
+    const selectHora = document.getElementById('selectHora');
+    const btnAgregar = document.getElementById('btnAgregar');
     const btnConfirmar = document.getElementById('btnConfirmar');
-    const seleccionados= new Set();
-    const maxDias      = {{ plan.cantidad_dias }};
-    const diasSemana   = JSON.parse(document.getElementById('diasSemanaJSON').textContent);
-
+    const listaTurnos = document.getElementById('listaTurnos');
+    const maxDias = {{ plan.cantidad_dias }};
+    const seleccionados = new Set();
+    
+    // Mapeo de días a índices para calcular fechas
     const diasIndices = { lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0 };
 
-    diasSemana.forEach(dia => {
-      let hoy       = new Date();
-      let hoyIdx    = hoy.getDay();
-      let targetIdx = diasIndices[dia];
-      let diff      = (targetIdx - hoyIdx + 7) % 7;
-      let fecha     = new Date(hoy.setDate(hoy.getDate() + diff));
-      let fechaStr  = fecha.toISOString().slice(0,10);
-
-      fetch(`/management/calendario/horarios/?fecha=${fechaStr}`)
-        .then(r => {
-          if (!r.ok) throw new Error(`Error al cargar ${dia}`);
-          return r.json();
-        })
-        .then(data => {
-          let cont = document.getElementById(`horarios-${dia}`);
-          cont.innerHTML = '';
-          if (!data.length) {
-            cont.innerHTML = '<span class="badge bg-danger">Sin horarios</span>';
+    // Cuando se selecciona un día, cargar sus horarios
+    selectDia.addEventListener('change', function() {
+        const dia = this.value;
+        if (!dia) {
+            selectHora.disabled = true;
+            selectHora.innerHTML = '<option value="">Primero seleccione un día</option>';
+            btnAgregar.disabled = true;
             return;
-          }
-          data.forEach(h => {
-            let btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = `btn btn-sm ${h.completo ? 'btn-secondary disabled' : 'btn-outline-success'}`;
-            btn.innerText  = `${h.hora} (${h.disponibles})`;
-            if (!h.completo) {
-              btn.onclick = () => {
-                if (seleccionados.size >= maxDias && !btn.classList.contains('active')) {
-                  alert(`Solo podés ${maxDias} turnos`);
-                  return;
-                }
-                btn.classList.toggle('active');
-                if (btn.classList.contains('active')) {
-                  seleccionados.add(`${dia}|${h.hora}`);
-                  crearInput(dia, h.hora, fechaStr);
-                } else {
-                  seleccionados.delete(`${dia}|${h.hora}`);
-                  eliminarInput(dia, h.hora);
-                }
-                btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
-              };
-            }
-            cont.appendChild(btn);
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById(`horarios-${dia}`)
-            .innerHTML = '<span class="badge bg-danger">Error al cargar</span>';
-        });
+        }
+        
+        // Calcular fecha del próximo día seleccionado
+        const hoy = new Date();
+        const hoyIdx = hoy.getDay();
+        const targetIdx = diasIndices[dia];
+        const diff = (targetIdx - hoyIdx + 7) % 7;
+        const fecha = new Date(hoy.setDate(hoy.getDate() + diff));
+        const fechaStr = fecha.toISOString().slice(0,10);
+        
+        // Cargar horarios disponibles
+        fetch(`/management/calendario/horarios/?fecha=${fechaStr}`)
+            .then(response => response.json())
+            .then(horarios => {
+                selectHora.innerHTML = '<option value="">Seleccionar horario...</option>';
+                
+                horarios.forEach(hora => {
+                    const option = document.createElement('option');
+                    option.value = hora.hora;
+                    option.textContent = `${hora.hora} (${hora.disponibles} disponibles)`;
+                    option.disabled = hora.completo;
+                    selectHora.appendChild(option);
+                });
+                
+                selectHora.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error al cargar horarios:', error);
+                selectHora.innerHTML = '<option value="">Error al cargar horarios</option>';
+            });
     });
-
-    function crearInput(dia, hora, fechaStr) {
-      let i1 = document.createElement('input');
-      i1.type = 'hidden';  i1.name = 'dias[]';  i1.value = dia; 
-      i1.id = `dia-${dia}-${hora}`;
-
-      let i2 = document.createElement('input');
-      i2.type = 'hidden';  i2.name = 'horas[]';  i2.value = hora;
-      i2.id = `hora-${dia}-${hora}`;
-
-      form.append(i1, i2);
-    }
-
-    function eliminarInput(dia, hora) {
-      document.getElementById(`dia-${dia}-${hora}`)?.remove();
-      document.getElementById(`hora-${dia}-${hora}`)?.remove();
-    }
+    
+    // Habilitar botón agregar cuando haya selección válida
+    selectHora.addEventListener('change', function() {
+        btnAgregar.disabled = !this.value;
+    });
+    
+    // Agregar turno a la lista
+    btnAgregar.addEventListener('click', function() {
+        const dia = selectDia.value;
+        const hora = selectHora.value;
+        const key = `${dia}|${hora}`;
+        
+        if (seleccionados.size >= maxDias && !seleccionados.has(key)) {
+            alert(`Solo puede seleccionar ${maxDias} turnos`);
+            return;
+        }
+        
+        if (!seleccionados.has(key)) {
+            // Agregar a la lista visual
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+            li.innerHTML = `
+                ${dia.charAt(0).toUpperCase() + dia.slice(1)} a las ${hora}
+                <button type="button" class="btn btn-sm btn-danger quitar-turno" data-key="${key}">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            listaTurnos.appendChild(li);
+            
+            // Agregar inputs ocultos al formulario
+            const inputDia = document.createElement('input');
+            inputDia.type = 'hidden';
+            inputDia.name = 'dias[]';
+            inputDia.value = dia;
+            form.appendChild(inputDia);
+            
+            const inputHora = document.createElement('input');
+            inputHora.type = 'hidden';
+            inputHora.name = 'horas[]';
+            inputHora.value = hora;
+            form.appendChild(inputHora);
+            
+            seleccionados.add(key);
+        }
+        
+        // Resetear selects
+        selectDia.value = '';
+        selectHora.value = '';
+        selectHora.disabled = true;
+        btnAgregar.disabled = true;
+        
+        // Mostrar botón confirmar si se alcanzó el máximo
+        btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
+    });
+    
+    // Eliminar turno de la lista
+    listaTurnos.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quitar-turno') || e.target.closest('.quitar-turno')) {
+            const btn = e.target.classList.contains('quitar-turno') ? e.target : e.target.closest('.quitar-turno');
+            const key = btn.dataset.key;
+            
+            // Eliminar de la lista visual
+            btn.closest('li').remove();
+            
+            // Eliminar inputs ocultos
+            const [dia, hora] = key.split('|');
+            document.querySelectorAll(`input[name="dias[]"][value="${dia}"]`).forEach(el => {
+                if (el.nextElementSibling?.name === 'horas[]' && el.nextElementSibling.value === hora) {
+                    el.remove();
+                    el.nextElementSibling.remove();
+                }
+            });
+            
+            seleccionados.delete(key);
+            btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
+        }
+    });
 });
 </script>
 {% endblock %}

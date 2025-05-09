@@ -49,8 +49,7 @@ function cargarEstadisticasClientes() {
                                 }
                             },
                             title: { 
-                                display: true, 
-                                text: `Movimiento de Clientes - Año ${data.año}`
+                                display: false, 
                             },
                             tooltip: {
                                 callbacks: {
@@ -116,8 +115,7 @@ function cargarEstadisticasClientes() {
                             plugins: {
                                 legend: { position: 'top' },
                                 title: { 
-                                    display: true, 
-                                    text: `Disponibilidad Diaria (${data.rango})`
+                                    display: false, 
                                 },
                                 tooltip: {
                                     callbacks: {
@@ -156,80 +154,120 @@ function cargarEstadisticasClientes() {
     }
 
     // Agregar botones de filtro
-    document.querySelectorAll('.btn-calendario-range').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.btn-calendario-range').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            cargarEstadisticasCalendario(this.dataset.range);
+    document.querySelectorAll('#chartCalendario').forEach(chart => {
+        chart.closest('.chart-panel').querySelectorAll('[data-range]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#chartCalendario').forEach(chart => {
+                    chart.closest('.chart-panel').querySelectorAll('[data-range]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                });
+                this.classList.add('active');
+                cargarEstadisticasCalendario(this.dataset.range);
+            });
         });
     });
 
     cargarEstadisticasCalendario();
 
-    // ===================== PLANES =====================
-    const chartPlanesCtx = document.getElementById('chartPlanes').getContext('2d');
-    let chartPlanes;
+// ===================== PLANES =====================
+const chartPlanesCtx = document.getElementById('chartPlanes').getContext('2d');
+let chartPlanes;
 
-    function cargarEstadisticasPlanes() {
-        fetch('/management/planes/estadisticas/')
-            .then(res => res.json())
-            .then(data => {
-                if (chartPlanes) {
-                    chartPlanes.data.labels = data.labels;
-                    chartPlanes.data.datasets[0].data = data.data;
-                    chartPlanes.update();
-                } else {
-                    chartPlanes = new Chart(chartPlanesCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: 'Clientes',
-                                data: data.data,
-                                backgroundColor: [
-                                    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
-                                    '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { position: 'right' },
-                                title: { 
-                                    display: true, 
-                                    text: 'Distribución de Clientes por Plan'
+function cargarEstadisticasPlanes() {
+    fetch('/management/planes/estadisticas/')
+        .then(res => res.json())
+        .then(data => {
+            if (chartPlanes) {
+                chartPlanes.data.labels = data.labels;
+                chartPlanes.data.datasets[0].data = data.data;
+                chartPlanes.update();
+            } else {
+                chartPlanes = new Chart(chartPlanesCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Clientes',
+                            data: data.data,
+                            backgroundColor: [
+                                '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+                                '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
+                            ],
+                            borderWidth: 1,
+                            borderColor: '#e3e5d7'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        devicePixelRatio: 2,
+                        plugins: {
+                            legend: { 
+                                position: 'right',
+                                align: 'center',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 16,
+                                    font: {
+                                        size: 11,
+                                        family: "'Segoe UI', sans-serif"
+                                    },
+                                    usePointStyle: true
+                                }
+                            },
+                            // Eliminamos el título del plugin
+                            title: { 
+                                display: false // Desactivamos el título interno
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    footer: (context) => `Total: ${data.total} clientes`
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        footer: (context) => 
-                                            `Total: ${data.total} clientes`
-                                    }
+                                bodyFont: {
+                                    size: 15,
+                                    family: "'Segoe UI', sans-serif"
                                 }
                             }
+                        },
+                        layout: {
+                            padding: {
+                                top: 0,  // Reducimos el padding superior
+                                right: 10,
+                                bottom: 0, // Reducimos el padding inferior
+                                left: 10
+                            }
+                        },
+                        elements: {
+                            arc: {
+                                borderWidth: 1,
+                                borderAlign: 'center'
+                            }
                         }
-                    });
-                }
-            });
-    }
+                    }
+                });
+            }
+        });
+}
 
-    // Llamar a la función al cargar
-    cargarEstadisticasPlanes();
+cargarEstadisticasPlanes();
 
 // ===================== EVENTOS =====================
     const chartEventosCtx = document.getElementById('chartEventos').getContext('2d');
     let chartEventos;
 
-    function cargarEstadisticasEventos(rango = '3m') {
+    function cargarEstadisticasEventos(rango = '4') {
         fetch(`/management/eventos/estadisticas/?rango=${rango}`)
             .then(res => res.json())
             .then(data => {
+                // Actualizar indicadores
+                document.getElementById('cancelados').textContent = data.cancelados;
+                document.getElementById('promedio').textContent = data.promedio_ocupacion;
+
                 if (chartEventos) {
                     chartEventos.data.labels = data.labels;
                     chartEventos.data.datasets[0].data = data.cupos;
                     chartEventos.data.datasets[1].data = data.inscriptos;
-                    chartEventos.data.datasets[2].data = data.porcentajes;
                     chartEventos.update();
                 } else {
                     chartEventos = new Chart(chartEventosCtx, {
@@ -242,37 +280,26 @@ function cargarEstadisticasClientes() {
                                     data: data.cupos,
                                     backgroundColor: 'rgba(59, 130, 246, 0.7)',
                                     borderColor: 'rgba(59, 130, 246, 1)',
-                                    borderWidth: 1,
-                                    yAxisID: 'y'
+                                    borderWidth: 1
                                 },
                                 {
                                     label: 'Inscriptos',
                                     data: data.inscriptos,
                                     backgroundColor: 'rgba(16, 185, 129, 0.7)',
                                     borderColor: 'rgba(16, 185, 129, 1)',
-                                    borderWidth: 1,
-                                    yAxisID: 'y'
-                                },
-                                {
-                                    label: 'Ocupación (%)',
-                                    data: data.porcentajes,
-                                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                                    borderColor: 'rgba(249, 115, 22, 1)',
-                                    borderWidth: 2,
-                                    type: 'line',
-                                    yAxisID: 'y1'
+                                    borderWidth: 1
                                 }
                             ]
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: true,
                             plugins: {
                                 legend: { 
                                     position: 'top',
                                 },
                                 title: { 
-                                    display: true, 
-                                    text: 'Concurrencia a Eventos'
+                                    display: false, 
                                 },
                                 tooltip: {
                                     callbacks: {
@@ -285,27 +312,10 @@ function cargarEstadisticasClientes() {
                             },
                             scales: {
                                 y: {
-                                    type: 'linear',
-                                    display: true,
-                                    position: 'left',
+                                    beginAtZero: true,
                                     title: {
                                         display: true,
                                         text: 'Cantidad de personas'
-                                    },
-                                    beginAtZero: true
-                                },
-                                y1: {
-                                    type: 'linear',
-                                    display: true,
-                                    position: 'right',
-                                    title: {
-                                        display: true,
-                                        text: 'Porcentaje de ocupación'
-                                    },
-                                    min: 0,
-                                    max: 100,
-                                    grid: {
-                                        drawOnChartArea: false
                                     }
                                 }
                             }
@@ -319,7 +329,11 @@ function cargarEstadisticasClientes() {
     document.querySelectorAll('#chartEventos').forEach(chart => {
         chart.closest('.col-md-6').querySelectorAll('[data-range]').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('#chartEventos').forEach(chart => {
+                    chart.closest('.col-md-6').querySelectorAll('[data-range]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                });
                 this.classList.add('active');
                 cargarEstadisticasEventos(this.dataset.range);
             });

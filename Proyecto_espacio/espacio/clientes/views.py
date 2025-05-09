@@ -74,17 +74,17 @@ def crear_cliente(request):
         if form.is_valid():
             cliente = form.save(commit=False)
             cliente.tipo = 'regular'
-
+            
+            # Manejar fecha de alta
             fecha_str = request.POST.get('fecha_alta')
             if fecha_str:
                 try:
-                    # Convertimos string a datetime (a las 00:00 hs)
-                    cliente.fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d")
+                    cliente.fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d").date()
                 except ValueError:
-                    cliente.fecha_alta = datetime.today()
+                    cliente.fecha_alta = date.today()
             else:
-                cliente.fecha_alta = datetime.today()
-
+                cliente.fecha_alta = date.today()
+                
             cliente.save()
             return redirect('clientes:lista_clientes')
     else:
@@ -102,7 +102,9 @@ def editar_cliente(request, cliente_id):
             form.save()
             return redirect('clientes:lista_clientes')
     else:
-        form = ClienteForm(instance=cliente)
+        # Asegurar que la fecha de alta se mantenga en el formulario
+        initial_data = {'fecha_alta': cliente.fecha_alta.strftime("%Y-%m-%d")} if cliente.fecha_alta else {}
+        form = ClienteForm(instance=cliente, initial=initial_data)
 
     return render(request, 'clientes/forms_cliente.html', {'form': form, 'editando': True})
 
@@ -127,14 +129,16 @@ def reactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     if request.method == 'POST':
         cliente.activo = True
-        cliente.fecha_baja = None  # Limpiamos la fecha de baja
+        cliente.fecha_baja = None
         cliente.save()
         
-        # Redirigir a la vista de edición con los datos precargados
-        form = ClienteForm(instance=cliente)
+        # Pasar la fecha existente al formulario
+        initial_data = {'fecha_alta': cliente.fecha_alta.strftime("%Y-%m-%d")} if cliente.fecha_alta else {}
+        form = ClienteForm(instance=cliente, initial=initial_data)
+        
         return render(request, 'clientes/forms_cliente.html', {
             'form': form,
-            'reactivando': True,  # Flag para identificar que viene de una reactivación
+            'reactivando': True,
             'cliente_id': cliente.id
         })
     
@@ -170,79 +174,94 @@ def detalle_cliente(request, cliente_id):
 
 @login_required
 def asignar_turnos(request):
-    print("TIPO DE USUARIO:", type(request.user))
-    print("ATRIBUTOS:", dir(request.user))
+    # Obtener datos del GET o POST
     plan_id = request.GET.get('plan_id') or request.POST.get('plan_id')
-    configuracion = Configuracion.objects.first()
-    dias_habilitados = configuracion.dias_habilitados if configuracion else []
-
+    
+    # Validar que tenemos plan_id
     if not plan_id:
         messages.error(request, "No se especificó ningún plan")
         return redirect('clientes:crear_cliente')
 
-    plan = Plan.objects.get(id=plan_id)
-    config = Configuracion.objects.first()
+    # Obtener datos del cliente del request
+    cliente_data = {
+        'nombre': request.GET.get('nombre'),
+        'apellido': request.GET.get('apellido'),
+        'dni': request.GET.get('dni'),
+        'telefono': request.GET.get('telefono'),
+        'mail': request.GET.get('mail'),
+        'estado': request.GET.get('estado', 'pendiente'),
+        'fecha_alta': request.GET.get('fecha_alta')
+    }
+
+    # Validar campos obligatorios
+    required_fields = ['nombre', 'apellido', 'dni', 'mail']
+    if not all(cliente_data[field] for field in required_fields):
+        messages.error(request, "Faltan datos obligatorios del cliente")
+        return redirect('clientes:crear_cliente')
+
+    try:
+        plan = Plan.objects.get(id=plan_id)
+        config = Configuracion.objects.first()
+    except Plan.DoesNotExist:
+        messages.error(request, "El plan seleccionado no existe")
+        return redirect('clientes:crear_cliente')
 
     if request.method == 'POST':
+        # Procesar el formulario de asignación de turnos
         dias = request.POST.getlist('dias[]')
         horas = request.POST.getlist('horas[]')
-        nombre = request.POST.get('nombre')
-        apellido = request.POST.get('apellido')
-        dni = request.POST.get('dni')
-        telefono = request.POST.get('telefono')
-        mail = request.POST.get('mail')
-        estado = request.POST.get('estado')
-
-        fecha_str = request.GET.get('fecha_alta') or request.POST.get('fecha_alta')
-        try:
-            fecha_alta = datetime.strptime(fecha_str, "%Y-%m-%d") if fecha_str else datetime.today()
-        except ValueError:
-            fecha_alta = datetime.today()
 
         if not dias or not horas:
             messages.error(request, "Debés seleccionar días y horarios.")
-            return redirect(request.path + f"?plan_id={plan_id}")
+            return redirect(request.path + f"?{request.GET.urlencode()}")
 
+        try:
+            fecha_alta = datetime.strptime(cliente_data['fecha_alta'], "%Y-%m-%d") if cliente_data['fecha_alta'] else datetime.today()
+        except ValueError:
+            fecha_alta = datetime.today()
+
+        # Crear o actualizar cliente
         cliente, creado = Cliente.objects.get_or_create(
-            mail=mail,
+            mail=cliente_data['mail'],
             defaults={
-                'nombre': nombre,
-                'apellido': apellido,
-                'dni': dni,
-                'telefono': telefono,
+                'nombre': cliente_data['nombre'],
+                'apellido': cliente_data['apellido'],
+                'dni': cliente_data['dni'],
+                'telefono': cliente_data['telefono'],
                 'plan': plan,
                 'dias': ", ".join(dias),
                 'hora': ", ".join(horas),
                 'tipo': 'regular',
-                'estado': estado,
+                'estado': cliente_data['estado'],
                 'fecha_alta': fecha_alta
             }
         )
 
         if not creado:
-            cliente.nombre = nombre
-            cliente.apellido = apellido
-            cliente.dni = dni
-            cliente.telefono = telefono
+            # Actualizar cliente existente
+            cliente.nombre = cliente_data['nombre']
+            cliente.apellido = cliente_data['apellido']
+            cliente.dni = cliente_data['dni']
+            cliente.telefono = cliente_data['telefono']
             cliente.plan = plan
             cliente.dias = ", ".join(dias)
             cliente.hora = ", ".join(horas)
-            cliente.tipo = 'regular'
-            cliente.estado = estado
+            cliente.estado = cliente_data['estado']
             cliente.fecha_alta = fecha_alta
             cliente.save()
             cliente.turnos.all().delete()
-            
+        
         generar_turnos_futuros(cliente)
-
         messages.success(request, "Cliente y turnos asignados correctamente.")
         return redirect('clientes:lista_clientes')
 
+    # Para GET, mostrar formulario de asignación de turnos
     return render(request, 'clientes/asignar_turnos.html', {
         'plan': plan,
         'config': config,
-        'dias_semana': dias_habilitados,
-        'dias_semana_json': json.dumps(dias_habilitados),
+        'dias_semana': config.dias_habilitados if config else [],
+        'dias_semana_json': json.dumps(config.dias_habilitados) if config else '[]',
+        'initial_data': cliente_data
     })
 
 def generar_turnos_futuros(cliente):

@@ -256,20 +256,84 @@ label {
 
 /*Estilo para el panel de estadisticas*/
 
+.chart-panel {
+    background-color: #e3e5d7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    height: 100%; /* Asegura misma altura en row */
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px; /* Aumentamos ligeramente la altura */
+    min-height: 250px;
+}
+
+.bg-white {
+    background-color: #e3e5d7 !important;
+}
+
+.rounded {
+    border-radius: 10px !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+canvas {
+    width: 100% !important;
+    height: 250px !important;
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pie-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+/* Mejora la legibilidad del texto en gráficos */
+.chartjs-render-monitor {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos para botones de rango */
 .btn-range {
-    padding: 4px 10px;
+    padding: 5px 12px;
     background-color: #e2e8f0;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 0.9rem;
     cursor: pointer;
-  }
-  
-  .btn-range:hover {
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-range:hover {
     background-color: #cbd5e0;
-  }
-  
-  .btn-range.active {
-    background-color: #4ade80;
+    transform: translateY(-1px);
+}
+
+.btn-range.active {
+    background-color: #586875;
     color: white;
+    font-weight: 500;
+}
+
+/* Indicadores */
+.badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
 }
