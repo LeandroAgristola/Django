@@ -34,12 +34,14 @@ webPublic: muestra la información del espacio al publico
 calendario: gestión de horarios de los clientes 
 
 Pendientes 
-    El formulario de reactivacion no toma la fecha cargada en el modal
-    al editar no se toma la fecha de alta del cliente si o si hay q cargarla nuevamente
-    Al cancelar un formulario de edicion de cliente nos redireje a un formulario vacio de crear nuevo cliente
-    Enviar JS a archivos externos
+
+    Nuevo formulario de asignacion y cliente:
+        no toma los dias que cargamos y nos informa error en asignacion
+        nos permite cargar dias por demas de los solicitados en el plan
+        al editar muestra los turnos ya asignados al cliente pero repetidos
     El formulario no debe enviarse si no se carga el turno
     EL formulario no se debe enviar si no se carga la fecha
+
 
 Corregir error en timeZone
 

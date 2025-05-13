@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, Plan
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -16,3 +16,9 @@ class ClienteForm(forms.ModelForm):
             'fecha_alta': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'estado': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'plan' in self.fields:
+            # Configurar las opciones normalmente
+            self.fields['plan'].queryset = Plan.objects.all()

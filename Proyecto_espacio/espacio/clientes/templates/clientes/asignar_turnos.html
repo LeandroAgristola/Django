@@ -42,145 +42,14 @@
     </div>
 
     <button type="submit" class="btn btn-success mt-3 d-none" id="btnConfirmar">Confirmar Turnos</button>
-    <a href="{% url 'clientes:crear_cliente' %}" class="btn btn-secondary mt-3">Cancelar</a>
+    <a href="{% url 'clientes:crear_cliente' %}?cancelar_asignacion=1" class="btn btn-secondary mt-3">Cancelar</a>
   </form>
 </div>
 
 {% endblock %}
 
-{% block scripts %}
-<script id="diasSemanaJSON" type="application/json">{{ dias_semana_json|safe }}</script>
+  {% block scripts %}
+  <script id="diasSemanaJSON" type="application/json">{{ dias_semana_json|safe }}</script>
+  {% endblock %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('formTurnos');
-    const selectDia = document.getElementById('selectDia');
-    const selectHora = document.getElementById('selectHora');
-    const btnAgregar = document.getElementById('btnAgregar');
-    const btnConfirmar = document.getElementById('btnConfirmar');
-    const listaTurnos = document.getElementById('listaTurnos');
-    const maxDias = {{ plan.cantidad_dias }};
-    const seleccionados = new Set();
-    
-    // Mapeo de días a índices para calcular fechas
-    const diasIndices = { lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0 };
-
-    // Cuando se selecciona un día, cargar sus horarios
-    selectDia.addEventListener('change', function() {
-        const dia = this.value;
-        if (!dia) {
-            selectHora.disabled = true;
-            selectHora.innerHTML = '<option value="">Primero seleccione un día</option>';
-            btnAgregar.disabled = true;
-            return;
-        }
-        
-        // Calcular fecha del próximo día seleccionado
-        const hoy = new Date();
-        const hoyIdx = hoy.getDay();
-        const targetIdx = diasIndices[dia];
-        const diff = (targetIdx - hoyIdx + 7) % 7;
-        const fecha = new Date(hoy.setDate(hoy.getDate() + diff));
-        const fechaStr = fecha.toISOString().slice(0,10);
-        
-        // Cargar horarios disponibles
-        fetch(`/management/calendario/horarios/?fecha=${fechaStr}`)
-            .then(response => response.json())
-            .then(horarios => {
-                selectHora.innerHTML = '<option value="">Seleccionar horario...</option>';
-                
-                horarios.forEach(hora => {
-                    const option = document.createElement('option');
-                    option.value = hora.hora;
-                    option.textContent = `${hora.hora} (${hora.disponibles} disponibles)`;
-                    option.disabled = hora.completo;
-                    selectHora.appendChild(option);
-                });
-                
-                selectHora.disabled = false;
-            })
-            .catch(error => {
-                console.error('Error al cargar horarios:', error);
-                selectHora.innerHTML = '<option value="">Error al cargar horarios</option>';
-            });
-    });
-    
-    // Habilitar botón agregar cuando haya selección válida
-    selectHora.addEventListener('change', function() {
-        btnAgregar.disabled = !this.value;
-    });
-    
-    // Agregar turno a la lista
-    btnAgregar.addEventListener('click', function() {
-        const dia = selectDia.value;
-        const hora = selectHora.value;
-        const key = `${dia}|${hora}`;
-        
-        if (seleccionados.size >= maxDias && !seleccionados.has(key)) {
-            alert(`Solo puede seleccionar ${maxDias} turnos`);
-            return;
-        }
-        
-        if (!seleccionados.has(key)) {
-            // Agregar a la lista visual
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-            li.innerHTML = `
-                ${dia.charAt(0).toUpperCase() + dia.slice(1)} a las ${hora}
-                <button type="button" class="btn btn-sm btn-danger quitar-turno" data-key="${key}">
-                    <i class="bi bi-x"></i>
-                </button>
-            `;
-            listaTurnos.appendChild(li);
-            
-            // Agregar inputs ocultos al formulario
-            const inputDia = document.createElement('input');
-            inputDia.type = 'hidden';
-            inputDia.name = 'dias[]';
-            inputDia.value = dia;
-            form.appendChild(inputDia);
-            
-            const inputHora = document.createElement('input');
-            inputHora.type = 'hidden';
-            inputHora.name = 'horas[]';
-            inputHora.value = hora;
-            form.appendChild(inputHora);
-            
-            seleccionados.add(key);
-        }
-        
-        // Resetear selects
-        selectDia.value = '';
-        selectHora.value = '';
-        selectHora.disabled = true;
-        btnAgregar.disabled = true;
-        
-        // Mostrar botón confirmar si se alcanzó el máximo
-        btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
-    });
-    
-    // Eliminar turno de la lista
-    listaTurnos.addEventListener('click', function(e) {
-        if (e.target.classList.contains('quitar-turno') || e.target.closest('.quitar-turno')) {
-            const btn = e.target.classList.contains('quitar-turno') ? e.target : e.target.closest('.quitar-turno');
-            const key = btn.dataset.key;
-            
-            // Eliminar de la lista visual
-            btn.closest('li').remove();
-            
-            // Eliminar inputs ocultos
-            const [dia, hora] = key.split('|');
-            document.querySelectorAll(`input[name="dias[]"][value="${dia}"]`).forEach(el => {
-                if (el.nextElementSibling?.name === 'horas[]' && el.nextElementSibling.value === hora) {
-                    el.remove();
-                    el.nextElementSibling.remove();
-                }
-            });
-            
-            seleccionados.delete(key);
-            btnConfirmar.classList.toggle('d-none', seleccionados.size !== maxDias);
-        }
-    });
-});
-</script>
 {% endblock %}
