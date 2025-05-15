@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Cliente, Plan
-from calendario.models import Turno
-from planes.models import Plan
-from configuracion.models import Configuracion
-from .forms import ClienteForm
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta, date
 from django.urls import reverse
 from django.contrib import messages
 import json
 from django.http import JsonResponse
+
+# Importaciones locales
+from .models import Cliente
+from .forms import ClienteForm
+from calendario.models import Turno
+from configuracion.models import Configuracion
+from planes.models import Plan
 
 @login_required
 def lista_clientes(request):
@@ -50,11 +52,9 @@ def lista_clientes(request):
         clientes_activos = clientes_activos.filter(estado=estado_filtro)
         clientes_inactivos = clientes_inactivos.filter(estado=estado_filtro)
 
-    planes = Plan.objects.all()
+    planes = Plan.objects.filter(activo=True)
 
     return render(request, 'clientes/lista_clientes.html', {
-        'clientes_activos': clientes_activos,
-        'clientes_inactivos': clientes_inactivos,
         'clientes_activos': clientes_activos,
         'clientes_inactivos': clientes_inactivos,
         'planes': planes,
@@ -68,35 +68,58 @@ def lista_clientes(request):
 
 @login_required
 def crear_cliente(request):
+    config = Configuracion.objects.first()
+    dias_semana = config.dias_habilitados if config else []
+    dias_semana_json = json.dumps(dias_semana) if config else '[]'
+    planes_json = json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.filter(activo=True)})
+
     if request.method == 'POST':
         form = ClienteForm(request.POST)
+        dias = request.POST.getlist('dias[]')
+        horas = request.POST.getlist('horas[]')
+
         if form.is_valid():
-            cliente = form.save(commit=False)
+            try:
+                cliente = form.save(commit=False)
+                cliente.save()
+                
+                # Eliminar turnos existentes y generar nuevos
+                cliente.turnos.all().delete()
+                generar_turnos_futuros(cliente)
+                
+                messages.success(request, "Cliente creado correctamente.")
+                return redirect('clientes:lista_clientes')
+                
+            except Exception as e:
+                print(f"Error al guardar cliente: {str(e)}")
+                messages.error(request, f"Error al guardar el cliente: {str(e)}")
+        else:
+            print(f"Errores de formulario: {form.errors}")
             
-            # Validar días según el plan
-            dias = request.POST.getlist('dias[]')
-            if cliente.plan and len(dias) != cliente.plan.cantidad_dias:
-                messages.error(request, f"El plan seleccionado requiere exactamente {cliente.plan.cantidad_dias} día(s)")
-                return redirect('clientes:crear_cliente')
-            
-            cliente.dias = ", ".join(dias)
-            cliente.hora = ", ".join(request.POST.getlist('horas[]'))
-            cliente.save()
-            
-            # Generar turnos futuros
-            generar_turnos_futuros(cliente)
-            
-            messages.success(request, "Cliente creado correctamente")
-            return redirect('clientes:lista_clientes')
-    else:
-        form = ClienteForm()
+        # Preparar datos para rellenar el formulario
+        turnos_preseleccionados = []
+        dias = request.POST.getlist('dias[]', [])
+        horas = request.POST.getlist('horas[]', [])
+        
+        for dia, hora in zip(dias, horas):
+            if dia and hora:
+                turnos_preseleccionados.append([dia, hora])
+        
+        return render(request, 'clientes/forms_cliente.html', {
+            'form': form,
+            'dias_semana': dias_semana,
+            'dias_semana_json': dias_semana_json,
+            'planes_json': planes_json,
+            'turnos_preseleccionados': turnos_preseleccionados
+        })
     
-    config = Configuracion.objects.first()
+    # GET request
+    form = ClienteForm()
     return render(request, 'clientes/forms_cliente.html', {
         'form': form,
-        'dias_semana': config.dias_habilitados if config else [],
-        'dias_semana_json': json.dumps(config.dias_habilitados) if config else '[]',
-        'planes_json': json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.all()})
+        'dias_semana': dias_semana,
+        'dias_semana_json': dias_semana_json,
+        'planes_json': planes_json
     })
 
 @login_required
@@ -105,25 +128,43 @@ def editar_cliente(request, cliente_id):
     config = Configuracion.objects.first()
     dias_semana = config.dias_habilitados if config else []
     dias_semana_json = json.dumps(dias_semana) if config else '[]'
-    planes = Plan.objects.all()
-    
-    # Preparar datos de planes para el template
-    planes_data = {str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in planes}
     
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             cliente = form.save(commit=False)
-            cliente.save()
-            # Eliminar turnos existentes y generar nuevos si cambian los días/horas
+            
             if 'dias[]' in request.POST:
+                dias = request.POST.getlist('dias[]')
+                horas = request.POST.getlist('horas[]')
+                
+                if cliente.plan:
+                    if len(dias) != cliente.plan.cantidad_dias:
+                        messages.error(request, f"El plan seleccionado requiere exactamente {cliente.plan.cantidad_dias} día(s)")
+                        return redirect('clientes:editar_cliente', cliente_id=cliente.id)
+                    
+                    if len(dias) != len(horas):
+                        messages.error(request, "Debe asignar un horario para cada día seleccionado")
+                        return redirect('clientes:editar_cliente', cliente_id=cliente.id)
+                
+                cliente.dias = ", ".join(dias)
+                cliente.hora = ", ".join(horas)
                 cliente.turnos.all().delete()
-                cliente.dias = ", ".join(request.POST.getlist('dias[]'))
-                cliente.hora = ", ".join(request.POST.getlist('horas[]'))
-                cliente.save()
                 generar_turnos_futuros(cliente)
+            
+            cliente.save()
             messages.success(request, "Cliente actualizado correctamente.")
             return redirect('clientes:lista_clientes')
+        
+        return render(request, 'clientes/forms_cliente.html', {
+            'form': form,
+            'editando': True,
+            'reactivando': 'reactivar' in request.GET,
+            'dias_semana': dias_semana,
+            'dias_semana_json': dias_semana_json,
+            'planes_json': json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.filter(activo=True)})
+        })
+
     else:
         initial_data = None
         if 'reactivar' in request.GET:
@@ -137,9 +178,9 @@ def editar_cliente(request, cliente_id):
             'reactivando': 'reactivar' in request.GET,
             'dias_semana': dias_semana,
             'dias_semana_json': dias_semana_json,
-            'planes_json': json.dumps(planes_data)
+            'planes_json': json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.filter(activo=True)})
         })
-    
+
 @login_required
 def desactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
@@ -151,7 +192,8 @@ def desactivar_cliente(request, cliente_id):
         cliente.save()
 
         # 👉 Eliminar turnos a partir de hoy
-        cliente.turnos.filter(fecha__gte=date.today()).delete()
+    if cliente.fecha_baja:
+        cliente.turnos.filter(fecha__gte=cliente.fecha_baja).delete()
 
         return redirect('clientes:lista_clientes')
     return redirect('clientes:lista_clientes')
@@ -311,29 +353,46 @@ def asignar_turnos(request):
     })
 
 def generar_turnos_futuros(cliente):
-    dias_seleccionados = cliente.dias.split(", ")
-    horas_seleccionadas = cliente.hora.split(", ")
-    fecha_actual = cliente.fecha_alta or date.today()
+    if not cliente.dias or not cliente.hora:
+        return
+        
+    dias_seleccionados = [dia.strip() for dia in cliente.dias.split(",")]
+    horas_seleccionadas = [hora.strip() for hora in cliente.hora.split(",")]
+    
+    if len(dias_seleccionados) != len(horas_seleccionadas):
+        return
+        
+    fecha_actual = cliente.fecha_alta if cliente.fecha_alta else date.today()
     fecha_limite = fecha_actual + timedelta(days=180)
 
     dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 
-    while fecha_actual <= fecha_limite:
-        dia_en_espanol = dias_esp[fecha_actual.weekday()]
+    # Eliminar solo turnos futuros
+    cliente.turnos.filter(fecha__gte=fecha_actual).delete()
 
-        if dia_en_espanol in dias_seleccionados:
-            for hora in horas_seleccionadas:
-                hora_dt = datetime.strptime(hora, "%H:%M").time()
+    for dia, hora in zip(dias_seleccionados, horas_seleccionadas):
+        try:
+            dia_idx = dias_esp.index(dia.lower())
+            hora_dt = datetime.strptime(hora, "%H:%M").time()
+            
+            current_date = fecha_actual
+            delta_days = (dia_idx - current_date.weekday() + 7) % 7
+            current_date += timedelta(days=delta_days)
 
-                # Verificar si ya existe el turno
-                if not Turno.objects.filter(fecha=fecha_actual, hora=hora_dt, cliente=cliente).exists():
-                    Turno.objects.create(fecha=fecha_actual, hora=hora_dt, cliente=cliente)
-
-        fecha_actual += timedelta(days=1)
+            while current_date <= fecha_limite:
+                Turno.objects.get_or_create(
+                    fecha=current_date,
+                    hora=hora_dt,
+                    cliente=cliente
+                )
+                current_date += timedelta(days=7)
+        except (ValueError, IndexError):
+            continue
 
 @login_required
 def clientes_estadisticas(request):
     hoy = timezone.now().date()
+    año_actual = hoy.year  # Define año_actual here
     año_actual = hoy.year
     
     # Definimos el rango completo del año calendario
@@ -369,9 +428,10 @@ def clientes_estadisticas(request):
         
         # Bajas: desactivados + eliminados en el mes
         bajas = Cliente.objects.filter(
-            Q(fecha_baja__gte=mes_inicio, fecha_baja__lt=mes_fin) |
-            Q(activo=False, modificado__gte=mes_inicio, modificado__lt=mes_fin)
-        ).distinct().count()
+            activo=False,
+            fecha_baja__gte=mes_inicio,
+            fecha_baja__lt=mes_fin
+        ).count()
         
         datos.append({
             'mes': meses_espanol[mes-1],

@@ -14,14 +14,6 @@ web (Para la parte pública del sitio)
 
     Planes.html:
 
-Pendientes generales:
-    mover todos los JS a la carpeta JS y linkear sus nombres
-
-
-
-
-
-Clientes pendientes:
 
 Bien continuando con mi proyecto de djnago del estudio de pilates en el cual tenemos las aplicaciones:
 clientes: Maneja el alta y baja de clientes
@@ -35,13 +27,8 @@ calendario: gestión de horarios de los clientes
 
 Pendientes 
 
-    Nuevo formulario de asignacion y cliente:
-        no toma los dias que cargamos y nos informa error en asignacion
-        nos permite cargar dias por demas de los solicitados en el plan
-        al editar muestra los turnos ya asignados al cliente pero repetidos
-    El formulario no debe enviarse si no se carga el turno
-    EL formulario no se debe enviar si no se carga la fecha
-
+    Luego de dar de baja un cliente, los turnos deben liberarse a partir de la fecha de baja
+    Al dar de alta un cliente no nos permite cargar turnos
 
 Corregir error en timeZone
 
