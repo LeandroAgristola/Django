@@ -61,10 +61,6 @@ class ClienteForm(forms.ModelForm):
             dias = self.data.getlist('dias[]')
             horas = self.data.getlist('horas[]')
 
-            # Verificar que los datos se estén recibiendo
-            print(f"Días recibidos: {dias}")  # Para depuración
-            print(f"Horas recibidas: {horas}")  # Para depuración
-
             if not dias or not horas:
                 raise ValidationError("Debes asignar los turnos requeridos por el plan.")
             

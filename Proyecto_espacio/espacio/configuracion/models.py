@@ -37,4 +37,3 @@ class Configuracion(models.Model):
     def __str__(self):
         return "Configuración del sitio"
 
-# Create your models here.

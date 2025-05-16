@@ -119,6 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const planesData = JSON.parse(document.getElementById('planesJSON').textContent);
 
+   const selectedOption = planSelect.options[planSelect.selectedIndex];
+  maxDias = parseInt(selectedOption?.getAttribute('data-dias')) || 0;
+  maxTurnosSpan.textContent = maxDias;
+  mensajeDias.textContent = `Seleccioná ${maxDias} días de la semana y sus horarios.`;
+
   // Setear datos de los planes
   Array.from(planSelect.options).forEach(option => {
     if (option.value && planesData[option.value]) {
@@ -139,24 +144,80 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Día seleccionado
-  selectDia.addEventListener('change', () => {
-    const dia = selectDia.value;
-    selectHora.innerHTML = '';
-    if (dia) {
-      // Simulación de horarios disponibles (modificá esto si lo traés por AJAX)
-      const horarios = ['08:00', '10:00', '12:00', '16:00', '18:00'];
-      horarios.forEach(hora => {
-        const option = document.createElement('option');
-        option.value = hora;
-        option.textContent = hora;
-        selectHora.appendChild(option);
-      });
-      selectHora.disabled = false;
-      btnAgregar.disabled = false;
-    } else {
-      selectHora.disabled = true;
-      btnAgregar.disabled = true;
-    }
+  selectDia.addEventListener('change', async () => {
+      const dia = selectDia.value;
+      selectHora.innerHTML = '';
+      
+      if (dia) {
+          try {
+              // Mapeo de días a números de semana
+             const diasSemanaMap = {
+                'lunes':   0,
+                'martes':  1,
+                'miercoles': 2,
+                'jueves':  3,
+                'viernes': 4,
+                'sabado':  5,
+                'domingo': 6
+              };
+              
+              // Calcular próxima fecha para el día seleccionado
+              const hoy = new Date();
+              const diaNum = diasSemanaMap[dia];
+              const diffDias = (diaNum - hoy.getDay() + 7) % 7;
+              const fechaConsulta = new Date(hoy);
+              fechaConsulta.setDate(hoy.getDate() + diffDias);
+              
+              // Formatear fecha YYYY-MM-DD
+              const fechaStr = fechaConsulta.toISOString().split('T')[0];
+              
+              // Usar la URL correcta según tu configuración
+              const response = await fetch(`/management/calendario/horarios/?fecha=${fechaStr}`);
+              
+              if (!response.ok) {
+                  throw new Error(`Error HTTP: ${response.status}`);
+              }
+              
+              const horarios = await response.json();
+              
+              if (!Array.isArray(horarios)) {
+                  throw new Error('Formato de respuesta inválido');
+              }
+
+              // Limpiar select
+              selectHora.innerHTML = '<option value="">Seleccione horario</option>';
+              
+              // Llenar con horarios disponibles
+              horarios.forEach(horario => {
+                  if (horario.disponibles > 0) {
+                      const option = document.createElement('option');
+                      option.value = horario.hora;
+                      option.textContent = `${horario.hora} (${horario.disponibles} cupo${horario.disponibles !== 1 ? 's' : ''})`;
+                      selectHora.appendChild(option);
+                  }
+              });
+
+              selectHora.disabled = false;
+              btnAgregar.disabled = selectHora.options.length <= 1;
+              
+          } catch (error) {
+              console.error('Error al obtener horarios:', error);
+              selectHora.innerHTML = '<option value="">Error al cargar horarios</option>';
+              selectHora.disabled = true;
+              btnAgregar.disabled = true;
+              
+              // Mostrar error temporal
+              const errorAlert = document.createElement('div');
+              errorAlert.className = 'alert alert-danger mt-2';
+              errorAlert.innerHTML = `Error: ${error.message}`;
+              document.getElementById('seccionTurnos').appendChild(errorAlert);
+              setTimeout(() => errorAlert.remove(), 5000);
+          }
+      } else {
+          selectHora.innerHTML = '<option value="">Seleccione un día primero</option>';
+          selectHora.disabled = true;
+          btnAgregar.disabled = true;
+      }
   });
 
   btnAgregar.addEventListener('click', () => {

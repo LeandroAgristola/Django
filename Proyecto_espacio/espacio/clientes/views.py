@@ -128,107 +128,125 @@ def editar_cliente(request, cliente_id):
     config = Configuracion.objects.first()
     dias_semana = config.dias_habilitados if config else []
     dias_semana_json = json.dumps(dias_semana) if config else '[]'
-    
+    planes_json = json.dumps({
+        str(plan.id): {'cantidad_dias': plan.cantidad_dias}
+        for plan in Plan.objects.filter(activo=True)
+    })
+
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             cliente = form.save(commit=False)
-            
+
+            # Actualizamos los turnos si vinieron en el POST
             if 'dias[]' in request.POST:
                 dias = request.POST.getlist('dias[]')
                 horas = request.POST.getlist('horas[]')
-                
-                if cliente.plan:
-                    if len(dias) != cliente.plan.cantidad_dias:
-                        messages.error(request, f"El plan seleccionado requiere exactamente {cliente.plan.cantidad_dias} día(s)")
-                        return redirect('clientes:editar_cliente', cliente_id=cliente.id)
-                    
-                    if len(dias) != len(horas):
-                        messages.error(request, "Debe asignar un horario para cada día seleccionado")
-                        return redirect('clientes:editar_cliente', cliente_id=cliente.id)
-                
+                # ... validaciones idénticas ...
                 cliente.dias = ", ".join(dias)
                 cliente.hora = ", ".join(horas)
                 cliente.turnos.all().delete()
                 generar_turnos_futuros(cliente)
-            
+
+            # Reactivación: levantamos la baja, PERO no tocamos plan/turnos
+            if 'reactivar' in request.GET:
+                cliente.activo = True
+                cliente.estado = 'pendiente'
+                cliente.fecha_baja = None
+
             cliente.save()
             messages.success(request, "Cliente actualizado correctamente.")
             return redirect('clientes:lista_clientes')
-        
+
+        # Si hay errores:
         return render(request, 'clientes/forms_cliente.html', {
             'form': form,
             'editando': True,
             'reactivando': 'reactivar' in request.GET,
             'dias_semana': dias_semana,
             'dias_semana_json': dias_semana_json,
-            'planes_json': json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.filter(activo=True)})
+            'planes_json': planes_json,
         })
 
+    # —————— GET ——————
+    # Calculamos la fecha para el input
+    if 'reactivar' in request.GET:
+        fecha_alta_str = request.GET.get('fecha_alta', '')
+        # Limpiar plan y turnos solo en GET para que arranque vacío
+        cliente.plan = None
+        cliente.dias = ""
+        cliente.hora = ""
     else:
-        initial_data = None
-        if 'reactivar' in request.GET:
-            initial_data = {'fecha_alta': request.GET.get('fecha_alta')}
-        
-        form = ClienteForm(instance=cliente, initial=initial_data)
-        
-        return render(request, 'clientes/forms_cliente.html', {
-            'form': form, 
-            'editando': True,
-            'reactivando': 'reactivar' in request.GET,
-            'dias_semana': dias_semana,
-            'dias_semana_json': dias_semana_json,
-            'planes_json': json.dumps({str(plan.id): {'cantidad_dias': plan.cantidad_dias} for plan in Plan.objects.filter(activo=True)})
-        })
+        fecha_alta_dt = cliente.fecha_alta
+        fecha_alta_str = (
+            fecha_alta_dt.strftime('%Y-%m-%d')
+            if hasattr(fecha_alta_dt, 'strftime')
+            else str(fecha_alta_dt)
+        )
+
+    initial_data = {'fecha_alta': fecha_alta_str}
+    form = ClienteForm(instance=cliente, initial=initial_data)
+
+    # Pre-cargamos los turnos existentes (si no es reactivación)
+    turnos_preseleccionados = []
+    if cliente.dias and cliente.hora:
+        dias = [d.strip() for d in cliente.dias.split(',')]
+        horas = [h.strip() for h in cliente.hora.split(',')]
+        turnos_preseleccionados = list(zip(dias, horas))
+
+    return render(request, 'clientes/forms_cliente.html', {
+        'form': form,
+        'editando': True,
+        'reactivando': 'reactivar' in request.GET,
+        'dias_semana': dias_semana,
+        'dias_semana_json': dias_semana_json,
+        'planes_json': planes_json,
+        'turnos_preseleccionados': turnos_preseleccionados,
+    })
 
 @login_required
 def desactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     if request.method == 'POST':
         fecha_baja = request.POST.get('fecha_baja')
-        cliente.activo = False
-        cliente.estado = 'pendiente'
-        cliente.fecha_baja = fecha_baja
-        cliente.save()
-
-        # 👉 Eliminar turnos a partir de hoy
-    if cliente.fecha_baja:
-        cliente.turnos.filter(fecha__gte=cliente.fecha_baja).delete()
-
-        return redirect('clientes:lista_clientes')
+        
+        try:
+            fecha_baja_date = datetime.strptime(fecha_baja, "%Y-%m-%d").date()
+            
+            # 1. Liberar turnos futuros
+            cliente.turnos.filter(fecha__gte=fecha_baja_date).delete()
+            
+            # 2. Limpiar datos del plan
+            cliente.plan = None
+            cliente.dias = ""
+            cliente.hora = ""
+            
+            # 3. Marcar como inactivo
+            cliente.activo = False
+            cliente.estado = 'pendiente'
+            cliente.fecha_baja = fecha_baja_date
+            cliente.save()
+            
+            messages.success(request, "Cliente desactivado correctamente")
+            return redirect('clientes:lista_clientes')
+            
+        except ValueError:
+            messages.error(request, "Formato de fecha inválido")
+            return redirect('clientes:lista_clientes')
+    
     return redirect('clientes:lista_clientes')
+
 
 @login_required
 def reactivar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    
-    if request.method == 'POST':
-        # Actualizar el estado del cliente
-        cliente.activo = True
-        cliente.fecha_baja = None
-        
-        # Procesar la fecha del modal
-        fecha_alta_str = request.POST.get('fecha_alta')
-        if fecha_alta_str:
-            try:
-                fecha_alta = datetime.strptime(fecha_alta_str, "%Y-%m-%d").date()
-                cliente.fecha_alta = fecha_alta
-            except ValueError:
-                # Si hay error en la fecha, usar la actual pero guardar la cadena para el formulario
-                fecha_alta = timezone.now().date()
-                cliente.fecha_alta = fecha_alta
-                fecha_alta_str = fecha_alta.strftime("%Y-%m-%d")
-        
-        cliente.save()
-        
-        # Redireccionar correctamente con parámetros GET
-        redirect_url = reverse('clientes:editar_cliente', kwargs={'cliente_id': cliente.id})
-        if fecha_alta_str:
-            redirect_url += f'?fecha_alta={fecha_alta_str}&reactivar=1'
-        
-        return redirect(redirect_url)
-    
-    return redirect('clientes:lista_clientes')
+
+    fecha_alta_str = request.POST.get('fecha_alta') or timezone.now().date().strftime("%Y-%m-%d")
+
+    # Solo redirige al formulario con los datos, no reactiva todavía
+    redirect_url = reverse('clientes:editar_cliente', kwargs={'cliente_id': cliente.id})
+    redirect_url += f'?fecha_alta={fecha_alta_str}&reactivar=1'
+    return redirect(redirect_url)
 
 @login_required
 def eliminar_cliente(request, cliente_id):

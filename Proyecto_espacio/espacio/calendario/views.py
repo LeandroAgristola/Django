@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from calendar import monthrange
 from django.db.models import Count
 import calendar
+from django.db.models import Q
 
 
 @login_required
@@ -56,11 +57,14 @@ def disponibilidad_por_dia(request):
         hora_actual = inicio
 
         while hora_actual < fin_horario:
-            ocupados = Turno.objects.filter(fecha=actual,
+            ocupados = Turno.objects.filter(
+                fecha=actual,
                 hora=hora_actual,
-                cliente__activo=True,
-                cliente__fecha_alta__lte=actual 
-                ).count()
+                cliente__fecha_alta__lte=actual
+                ).filter(
+
+                Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=actual)
+            ).count()
 
             disponibles = 6 - ocupados
             total_turnos_disponibles += disponibles
@@ -113,28 +117,27 @@ def horarios_por_dia(request):
     horarios = []
     hora_actual = inicio
 
+    CAPACIDAD_MAXIMA = 6  # Debería venir de Configuracion
+    
     while hora_actual < fin:
-        turnos_qs = Turno.objects.filter(
+        ocupados = Turno.objects.filter(
             fecha=fecha,
-            hora=hora_actual,
-            cliente__activo=True,
-            cliente__fecha_alta__lte=fecha  # 👈 solo clientes activos con fecha válida
-        )
-
-        if cliente_id:
-            turnos_qs = turnos_qs.exclude(cliente_id=cliente_id)
-
-        ocupados = turnos_qs.count()
-        disponibles = 6 - ocupados
-
+            hora=hora_actual
+        ).filter(
+            Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=fecha)
+        ).count()
+        
+        disponibles = CAPACIDAD_MAXIMA - ocupados
+        
         horarios.append({
             'hora': hora_actual.strftime('%H:%M'),
             'disponibles': disponibles,
-            'completo': disponibles <= 0
+            'completo': disponibles <= 0,
+            'capacidad_maxima': CAPACIDAD_MAXIMA  # Enviar al frontend
         })
-
+        
         hora_actual = (datetime.combine(fecha, hora_actual) + timedelta(hours=1)).time()
-
+    
     return JsonResponse(horarios, safe=False)
 
 @login_required

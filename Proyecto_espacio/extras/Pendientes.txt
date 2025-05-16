@@ -27,8 +27,9 @@ calendario: gestión de horarios de los clientes
 
 Pendientes 
 
-    Luego de dar de baja un cliente, los turnos deben liberarse a partir de la fecha de baja
-    Al dar de alta un cliente no nos permite cargar turnos
+    Agregar error si se repite el dia y la horarios
+    Agregar consulta si se quiere poner otro turno en otra hora pero en el mismo dia
+    Cuando presenta un error el formulario no me deja caragar turnos si no cambio el plan
 
 Corregir error en timeZone
 
