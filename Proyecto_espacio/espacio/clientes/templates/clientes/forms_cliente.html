@@ -163,13 +163,15 @@ document.addEventListener('DOMContentLoaded', () => {
               
               // Calcular próxima fecha para el día seleccionado
               const hoy = new Date();
+              // Corrige el desfase: transforma domingo(0) en 6, lunes(1) en 0, etc.
+              const hoyIndex = (hoy.getDay() + 6) % 7;
               const diaNum = diasSemanaMap[dia];
-              const diffDias = (diaNum - hoy.getDay() + 7) % 7;
+              const diffDias = (diaNum - hoyIndex + 7) % 7;
               const fechaConsulta = new Date(hoy);
               fechaConsulta.setDate(hoy.getDate() + diffDias);
               
               // Formatear fecha YYYY-MM-DD
-              const fechaStr = fechaConsulta.toISOString().split('T')[0];
+              const fechaStr = fechaConsulta.toLocaleDateString('sv-SE');
               
               // Usar la URL correcta según tu configuración
               const response = await fetch(`/management/calendario/horarios/?fecha=${fechaStr}`);
@@ -224,7 +226,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const dia = selectDia.value;
     const hora = selectHora.value;
     const key = `${dia}-${hora}`;
-    if (!dia || !hora || seleccionados.has(key) || seleccionados.size >= maxDias) return;
+
+    // Eliminar alertas previas
+    document.querySelectorAll('.alert-turno').forEach(e => e.remove());
+
+    if (!dia || !hora) return;
+
+    if (seleccionados.has(key)) {
+      const alerta = document.createElement('div');
+      alerta.className = 'alert alert-warning mt-2 alert-turno';
+      alerta.innerText = `Ya agregaste el turno ${dia} a las ${hora}.`;
+      btnAgregar.insertAdjacentElement('afterend', alerta);
+      return;
+    }
+
+    if (seleccionados.size >= maxDias) {
+      const alerta = document.createElement('div');
+      alerta.className = 'alert alert-warning mt-2 alert-turno';
+      alerta.innerText = `Ya seleccionaste el máximo de ${maxDias} turnos permitidos por el plan.`;
+      btnAgregar.insertAdjacentElement('afterend', alerta);
+      return;
+    }
 
     seleccionados.add(key);
     contadorTurnos.textContent = seleccionados.size;

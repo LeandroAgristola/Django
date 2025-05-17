@@ -42,6 +42,27 @@ class ClienteForm(forms.ModelForm):
                 self.instance.dias = dias_str
                 self.instance.hora = horas_str
 
+    def clean_dni(self):
+        dni = self.cleaned_data.get('dni')
+        if dni is not None:
+            qs = Cliente.objects.filter(dni=dni)
+            # si estamos editando, lo excluimos
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise ValidationError("Ya existe un cliente con ese DNI.")
+        return dni
+
+    def clean_mail(self):
+        mail = self.cleaned_data.get('mail')
+        if mail:
+            qs = Cliente.objects.filter(mail=mail)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise ValidationError("Ya existe un cliente con ese email.")
+        return mail
+
     def clean_fecha_alta(self):
         fecha_alta = self.cleaned_data.get('fecha_alta')
         if not fecha_alta:
@@ -86,5 +107,6 @@ class ClienteForm(forms.ModelForm):
             self.dias_lista = [dia.strip() for dia in dias]
             self.horas_lista = [hora.strip() for hora in horas]
             
-            if len(set(self.dias_lista)) != len(self.dias_lista):
-                raise ValidationError("No puedes asignar el mismo día más de una vez.")
+            turnos_combinados = list(zip(self.dias_lista, self.horas_lista))
+            if len(turnos_combinados) != len(set(turnos_combinados)):
+                raise ValidationError("No puedes asignar el mismo día y hora más de una vez.")
