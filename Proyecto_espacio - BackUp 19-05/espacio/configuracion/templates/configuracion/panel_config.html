@@ -1,0 +1,62 @@
+{% extends "management/layout_management.html" %}
+{% block content %}
+
+<div class="container-fluid" id="listaDatos">
+  <h2 class="mb-4">Datos de <strong>{{ configuracion.nombre_estudio }}</strong></h2>
+  <a href="{% url 'configuracion:editar_datos' %}" class="btn btn-success mb-4">Editar datos</a>
+
+  <div class="row g-4">
+    <!-- Columna izquierda -->
+    <div class="col-md-6">
+      <div class="p-3 rounded shadow-sm bg-light">
+        <p><i class="fas fa-building me-2"></i><strong>Nombre:</strong> {{ configuracion.nombre_estudio }}</p>
+        <p><i class="fas fa-id-card me-2"></i><strong>CUIT:</strong> {{ configuracion.cuit }}</p>
+        <p><i class="fas fa-map-marker-alt me-2"></i><strong>Dirección:</strong> {{ configuracion.direccion }}</p>
+        <p><i class="fas fa-map me-2"></i><strong>Google Maps:</strong> {{ configuracion.maps }}</p>
+        <p><i class="fab fa-whatsapp me-2"></i><strong>WhatsApp:</strong> {{ configuracion.whatsapp }}</p>
+        <p><i class="fas fa-phone me-2"></i><strong>Teléfono:</strong> {{ configuracion.telefono }}</p>
+        <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ configuracion.email }}</p>
+      </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="col-md-6">
+      <div class="p-3 rounded shadow-sm bg-light">
+        <p><i class="fab fa-instagram me-2"></i><strong>Instagram:</strong> {{ configuracion.instagram }}</p>
+        <p><i class="fab fa-facebook me-2"></i><strong>Facebook:</strong> {{ configuracion.facebook }}</p>
+        <p><i class="fab fa-youtube me-2"></i><strong>Youtube:</strong> {{ configuracion.youtube }}</p>
+        <p><i class="fas fa-calendar-week me-2"></i><strong>Horario Lunes a Viernes:</strong> 
+          {{ configuracion.horario_semana_inicio|default:"-" }} a {{ configuracion.horario_semana_fin|default:"-" }}
+        </p>
+        <p><i class="fas fa-calendar-day me-2"></i><strong>Horario Sábado:</strong> 
+          {{ configuracion.horario_sabado_inicio|default:"-" }} a {{ configuracion.horario_sabado_fin|default:"-" }}
+        </p>
+        <p><i class="fas fa-calendar-day me-2"></i><strong>Horario Domingo:</strong>
+          {% if 'domingo' in configuracion.dias_habilitados %}
+            {{ configuracion.horario_domingo_inicio|default:"-" }} a {{ configuracion.horario_domingo_fin|default:"-" }}
+          {% else %}
+            Día no disponible
+          {% endif %}
+        </p>  
+      </div>
+    </div>
+
+    <!-- Fila completa para Texto Hero -->
+    <div class="col-12">
+      <div class="p-3 rounded shadow-sm mt-4 bg-light">
+        <p><i class="fas fa-quote-left me-2"></i><strong>Texto Hero:</strong></p>
+        <p class="mb-0">{{ configuracion.texto_hero }}</p>
+      </div>
+      <div class="p-3 rounded shadow-sm mt-4 bg-light">
+        <p><i class="fas fa-comment-dots me-2"></i><strong>Texto Whatsapp Plan:</strong></p>
+        <p class="mb-0">{{ configuracion.mensaje_whatsapp_plan }}</p>
+      </div>
+      <div class="p-3 rounded shadow-sm mt-4 bg-light">
+        <p><i class="fas fa-comment-dots me-2"></i><strong>Texto Whatsapp Evento:</strong></p>
+        <p class="mb-0">{{ configuracion.mensaje_whatsapp_evento }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

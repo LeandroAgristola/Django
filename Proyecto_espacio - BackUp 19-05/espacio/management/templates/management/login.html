@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"> <!-- Sets character encoding to support special characters -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design for mobile devices -->
+    <meta name="description" content="COMPLETAR"> <!-- SEO meta description -->
+
+    {% block css %}
+    <!-- Bootstrap CSS for responsive design -->
+    <link rel="stylesheet" href="{% static 'css/styleManagement.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.css' %}">  <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% endblock %}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+
+    <!-- Font -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Farro:wght@300;400;500;700&family=Federo&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="login-page"> <!-- Body with class 'login-page' for specific styling -->
+
+    <!-- Main container for the login page, centered both vertically and horizontally -->
+    <div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+        <div id="development-form" class="p-4 rounded shadow"> <!-- Form container with padding, rounded corners, and shadow -->
+            
+            <!-- Logo and title section -->
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+                <div class="col-md-6 text-center d-flex flex-row align-items-center justify-content-center">
+                        <h1 class="logo-title mb-0">Estudio</h1>
+                        <img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-2"> 
+                </div>
+            </div>
+
+            <!-- Display an error message if it exists -->
+            {% if message %}
+                <div class="alert alert-danger">{{ message }}</div> <!-- Error message displayed in red -->
+            {% endif %}
+
+            <!-- Login form that posts to the login URL -->
+            <form action="{% url 'login' %}" method="post" class="w-100"> 
+                {% csrf_token %} <!-- CSRF token for security -->
+                
+                <!-- Username input field -->
+                <div class="mb-3">
+                    <label for="username">Username</label> <!-- Label for the username field -->
+                    <input autofocus class="form-control" type="text" name="username" id="username" placeholder="Enter your username"> <!-- Username input -->
+                </div>
+
+                <!-- Password input field -->
+                <div class="mb-3">
+                    <label for="password">Password</label> <!-- Label for the password field -->
+                    <input class="form-control" type="password" name="password" id="password" placeholder="Enter your password"> <!-- Password input -->
+                </div>
+
+                <!-- Submit button for the login form -->
+                <div class="d-flex justify-content-center">
+                    <input class="btn-custom" type="submit" value="Login"> <!-- Login button -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Block to include JavaScript files -->
+    {% block scripts %}
+        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script> <!-- Bootstrap JS -->
+    {% endblock %}
+</body>
+
+</html>

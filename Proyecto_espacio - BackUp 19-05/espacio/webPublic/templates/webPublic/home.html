@@ -1,0 +1,165 @@
+{% extends "webPublic/layout.html" %}
+{% load static %}
+
+{% block content %}
+<section id="hero" class="d-flex align-items-center justify-content-center">
+
+    <div class="container-fluid d-flex align-items-center justify-content-center">   
+        <div class="row">
+            <div class="col-md-6 d-flex justify-content-center align-items-center fade-in text-center">
+                <p id="Textohero"> {{ configuracion.texto_hero }}</p>
+            </div>
+            
+            <div class="col-md-6 d-flex justify-content-center align-items-center fade-in">
+                <img src="{% static 'img/Img_princ.png' %}" alt="Imagen Principal" class="img-fluid">
+            </div>
+
+        </div>
+    </div>
+    
+</section>
+
+
+<section id="nosotros" class="d-flex align-items-center justify-content-center">
+    <div class="container-fluid d-flex flex-column align-items-center justify-content-center"> 
+
+        <div class="row align-items-center">
+            <div class="col-md-6 d-flex justify-content-center fade-in">
+                <img src="{% static 'img/img_espacio01.png' %}" alt="Imagen Nosotros" class="img-nosotros">
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-center text-faded fade-in">
+                <div class="text-center">
+                    <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
+                    <p class="text-nosotros">Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center ">
+            <div class="col-md-6 order-md-2 d-flex justify-content-center fade-in">
+                <img src="{% static 'img/img_espacio02.png' %}" alt="Imagen Nosotros" class="img-nosotros">
+            </div>
+
+            <div class="col-md-6 order-md-1 d-flex justify-content-center text-faded fade-in">
+                <div class="text-center">
+                    <h3><span class="TextoAcento">Nuestro Espacio</span></h3>
+                    <p class="text-nosotros">Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis veniam facere adipisci saepe neque atque sit, consequuntur doloribus repudiandae necessitatibus consequatur eaque id voluptatem minus ratione quae. Reprehenderit, enim atque!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planesHorarios" class="planes-horarios d-flex align-items-center">
+    <div class="container">
+      <div class="row justify-content-center fade-in">
+        <!-- Tarjeta principal -->
+        <div class="col-12 col-lg-10">
+          <div class="card-custom text-center p-4">
+            <h2 class="titulo-card"><span class="TextoAcento">Nuestros Planes</span></h2>
+  
+            <!-- Grid de tarjetas -->
+            <div class="row">
+              {% for plan in planes %}
+              <div class="col-12 col-md-4 mb-4">
+                <div class="card-plan p-3 h-100 text-center">
+                  <h5 class="titulo-plan">{{ plan.nombre }}</h5>
+                  <p class="detalle-plan">{{ plan.detalle }}</p>
+                  <p class="precio-plan">$ {{ plan.precio_formateado }}</p>
+                  <a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}&text={{ configuracion.mensaje_whatsapp_plan }} {{ plan.nombre }}" target="_blank"><button class="btn-custom ">Consultar</button></a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+                <p class="card-text">
+                    Abierto 
+                    {% if 'lunes' in configuracion.dias_habilitados and 'viernes' in configuracion.dias_habilitados %}
+                        de lunes a viernes, de {{ configuracion.horario_semana_inicio }} a {{ configuracion.horario_semana_fin }} hs.
+                    {% endif %}
+                    {% if 'sabado' in configuracion.dias_habilitados %}
+                        Sábados {{ configuracion.horario_sabado_inicio }} a {{ configuracion.horario_sabado_fin }} hs.
+                    {% endif %}
+                    {% if 'domingo' in configuracion.dias_habilitados %}
+                        Domingo {{ configuracion.horario_domingo_inicio }} a {{ configuracion.horario_domingo_fin }} hs.
+                    {% endif %}
+                </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section id="eventos">
+    <div class="container fade-in">
+        <div class="row eventos-contenedor">
+            <!-- Columna de Imagen -->
+            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                <img src="/static/img/ImgEventos.png" alt="Eventos" class="img-eventos">
+            </div>            
+
+            <!-- Columna de Texto -->
+            <div class="col-md-6 d-flex flex-column justify-content-center ">
+                <h3><span class="TextoAcento">Eventos</span></h3>
+                <p class="eventos-texto">
+                    Únete a nuestras clases especiales, talleres y eventos exclusivos para mejorar tu bienestar físico y mental.
+                </p>
+                <a href="{% url 'eventos' %}#eventos"><button class="btn-custom">Ver próximos eventos</button></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="staff" class="staff-seccion">
+    <div class="container text-center">
+        <h3 class="titulo-staff"><span class="TextoAcento">Nuestro Staff</span></h3>
+        <p class="descripcion-staff">Conoce a nuestro equipo de profesionales comprometidos con tu bienestar.</p>
+
+        <!-- Contenedor de tarjetas para escritorio -->
+        <div class="d-none d-md-flex justify-content-center">
+            {% for empleado in empleados %}
+            <div class="staff-card">
+                <img src="/media/{{ empleado.imagen_perfil }}" alt="{{ empleado.nombre }}">
+                <h4>{{ empleado.nombre }}</h4>
+                <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
+                    <i class="fab fa-instagram"></i> {{ empleado.instagram }}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+<!-- Contenedor de tarjetas para móvil -->
+
+<div class="container" id="containerCarusel">
+    <div class="carousel slide carousel-fade" id="carousel1" data-bs-ride="carousel">
+        
+        <div class="carousel-inner">
+            {% for empleado in empleados %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="staff-card">
+                    <img src="/media/{{ empleado.imagen_perfil }}" alt="{{ empleado.nombre }}">
+                    <h4>{{ empleado.nombre }}</h4>
+                    <a href="https://instagram.com/{{ empleado.instagram }}" target="_blank">
+                        <i class="fab fa-instagram"></i> {{ empleado.instagram }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </a>
+
+        <a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </a>
+    </div>
+</div>
+
+</section>
+
+
+{% endblock %}

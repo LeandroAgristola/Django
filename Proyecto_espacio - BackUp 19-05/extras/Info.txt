@@ -1,0 +1,195 @@
+Proyecto Pilates / Yoga / Gimnasios
+
+Tecnologías
+
+    Lenguajes de Programación:
+
+        HTML
+        CSS
+        JavaScript y/o Python
+
+    Frameworks y Librerías
+
+        Bootstrap (para el diseño responsive)
+        Django (según la elección final del stack)
+
+Este es un proyecto orientado para clientes que disponen de un Centro de Pilates o yoga, 
+también dándole algunos ajustes se puede utilizar para un gimnasio en general
+
+Esta web va a combinar one page con paginas independientes. 
+Dispondrá de una página de administración donde se podrán realizar las siguientes acciones:
+
+    Crear evento:
+        Fecha y hora
+        lugar
+        Info del evento (tareas a realizar metodología)
+        Costo (si es 0 se mostrará como "sin costo")
+        Cantidad de cupos
+
+    Listado de eventos activos (Botón de borrar y modificar):
+        Misma info de enveto
+        Listado de inscriptos
+        Cupos disponibles
+
+    Clientes:
+        Crear nuevo usuario:
+            Nombre
+            Apellido
+            Edad
+            Fecha de inscripción
+            Plan actual
+            Horario (calendario)
+            Numero de cliente (lo asigna atumaticamente)
+                
+    *Calendario: el sistema solo debe dejar cargar clientes en un horario disponible, se podrá cargar solo 6 clientes por hora. 
+    Cuando mostremos el calendario para cargar un nuevo cliente debe mostrar el Excel actual actualizado y marcar en verde los días 
+    y horarios disponibles.
+
+        Listados de usuarios activos (botón de borrar o modificar)
+            Al presionar sobre un nombre mostrar:
+                Nombre
+                Apellido
+                Edad
+                Fecha de inscripción
+                Plan actual
+                Numero de cliente
+
+        Calendario:
+            Mostrar Excel con clientes por turno al presionar en un día debemos ver el listado del día por hora con los clientes por hora
+            Al eliminar un cliente debe ser eliminado su usuario en todos los turnos que esté inscripto, dejando libre automáticamente
+            su horario para poder ser utilizado por otro cliente.
+            Automáticamente se debe actualizar el Excel
+            El calendario debe poder ser descargado en una carpeta que se sincronizará en drive para que sea visto por todos los empleados.
+
+        Info de clientes:
+            Cantidad de activos totales
+            Cantidad de activos por plan (agregar filtro)
+            Historial de bajas (mensual, trimestral, semestral)
+
+  Empleados:
+        Listado de empleados actuales (boton de borrar o modificar)
+             Al precionar sobre un nombre mostrar:
+                Nombre (se muestra en la tarjeta)
+                Apellido (se muestra en la tarjeta)
+                Foto (se muestra en la tarjeta)
+                Instagram
+                Fecha de ingreso
+                Celular
+                Dirección
+                
+        Agregar nuevo empleado:
+            Nombre (se muestra en la tarjeta)
+            Apellido (se muestra en la tarjeta)
+            Foto (se muestra en la tarjeta)
+            Instagram
+            Fecha de ingreso
+            Celular
+            Dirección
+              
+Estructura de la página:
+
+Fuente suave y colores cálidos
+
+Layout:
+
+Header alto de xxx: Fondo color del espacio
+    Izquierda logos pequeños con link a las redes
+    Logo centrado grande
+    Navbar debajo con pequeña animación cuando pasamos el cursor:
+        Home (Index)
+        Nosotros (Index)
+        Planes (Page 1)
+        Horarios (Page 1) Opcional Page 2
+        Staff (Index)
+        Eventos (Page 2/3)
+        Contacto (Page 3/4)
+
+footer:
+    Horizontal: 
+        Icono/instagram (link a instagram)
+        Icono/Cel (link a whatsapp)
+        Icono/Mail (link a mail to)
+        Icono/Direccion (link a google maps)
+    Copy right:Debajo centrado letra pequeña
+
+Home:
+
+Seccion "nosotros":
+    Fondo blanco
+    Debajo del header contiene un div centrado en pagina con un frase a la izquierda y un imagen con forma a la deracha
+    *la forma de la imagen puede ser redondeada con efectos de sombra, etc
+
+Divisor con un frase: letras anchas ocupando el ancho de la pagina
+
+Seccion Planes:
+    Targenta grande contenedora cuadrada, bordese redondeados, Foto del espacio con un linearGradient para opacar la imagen
+    Tarjetas internas,cuadrada, bordese redondeados, color oscuro fondo color del espacio, con un alfa de 0.8.
+    Tarjeta Nro1: Planes
+        Titulo "planes"
+        Pequeñaa frase
+        boton "Ver Planes" (link a page 1)
+    Tarjeta Nro2: Horarios 
+        Titulo "Horarios"
+        Mostrar horarios en el que esta abierto el espacio.
+        boton: "ver calendario" (link a page 2) opcionl
+
+Seccion Eventos:
+    Fondo blanco
+    Izquierda  Foto del evento cuadrada border redondeados
+    Derecha:
+         frase pequeña (opcional)
+         boton grande de "ver eventos" (link a page 2)   
+
+Seccion Staff:
+    Tarjetas indiviaules cuadradas, se muestran hasta 4
+    En modo mobil se muestra un carrusel con una sola imagen.
+    Tarjeta contienen:
+        Foto del empleado
+        Solo nombre
+        Instagram (opcional)
+
+Page 1: Planes
+    Layout
+    Fondo imagen del estudio y/o entrenamiento con un linearGradient para opacar la imagen
+    Tarjetas con planes:
+        Version mobil: 1 carrusel con un tarjeta 
+        Version desktop: motrar 6 tarjetas apiladas de 2 x 3
+        Tarjetas con el mismo estilo que en home seccion planes
+        Cada tarjeta contien: 
+            img (opcional)
+            Nombre del Plan
+            Clases por semana
+            Valor
+            Boton "consultar por plan (opcional)
+                este boton nos llevara a un ventana de whatsapp con un mensaje pre armado:
+                    "Hola queria consultar por el plan "x"
+                
+Page 2: Horarios
+    Layout
+    Fondo imagen del estudio y/o entrenamiento con un linearGradient para opacar la imagen
+    Consumir calendario de la ventana de administración
+    Calendario interactivo:
+        Mostrar calendario por dia (en verde si tiene horarios disponibles en rojo si no hay horarios disponibles)
+        Al precionar sobre un dia mostrar la linea de tiempo del dia solo con los horarios disponibles
+        Si el dia no tiene horarios disponibles mostrar un mensaje de "el dia seleccionado no tiene horarios disponibles"
+
+Page 2/3: Eventos
+    Layout
+    Tarjetas del mismo estilo que home
+    Imagen de fondo de la tarjeta con evento con linearGradient
+    Encima de la imagen info:
+        dia
+        Horario
+        Valor
+        Disponible o completo
+            La disponbibilidad la dara la cantidad de gente que se incribe segun el cupo cargado por el administrador
+        boton de "incribirse"
+            el boton solo se muestra si esta disponible, en caso de estar completo mostrar el boton gris sin efectos.
+
+Page 3/4: Contacto 
+
+    Layout
+    Fondo imagen del estudio y/o entrenamiento con un linearGradient para opacar la imagen
+    Formulario de contacto
+        Cada input debe tener un color en hover del mismo que el estudio.
+        El formulario se enviar por mail o whatsapp al administrador.

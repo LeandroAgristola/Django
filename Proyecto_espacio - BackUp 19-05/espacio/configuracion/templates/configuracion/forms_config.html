@@ -1,0 +1,118 @@
+{% extends "management/layout_management.html" %}
+{% block content %}
+
+<div class="container my-4" id="formConfig">
+  <h2 class="mb-4">
+      Editar Configuración
+  </h2>
+
+  <form id="configForm" method="post">
+    {% csrf_token %}
+
+    <!-- Otros campos -->
+    {% for field in form %}
+    {% if field.name not in "dias_habilitados horario_semana_inicio horario_semana_fin horario_sabado_inicio horario_sabado_fin horario_domingo_inicio horario_domingo_fin" %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Campo personalizado: Días habilitados -->
+    <div class="row">
+      {% for checkbox in form.dias_habilitados %}
+        <div class="col-md-6 mb-2">
+          <div class="form-check">
+            {{ checkbox.tag }}
+            <label class="form-check-label ms-2">{{ checkbox.choice_label }}</label>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+        
+    <!-- Campo personalizado: Horarios -->
+    <div class="row">
+        <div class="col-md-6 mb-2">
+          {{ form.horario_semana_inicio.label_tag }}
+          {{ form.horario_semana_inicio }}
+          {% if form.horario_semana_inicio.errors %}
+          <div class="text-danger small">{{ form.horario_semana_inicio.errors|striptags }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 mb-2">
+          {{ form.horario_semana_fin.label_tag }}
+          {{ form.horario_semana_fin }}
+          {% if form.horario_semana_fin.errors %}
+          <div class="text-danger small">{{ form.horario_semana_fin.errors|striptags }}</div>
+          {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-2">
+        {{ form.horario_sabado_inicio.label_tag }}
+        {{ form.horario_sabado_inicio }}
+        {% if form.horario_sabado_inicio.errors %}
+        <div class="text-danger small">{{ form.horario_sabado_inicio.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6 mb-2">
+        {{ form.horario_sabado_fin.label_tag }}
+        {{ form.horario_sabado_fin }}
+        {% if form.horario_sabado_fin.errors %}
+        <div class="text-danger small">{{ form.horario_sabado_fin.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        {{ form.horario_domingo_inicio.label_tag }}
+        {{ form.horario_domingo_inicio }}
+        {% if form.horario_domingo_inicio.errors %}
+        <div class="text-danger small">{{ form.horario_domingo_inicio.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6 mb-3">
+        {{ form.horario_domingo_fin.label_tag }}
+        {{ form.horario_domingo_fin }}
+        {% if form.horario_domingo_fin.errors %}
+        <div class="text-danger small">{{ form.horario_domingo_fin.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">
+        Guardar
+      </button>
+      <a href="{% url 'configuracion:panel_config' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Confirmar cambios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que querés guardar los cambios? Los datos se verán reflejados en la página principal.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success" form="configForm">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

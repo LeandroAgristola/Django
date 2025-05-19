@@ -1,0 +1,26 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="tarjetaEmpleado">
+    <h2 class="text-center">Detalle del Empleado</h2>
+
+    <div class="card mt-3 p-3">
+        {% if empleado.imagen_perfil %}
+        <p class="text-center">
+            <img src="{{ empleado.imagen_perfil.url }}" alt="Foto de {{ empleado.nombre }}" style="max-height: 200px;">
+        </p>
+        {% endif %}
+
+        <p class="TextoEmpleado"><strong>Nombre:</strong> {{ empleado.nombre }} {{ empleado.apellido }}</p>
+        <p class="TextoEmpleado"><strong>Email:</strong> {{ empleado.email }}</p>
+        <p class="TextoEmpleado"><strong>Teléfono:</strong> {{ empleado.telefono }}</p>
+        <p class="TextoEmpleado"><strong>Dirección:</strong> {{ empleado.direccion }}</p>
+        <p class="TextoEmpleado"><strong>Fecha de ingreso:</strong> {{ empleado.fecha_alta }}</p>
+        <p class="TextoEmpleado"><strong>Mostrar en web:</strong> {{ empleado.mostrar_en_web|yesno:"Sí,No" }}</p>
+        
+        <div class="text-center">
+            <a href="{% url 'lista_empleados' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

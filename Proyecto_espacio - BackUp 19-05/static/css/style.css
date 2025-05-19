@@ -1,0 +1,776 @@
+
+
+/* Estilos Generales ------------------> */
+html {
+    scroll-behavior: smooth;
+}
+
+.Paleta {
+    color: #f6eddc;
+    color: #e3e5d7;/*Fondos*/
+    color: #bdd6d2; 
+    color: #a5c8ca; 
+    color: #586875; /*Hover / Focus*/
+    color: #3c4750; /*Texto*/
+    color: #283131; /*Texto Acento*/
+}
+
+.Fuentes {
+    font-family: "Federo", sans-serif; /* Logo */
+    font-family: "Faculty Glyphic", sans-serif; /* Fuente Principal*/ 
+    font-family: "Farro", sans-serif; /*NavLink*/        
+}
+
+body {
+    margin: 0;
+}
+
+.TextoAcento {
+    color: #283131;
+    font-weight: bold;
+    font-family: "Federo", sans-serif;
+
+}
+
+p ,h1, h2, h3, h4, a {
+    color: #3c4750;   
+}
+
+a {
+    text-decoration: none;
+    font-family: "Farro", sans-serif;
+}
+
+p {
+    font-family: "Faculty Glyphic", sans-serif
+}
+
+a:hover,
+a:focus {
+    color: #586875;
+}
+
+.btn-custom {
+    background-color: #586875;
+    color: #f6eddc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-family: "Farro", sans-serif;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-custom:hover {
+    background-color: #3c4750;
+}
+
+/* Botón flotante de WhatsApp ------------------> */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #fff;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #1ebe57;
+}
+
+/* Estilos para el header ------------------> */
+.custom-header {
+    background-color: #e3e5d7;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    padding: 10px 0;
+    height: 120px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a {
+    font-size: 1rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.social-icons a:hover {
+    transform: scale(1.2);
+}
+
+/* Estilos para el logo ------------------> */
+.logo-img {
+    height: 50px;
+    width: auto;
+    margin-bottom: 5px;
+}
+
+.logo-title {
+    font-family: "Federo", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Estilos para el navbar ------------------> */
+.navbar {
+    padding: 0;
+}
+
+.navbar-nav {
+    text-align: center;
+}
+
+.nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 5px 0;
+    position: relative;
+    letter-spacing: 1px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color:  #586875;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Estilo para texto de hero ------------------> */
+
+#hero{
+    height: calc(100vh - 120px);    
+}
+
+#Textohero {
+    font-family: "Federo", sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    padding: 0 50px;
+}
+
+/* Sección Nosotros ------------------> */
+
+#nosotros {
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 100% de la altura de la ventana */
+    background-color: #f6eddc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#nosotros .row{
+    padding: 15px;
+}
+
+.text-nosotros {
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 15px 10px; 
+}
+
+.img-nosotros {
+    width: 90%;
+    max-height: 350px;  /* Evita que la imagen crezca demasiado */
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Sección Planes y Horarios ------------------>*/
+
+#planesHorarios {
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/ImgPlanesHorarios.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 60px 0;
+}
+
+#planesHorarios .card-custom {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: #bdd6d2; /* Color armonioso con opacidad */
+    border-radius: 20px;
+    z-index: 1;
+}
+
+#planesHorarios .titulo-card {
+    margin-bottom: 30px;
+}
+
+#planesHorarios .card-text {
+    font-size: 1.5rem;
+    color: #3c4750;
+    margin-bottom: 10px;
+    background-color: #e3e5d7;
+    border-radius: 20px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card-plan { /* Tarjetas individuales */
+    background-color: #e3e5d7;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.card-plan:hover {
+    transform: translateY(-4px);
+}
+
+.titulo-plan {
+    font-family: "Federo", sans-serif;
+    font-size: 1.2rem;
+    color: #283131;
+    margin-bottom: 10px;
+}
+
+.detalle-plan {
+    font-size: 1rem;
+    color: #3c4750;
+}
+
+.precio-plan {
+    font-family: "Farro", sans-serif;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: #3c4750;
+}
+
+#planesHorarios .btn-custom { /* Botón */
+    width: 50%; 
+}
+
+/* Sección Eventos  ------------------>*/
+#eventos {
+    min-height: 50vh; 
+    background: #bdd6d29a;
+    display: flex;
+    align-items: center;
+}
+
+.eventos-texto {/* Columna del texto */
+    color: #3c4750;
+    font-size: 1rem;
+    max-width: 350px; /* Reduce el ancho del texto */
+}
+
+.img-eventos { /* Imagen */
+    width: 70%;
+    height: 70%;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-left: auto; /* Alinea la imagen a la derecha */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+#eventos .btn-custom { /* Botón */
+    width: 50%;
+}
+
+/* Seccion Staff ------------------>*/
+
+#containerCarusel {
+    display: none;
+}
+
+.staff-seccion {
+    min-height: 50vh;
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/img_staff.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    padding: 40px 0;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-staff {
+    font-family: "Federo", sans-serif;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.descripcion-staff {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.staff-card {
+    width: 220px;
+    height: 320px;
+    background-color:  #bdd6d2;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.staff-card img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: #a5c8ca;
+    object-fit: cover;
+}
+
+.staff-card h4 {
+    font-family: "Farro", sans-serif;
+    color: #3c4750;
+    margin-top: 10px;
+}
+
+.staff-card a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.staff-card i {
+    margin-right: 5px;
+}
+
+/* Footer ------------------>*/
+footer {
+    background-color: #e3e5d7;
+    font-size: 0.9em;
+    padding: 20px 0;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.footer-brand {/* Centrar elementos en móvil */
+    text-align: center;
+}
+
+.footer-social {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-social a {/* Iconos de redes y dirección */
+    font-size: 1.5rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.footer-social a:hover {
+    transform: scale(1.2);
+}
+
+/* Estilo de aparicion de los elementos ------------------>*/
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1.8s ease-out, transform 1.8s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 1366px) {
+
+}
+
+/* Estilos para mobile ------------------>*/
+@media (max-width: 767.98px) {
+    .custom-header {
+        height: 150px;
+    }
+
+    .logo-img {
+        height: 50px;
+    }
+    
+    .logo-title {
+        font-size: 1.5rem;
+    }
+
+    .social-icons {
+        display: none;;
+    }
+
+    .nav-link {
+        font-family: "Farro", sans-serif;
+        font-size: 1rem;
+        font-weight: lighter;
+    }
+
+    .navbar-collapse {
+        position: fixed;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: #e3e5d7;
+        display: flex ;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start !important;
+        padding-top: 20px;
+        z-index: 1050;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        opacity: 0;
+        display: none;
+    }
+
+    .navbar-collapse.show {
+        transform: translateY(0);
+        opacity: 1;
+        z-index: 1050;
+    }
+
+    .navbar-nav {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px; /* Espacio entre los enlaces */
+    }
+
+    /* Estilos para el botón de hamburguesa */
+    .navbar-toggler {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 10px;
+    }
+
+    .navbar-toggler-icon {
+        width: 30px;
+        height: 3px;
+        background-color: #3c4750;
+        position: relative;
+        transition: all 0.3s ease-in-out;
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+}
+
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after {
+        content: "";
+        width: 30px;
+        height: 3px;
+        background-color: #000000;
+        position: absolute;
+        left: 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .navbar-toggler:focus, .navbar-toggler:active {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .navbar-toggler-icon::before {
+        top: -10px;
+    }
+
+    .navbar-toggler-icon::after {
+        top: 10px;
+    }
+
+    /* Animación del botón de hamburguesa a cruz */
+    .navbar-toggler.active .navbar-toggler-icon {
+        background: none; /*esta propiedad soluciona la linea del medio al hacer la animacion de hamburguesa a*/
+    }
+
+    .navbar-toggler.active .navbar-toggler-icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .navbar-toggler.active .navbar-toggler-icon::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
+
+    /* Bloqueo de scroll al abrir el menú */
+    .menu-open {
+        overflow: hidden;
+        height: 100vh;
+    }
+
+    /* Iconos sociales dentro del menú */
+    .menu-social-icons {
+        margin-top: 50px;
+        padding-bottom: 20px; /* Espaciado inferior */
+        display: flex;
+        gap: 20px;
+    }
+
+    .menu-social-icons a i {
+        font-size: 1.5rem;
+        transition: transform 0.3s ease-in-out;
+        display: inline-block; /* Evita que afecte el flujo */
+    }
+
+    .menu-social-icons a i:hover {
+        transform: scale(1.2);
+    }
+
+    /* Seccion Hero Movil */
+    #Textohero {
+        margin-top: 20px;
+        font-size: 1.5rem;
+    }
+
+     /* Seccion Nosotros Movil */
+
+    #nosotros {
+        padding: 50px 15px; /* Más espacio en móviles */
+    }
+
+    .text-nosotros {
+        font-size: 1rem; /* Texto más pequeño en móviles */
+        max-width: 100%;
+    }
+
+    .img-nosotros {
+        max-height: 200px; /* Imagen más pequeña en móviles */
+    }
+
+    #nosotros .row {
+        gap: 20px; /* Espacio entre filas */
+    }
+
+    /* Seccion planesHorios movil */
+
+    #planesHorarios {
+        min-height: auto; /* Se adapta al contenido */
+    }
+
+    .card-plan {
+        margin-bottom: 20px;
+    }
+
+    /* Seccion Eventos Movil */
+
+    .eventos-contenedor {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .eventos-texto {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    #eventos .btn-custom {
+        width: 90%;
+        max-width: 250px;
+        margin: 20px auto; /* Asegura que el botón se centre */
+        display: block; /* Garantiza que no afecte la alineación */
+        text-align: center;
+    }
+
+    .img-eventos {
+        max-width: 70%;
+        margin: 20px auto 20px auto;
+    }
+
+    /* Seccion Staff Movil */
+
+    #containerCarusel {
+        display: block; /* Asegura que el carrusel se muestre */
+        margin: 0 auto;
+    }
+
+    #containerCarusel .carousel {
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    #containerCarusel .carousel-inner {
+        position: relative;
+        justify-content: center;
+        padding-bottom: 0; 
+        align-items: center;
+    }
+
+    #containerCarusel .carousel-item {
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    #containerCarusel .staff-card {
+        border-radius: 15px;
+        height: 280px;
+        width: 220px; 
+        background-color:#bdd6d2;
+        color: white;
+        background-position: center;
+        background-size: cover;
+        padding: 15px;
+        margin: 20px auto; 
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    #containerCarusel .staff-card img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border-style: solid;
+        border-color: #a5c8ca;
+    }
+
+    #containerCarusel .carousel-item.active {
+        position: relative;
+        opacity: 1;
+        z-index: 1;
+    }
+
+    #containerCarusel .staff-card h4 {
+        font-family: "Farro", sans-serif;
+        color: #3c4750;
+        margin-top: 10px;
+    }
+
+    #containerCarusel .staff-card a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ajustes para los controles del carrusel */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 40px;
+        height: 40px;
+        filter: invert(100%); /* Cambia el color de los iconos */
+        z-index: 2; /* Asegura que los botones estén por encima de las tarjetas */
+    }
+
+    /* Seccion Footer Movil */
+
+    .footer-brand {
+        flex-direction: row; /* Mantiene el logo y el texto en línea */
+        align-items: center;
+        justify-content: center; /* Centra horizontalmente */
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+}
+
+/* Template eventos ------------------>*/
+
+#eventosTemplate {
+    min-height: 100vh; /* Asegura que la sección ocupe al menos el 50% de la altura de la ventana */
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/ImgEventosTemplate.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 60px 0;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+#eventosTemplate .card-custom { /*Tarjeta contenedora  de fondo*/
+    background: #bdd6d2; /* Color armonioso con opacidad */
+    border-radius: 20px;
+    z-index: 1;
+}
+.card-evento {
+    --imagen-evento: none; /* valor default lo carga dinamicamente desde HTML */
+    background-image: linear-gradient(90deg, #f5ecdb, #f5ecdbf5, #f5ecdb86),var(--imagen-evento); /* agregamos el gradient que aplica a la variable que tomamos desde HTML */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    height: 450px;
+}
+
+.card-evento:hover {
+    transform: translateY(-4px);
+}
+
+.titulo-evento {
+    font-family: "Federo", sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #283131;
+    margin-bottom: 10px;
+}
+
+#eventosTemplate .card-text{
+    font-size: 1.2rem;
+}
+
+#eventosTemplate .btn-custom { /* Botón */
+    width: 100%;
+}
+
+#eventosTemplate #btn-Nodisponible {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+#eventosTemplate .linkPago {
+    background-color: #bdd6d2;
+    border-radius: 10px;
+    padding: 5px;  
+}
+

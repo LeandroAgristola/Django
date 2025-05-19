@@ -1,0 +1,69 @@
+{% extends "management/layout_management.html" %}
+{% block content %}
+
+<div class="container my-4" id="formPlanes">
+  <h2 class="mb-4">
+    {% if form.instance.pk %}
+      Editar Plan
+    {% else %}
+      Crear Plan
+    {% endif %}
+  </h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="{{ form.nombre.id_for_label }}" class="form-label">Título</label>
+      {{ form.nombre }}
+      {% if form.nombre.errors %}
+        <div class="text-danger small">{{ form.nombre.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Mostrar en web -->
+    <div class="form-check form-switch mb-4">
+        {{ form.mostrar_en_web }}
+        <label for="{{ form.mostrar_en_web.id_for_label }}" class="form-check-label">Mostrar en la web</label>
+        {% if form.mostrar_en_web.errors %}
+            <div class="text-danger small">{{ form.mostrar_en_web.errors|striptags }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Detalle -->
+    <div class="mb-3">
+      <label for="{{ form.detalle.id_for_label }}" class="form-label">Descripción</label>
+      {{ form.detalle }}
+      {% if form.detalle.errors %}
+        <div class="text-danger small">{{ form.detalle.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Cantidad de días -->
+    <div class="mb-3">
+        <label for="{{ form.cantidad_dias.id_for_label }}" class="form-label">Cantidad de días por semana</label>
+        {{ form.cantidad_dias }}
+        {% if form.cantidad_dias.errors %}
+        <div class="text-danger small">{{ form.cantidad_dias.errors|striptags }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Precio -->
+    <div class="mb-3">
+      <label for="{{ form.precio.id_for_label }}" class="form-label">Precio</label>
+      {{ form.precio }}
+      {% if form.precio.errors %}
+        <div class="text-danger small">{{ form.precio.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-success">Guardar</button>
+      <a href="{% url 'planes:lista_planes' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

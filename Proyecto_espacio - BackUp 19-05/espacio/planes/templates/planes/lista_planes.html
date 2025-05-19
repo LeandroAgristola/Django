@@ -1,0 +1,118 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="listaPlanes">
+    <h2 class="mb-4">Lista de <strong>Planes</strong></h2>
+    <a href="{% url 'planes:crear_plan' %}" class="btn btn-success mb-3">Nuevo Plan</a>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Días</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in planes_activos %}
+            <tr>
+                <td>{{ plan.nombre }}</td>
+                <td>{{ plan.detalle }}</td>
+                <td>${{ plan.precio }}</td>
+                <td>{{ plan.cantidad_dias }}</td>
+                <td>Activo</td>
+                <td>
+                    <a href="{% url 'planes:editar_plan' plan.id %}" class="btn btn-outline-primary btn-sm">Editar</a>
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDesactivar{{ plan.id }}">X</button>
+                </td>
+            </tr>
+
+            <!-- Modal Desactivar -->
+            <div class="modal fade" id="modalDesactivar{{ plan.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{% url 'planes:desactivar_plan' plan.id %}">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Desactivar plan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro que querés desactivar el plan <strong>{{ plan.nombre }}</strong>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Sí, desactivar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr><td colspan="6">No hay planes activos.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Planes No Activos -->
+    <hr>
+    <h4 class="mt-5">Planes inactivos</h4>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in planes_inactivos %}
+            <tr>
+                <td>{{ plan.nombre }}</td>
+                <td>{{ plan.detalle  }}</td>
+                <td>${{ plan.precio }}</td>
+                <td>Inactivo</td>
+                <td>
+                    <!-- Reactivar lleva a formulario de edición -->
+                    <a href="{% url 'planes:editar_plan' plan.id %}" class="btn btn-outline-success btn-sm">Reactivar</a>
+
+                    <!-- Modal Eliminar Permanente -->
+                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ plan.id }}">X</button>
+                </td>
+            </tr>
+
+            <!-- Modal Eliminar Permanente -->
+            <div class="modal fade" id="modalEliminar{{ plan.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{% url 'planes:eliminar_plan' plan.id %}">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Eliminar Plan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Querés eliminar <strong>{{ plan.nombre }}</strong> permanentemente?<br>
+                                <small class="text-danger">Esta acción no se puede deshacer.</small>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <tr><td colspan="5">No hay planes inactivos.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

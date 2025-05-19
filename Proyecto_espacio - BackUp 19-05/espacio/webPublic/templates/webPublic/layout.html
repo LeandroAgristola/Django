@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-ES"> 
+	<head> 
+		<meta charset="utf-8"> <!-- Sets character encoding to support special characters -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive design for mobile devices -->
+		<meta name="description" content="COMPLETAR"> <!-- SEO meta description -->
+
+		{% block css %}
+		<!-- Bootstrap CSS for responsive design -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+		<!-- Custom CSS styles -->
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?v=2">
+		{% endblock %}
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="{% static 'logo/favicon.ico' %}">
+
+		<!-- Font -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Farro:wght@300;400;500;700&family=Federo&display=swap" rel="stylesheet">
+
+		<!-- Font Awesome for icons -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" 
+		integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" 
+		crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+		
+		<title>{% block title %} {{ configuracion.nombre_estudio }} {% endblock %}</title> <!-- Page title with a block for dynamic content -->
+	</head>
+	
+	<body>
+
+<!-- Header Section -->
+		<header id="home" class="custom-header">
+			<div class="container">
+				<!-- Primera fila: Iconos sociales y logo -->
+				<div class="row align-items-center py-2">
+					<!-- Iconos sociales -->
+					<div class="col-md-3 social-icons">
+						<a href="{{ configuracion.instagram }}" target="_blank">
+							<i class="fab fa-instagram fa-lg mx-2"></i>
+						</a>
+						<a href="{{ configuracion.facebook }}" target="_blank">
+							<i class="fab fa-facebook-f fa-lg mx-2"></i>
+						</a>
+						<a href="{{ configuracion.youtube }}" target="_blank">
+							<i class="fab fa-youtube fa-lg mx-2"></i>
+						</a>
+					</div>
+					
+					<!-- Logo centrado -->
+					<div class="col-md-6 text-center">
+						<a href="{% url 'home' %}" class="d-flex flex-row align-items-center justify-content-center">
+							<h1 class="logo-title mb-0"> {{ configuracion.nombre_estudio }} </h1>
+							<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-2"> 
+						</a>
+					</div>
+					
+					<!-- Espacio vacío para balancear el grid -->
+					<div class="col-md-3">
+						
+					</div>
+				</div>	
+				<!-- Segunda fila: Navbar -->
+				<div class="row">
+					<div class="col-12">
+						<nav class="navbar navbar-expand-md navbar-light justify-content-center">
+							<!-- Botón de hamburguesa -->
+							<button class="navbar-toggler" type="button" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							</button>
+
+							<!-- Menú colapsable -->
+							<div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
+								<ul class="navbar-nav">
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#nosotros">Nosotros</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#planesHorarios">Planes</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'eventos' %}#eventos">Eventos</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="{% url 'home' %}#staff">Staff</a></li>
+									<li class="nav-item mx-2"><a class="nav-link" href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" target="_blank">Consultar</a></li>
+								</ul>
+
+								<!-- Iconos sociales dentro del menú en móvil -->
+								<div class="menu-social-icons d-md-none">
+									<a href="{{ configuracion.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
+									<a href="{{ configuracion.facebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+									<a href="{{ configuracion.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<!-- Dynamic content block -->
+		{% block content %}
+
+		{% endblock %}
+		
+		<!-- Footer Section -->
+		<footer class="py-4">
+			<div class="container">
+				<div class="row justify-content-center align-items-center text-center text-md-start">
+					
+					<!-- Columna 1: Logo, redes y dirección -->
+					<div class="col-md-6">
+						<div class="footer-brand mb-3 d-flex flex-md-row align-items-center justify-content-center justify-content-md-start">
+							<a href="{% url 'home' %}" class="d-flex flex-row align-items-center justify-content-center">
+								<h1 class="logo-title mb-0 mt-2 mt-md-0">Estudio</h1>
+								<img src="{% static 'logo/logo.png' %}" alt="logo" class="logo-img me-md-2">
+							</a>
+						</div>
+						<div class="footer-social">
+							<a href="{{ configuracion.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
+							<a href="{{ configuracion.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>
+							<a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" target="_blank"><i class="fab fa-whatsapp"></i></a>
+							<a href="{{ configuracion.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
+							<a href="mailto:{{ configuracion.email }}" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+							<a href="{{ configuracion.maps }}" target="_blank"><i class="fa-solid fa-location-dot"></i></a>
+						</div>
+						<p class="mt-2"> {{ configuracion.direccion }} </p>
+					</div>
+
+					<!-- Columna 2: Información legal -->
+					<div class="col-md-6 text-center text-md-end mt-4 mt-md-0">
+						<p class="mb-1">&copy; Copyright 2024 | Todos los derechos reservados</p>
+						<p class="mb-0">CUIT {{ configuracion.cuit }} | {{ configuracion.direccion }}</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+		
+		<!-- Boton de whatsapp -->
+		<a href="https://api.whatsapp.com/send?phone={{ configuracion.whatsapp }}" 
+			class="whatsapp-float" 
+			target="_blank" 
+			aria-label="Chatea con nosotros por WhatsApp">
+			<i class="fab fa-whatsapp"></i>
+		</a>
+
+		<!-- Scripts block for JS files -->
+		{% block scripts %}
+		<!-- Bootstrap JS bundle -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- Animacion del scroll -->
+		<script src="{% static 'js/fadeInOnScroll.js' %}"></script>
+		<!-- Animacion del Menu -->
+		<script src="{% static 'js/menu-animations.js' %}"></script>
+		{% endblock %}
+	</body>
+</html>
