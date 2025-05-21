@@ -21,8 +21,6 @@ from django.templatetags.static import static
 import os
 from reportlab.pdfgen import canvas # exportar_pdf
 
-
-
 @login_required
 def lista_eventos(request):
     eventos = Evento.objects.filter(estado=True)
@@ -86,13 +84,10 @@ def editar_evento(request, pk):
 def desactivar_evento(request, pk):
     evento = get_object_or_404(Evento, pk=pk)
 
-    # Contar cuántos inscriptos tenía
     cantidad_inscriptos = InscripcionEvento.objects.filter(evento=evento).count()
 
-    # Eliminar inscripciones
     InscripcionEvento.objects.filter(evento=evento).delete()
 
-    # Restaurar cupos
     evento.cupos += cantidad_inscriptos
     evento.estado = False
     evento.save()
@@ -154,12 +149,17 @@ def inscribir_cliente(request, evento_id):
                 email = request.POST.get('cliente_id')
                 cliente = Cliente.objects.get(mail=email)
 
-            else:  # nuevo
+            else: 
+                email = form.cleaned_data['email']
+                if Cliente.objects.filter(mail=email).exists():
+                    messages.error(request, "El correo electrónico ya está registrado.")
+                    return redirect('eventos_admin:inscribir_cliente', evento_id=evento.id)
+
                 cliente = Cliente.objects.create(
                     nombre=form.cleaned_data['nombre'],
                     apellido=form.cleaned_data['apellido'],
-                    dni=int(datetime.now().timestamp()),  # temporal, o generá uno por formulario
-                    mail=form.cleaned_data['email'],
+                    dni=int(datetime.now().timestamp()), 
+                    mail=email,
                     telefono=form.cleaned_data['telefono'],  
                     plan=None,
                     tipo='eventual',
@@ -170,7 +170,7 @@ def inscribir_cliente(request, evento_id):
                 messages.warning(request, "Este cliente ya está inscripto en el evento.")
                 return redirect('eventos_admin:inscribir_cliente', evento_id=evento.id)
 
-            evento.cupos = max(0, evento.cupos - 1)  # no baja de 0
+            evento.cupos = max(0, evento.cupos - 1) 
             evento.save()
 
             inscripcion = InscripcionEvento.objects.create(
@@ -212,16 +212,12 @@ def eliminar_inscripcion(request, inscripcion_id):
     inscripcion = get_object_or_404(InscripcionEvento, id=inscripcion_id)
     evento = inscripcion.evento
 
-    # Liberamos el cupo
     evento.cupos += 1
     evento.save()
 
-    # Eliminamos solo la inscripción, no el cliente
     inscripcion.delete()
     messages.success(request, "Inscripción eliminada y cupo liberado.")
     return redirect('eventos_admin:detalle_eventos', pk=evento.id)
-
-# Vista para exportar inscriptos a PDF
 
 @login_required
 def exportar_inscriptos_pdf(request, evento_id):
@@ -234,23 +230,19 @@ def exportar_inscriptos_pdf(request, evento_id):
     c = canvas.Canvas(response, pagesize=A4)
     width, height = A4
 
-    # Logo
     logo_path = 'C:/Users/Leandro/Documents/ReposGit/Django/Proyecto_espacio/static/logo/logo.png'
     if os.path.exists(logo_path):
         x = 15 * cm
-        y = height - 5 * cm  # un poquito más abajo
+        y = height - 5 * cm 
         c.drawImage(logo_path, x, y, width=4*cm, height=4*cm, preserveAspectRatio=True, mask='auto')
 
-    # Título
     c.setFont("Helvetica-Bold", 16)
     c.drawString(1*cm, height - 2*cm, "Listado de Inscriptos")
 
-    # Datos del evento
     c.setFont("Helvetica", 10)
     c.drawString(1*cm, height - 3*cm, f"Evento: {evento.titulo}")
     c.drawString(1*cm, height - 3.6*cm, f"Fecha: {evento.fecha.strftime('%d/%m/%Y')} - Hora: {evento.hora.strftime('%H:%M')} hs")
 
-    # Datos de tabla
     data = [["Nombre y Apellido", "Email", "Teléfono", "Estado"]]
     for ins in inscripciones:
         data.append([
@@ -260,7 +252,6 @@ def exportar_inscriptos_pdf(request, evento_id):
             ins.get_estado_display()
         ])
 
-    # Tabla
     table = Table(data, colWidths=[6*cm, 6*cm, 3*cm, 3*cm])
     table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
@@ -283,20 +274,18 @@ def exportar_inscriptos_pdf(request, evento_id):
 
 @login_required
 def estadisticas_eventos(request):
-    rango = request.GET.get('rango', '4')  # Por defecto últimos 4 eventos
+    rango = request.GET.get('rango', '4')  
     
     hoy = timezone.now().date()
     
-    # Obtenemos eventos finalizados (incluyendo los desactivados)
     eventos = Evento.objects.filter(
         fecha__lte=hoy
     ).order_by('-fecha', '-hora')
     
-    # Filtramos por cantidad de eventos según el rango
     if rango.isdigit():
         eventos = eventos[:int(rango)]
     else:
-        eventos = eventos[:4]  # Valor por defecto
+        eventos = eventos[:4] 
 
     data = {
         'labels': [],
@@ -321,7 +310,6 @@ def estadisticas_eventos(request):
         if not evento.estado:
             data['cancelados'] += 1
 
-    # Calculamos el promedio de ocupación
     if eventos:
         data['promedio_ocupacion'] = round(total_porcentaje / len(eventos))
 

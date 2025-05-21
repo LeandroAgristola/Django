@@ -146,3 +146,12 @@ class InscribirClienteForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        tipo_cliente = self.cleaned_data.get('tipo_cliente')
+        
+        if tipo_cliente == 'nuevo':
+            if Cliente.objects.filter(mail=email).exists():
+                raise ValidationError("Este correo electrónico ya está registrado.")
+        return email
