@@ -119,38 +119,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const planesData = JSON.parse(document.getElementById('planesJSON').textContent);
 
-   const selectedOption = planSelect.options[planSelect.selectedIndex];
-  maxDias = parseInt(selectedOption?.getAttribute('data-dias')) || 0;
-  maxTurnosSpan.textContent = maxDias;
-  mensajeDias.textContent = `Seleccioná ${maxDias} días de la semana y sus horarios.`;
-
-  // Setear datos de los planes
   Array.from(planSelect.options).forEach(option => {
     if (option.value && planesData[option.value]) {
       option.setAttribute('data-dias', planesData[option.value].cantidad_dias);
     }
   });
 
-  // Al cambiar el plan
-  planSelect.addEventListener('change', () => {
+  function actualizarUIPlan() {
     const selectedOption = planSelect.options[planSelect.selectedIndex];
-    maxDias = parseInt(selectedOption.getAttribute('data-dias')) || 0;
+    maxDias = parseInt(selectedOption?.getAttribute('data-dias')) || 0;
     maxTurnosSpan.textContent = maxDias;
-    contadorTurnos.textContent = seleccionados.size;
     mensajeDias.textContent = `Seleccioná ${maxDias} días de la semana y sus horarios.`;
     listaTurnos.innerHTML = '';
     inputsOcultos.innerHTML = '';
     seleccionados.clear();
-  });
+    contadorTurnos.textContent = '0';
+  }
 
-  // Día seleccionado
+  if (planSelect.value) {
+    actualizarUIPlan();
+  }
+
+ 
+  planSelect.addEventListener('change', actualizarUIPlan);
+
+
   selectDia.addEventListener('change', async () => {
       const dia = selectDia.value;
       selectHora.innerHTML = '';
       
       if (dia) {
           try {
-              // Mapeo de días a números de semana
+              
              const diasSemanaMap = {
                 'lunes':   0,
                 'martes':  1,
@@ -161,19 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 'domingo': 6
               };
               
-              // Calcular próxima fecha para el día seleccionado
+              
               const hoy = new Date();
-              // Corrige el desfase: transforma domingo(0) en 6, lunes(1) en 0, etc.
+             
               const hoyIndex = (hoy.getDay() + 6) % 7;
               const diaNum = diasSemanaMap[dia];
               const diffDias = (diaNum - hoyIndex + 7) % 7;
               const fechaConsulta = new Date(hoy);
               fechaConsulta.setDate(hoy.getDate() + diffDias);
               
-              // Formatear fecha YYYY-MM-DD
               const fechaStr = fechaConsulta.toLocaleDateString('sv-SE');
               
-              // Usar la URL correcta según tu configuración
+             
               const response = await fetch(`/management/calendario/horarios/?fecha=${fechaStr}`);
               
               if (!response.ok) {
@@ -186,10 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   throw new Error('Formato de respuesta inválido');
               }
 
-              // Limpiar select
+          
               selectHora.innerHTML = '<option value="">Seleccione horario</option>';
               
-              // Llenar con horarios disponibles
+          
               horarios.forEach(horario => {
                   if (horario.disponibles > 0) {
                       const option = document.createElement('option');
@@ -208,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
               selectHora.disabled = true;
               btnAgregar.disabled = true;
               
-              // Mostrar error temporal
               const errorAlert = document.createElement('div');
               errorAlert.className = 'alert alert-danger mt-2';
               errorAlert.innerHTML = `Error: ${error.message}`;
@@ -227,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hora = selectHora.value;
     const key = `${dia}-${hora}`;
 
-    // Eliminar alertas previas
     document.querySelectorAll('.alert-turno').forEach(e => e.remove());
 
     if (!dia || !hora) return;
@@ -258,12 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
       seleccionados.delete(key);
       contadorTurnos.textContent = seleccionados.size;
       li.remove();
-      // Eliminar inputs ocultos
       document.querySelectorAll(`[data-key="${key}"]`).forEach(el => el.remove());
     });
     listaTurnos.appendChild(li);
 
-    // Inputs ocultos
     const inputDia = document.createElement('input');
     inputDia.type = 'hidden';
     inputDia.name = 'dias[]';
@@ -280,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
     inputsOcultos.appendChild(inputHora);
   });
 
-  // Restaurar turnos previos (en caso de error)
   const diasIniciales = Array.from(document.getElementsByName('dias[]')).map(i => i.value);
   const horasIniciales = Array.from(document.getElementsByName('horas[]')).map(i => i.value);
   if (diasIniciales.length && horasIniciales.length && diasIniciales.length === horasIniciales.length) {

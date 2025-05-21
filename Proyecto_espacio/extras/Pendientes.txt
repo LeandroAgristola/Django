@@ -13,11 +13,7 @@ Pendientes
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
-        Cuando presenta un error el formulario no me deja cargar turnos si no cambio el plan
         Cuando cargamos un turno, el numero de turnos disponibles los tiene que tomar a partir de la fecha de alta
-
-    Generales:
-        Corregir error en timeZone
 
 Nuevas funcionalidades:
 
