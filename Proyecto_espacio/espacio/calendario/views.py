@@ -117,27 +117,28 @@ def horarios_por_dia(request):
     horarios = []
     hora_actual = inicio
 
-    CAPACIDAD_MAXIMA = 6  # Debería venir de Configuracion
+    CAPACIDAD_MAXIMA = 6 
     
     while hora_actual < fin:
         ocupados = Turno.objects.filter(
             fecha=fecha,
             hora=hora_actual
         ).filter(
-            Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=fecha)
+            Q(cliente__fecha_alta__lte=fecha) &  
+            (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=fecha))
         ).count()
         
         disponibles = CAPACIDAD_MAXIMA - ocupados
-        
+
         horarios.append({
             'hora': hora_actual.strftime('%H:%M'),
-            'disponibles': disponibles,
+            'disponibles': 0 if disponibles <= 0 else disponibles,
             'completo': disponibles <= 0,
-            'capacidad_maxima': CAPACIDAD_MAXIMA  # Enviar al frontend
+            'texto': 'COMPLETO' if disponibles <= 0 else f'{disponibles} cupos'
         })
         
         hora_actual = (datetime.combine(fecha, hora_actual) + timedelta(hours=1)).time()
-    
+        
     return JsonResponse(horarios, safe=False)
 
 @login_required

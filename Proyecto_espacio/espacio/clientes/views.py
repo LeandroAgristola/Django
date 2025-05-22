@@ -385,7 +385,6 @@ def generar_turnos_futuros(cliente):
 
     dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 
-    # Eliminar solo turnos futuros
     cliente.turnos.filter(fecha__gte=fecha_actual).delete()
 
     for dia, hora in zip(dias_seleccionados, horas_seleccionadas):
@@ -398,11 +397,23 @@ def generar_turnos_futuros(cliente):
             current_date += timedelta(days=delta_days)
 
             while current_date <= fecha_limite:
-                Turno.objects.get_or_create(
+                ocupados = Turno.objects.filter(
                     fecha=current_date,
-                    hora=hora_dt,
-                    cliente=cliente
-                )
+                    hora=hora_dt
+                ).filter(
+                    Q(cliente__fecha_alta__lte=current_date) &
+                    (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=current_date))
+                ).count()
+
+                if ocupados < 6:
+                    Turno.objects.get_or_create(
+                        fecha=current_date,
+                        hora=hora_dt,
+                        cliente=cliente
+                    )
+                else:
+                    print(f"Turno {current_date} {hora_dt} lleno para {cliente}")
+
                 current_date += timedelta(days=7)
         except (ValueError, IndexError):
             continue

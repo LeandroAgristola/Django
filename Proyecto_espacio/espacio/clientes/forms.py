@@ -2,6 +2,8 @@ from django import forms
 from .models import Cliente, Plan
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.db.models import F, Q
+from datetime import datetime, timedelta
 
 class ClienteForm(forms.ModelForm):
     dias = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -28,13 +30,11 @@ class ClienteForm(forms.ModelForm):
         self.horas_lista = []
         super().__init__(*args, **kwargs)
 
-        # Capturar los turnos si vienen por POST
         data = args[0] if args else None
         if data:
             self.dias_lista = data.getlist('dias[]')
             self.horas_lista = data.getlist('horas[]')
 
-            # Asignarlos al cliente para que pasen el clean() del modelo
             dias_str = ", ".join(self.dias_lista)
             horas_str = ", ".join(self.horas_lista)
 
@@ -46,7 +46,6 @@ class ClienteForm(forms.ModelForm):
         dni = self.cleaned_data.get('dni')
         if dni is not None:
             qs = Cliente.objects.filter(dni=dni)
-            # si estamos editando, lo excluimos
             if self.instance and self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
@@ -68,7 +67,7 @@ class ClienteForm(forms.ModelForm):
         if not fecha_alta:
             raise ValidationError("La fecha de alta es obligatoria.")
         return fecha_alta
-    
+
     def clean(self):
         cleaned_data = super().clean()
         plan = cleaned_data.get('plan')
@@ -78,7 +77,6 @@ class ClienteForm(forms.ModelForm):
             self.add_error('fecha_alta', "Debes ingresar una fecha de alta válida.")
 
         if plan:
-            # Obtener días y horas del POST
             dias = self.data.getlist('dias[]')
             horas = self.data.getlist('horas[]')
 
@@ -97,16 +95,49 @@ class ClienteForm(forms.ModelForm):
                     f"Faltan horarios para {len(dias) - len(horas)} días."
                 )
             
-            # Validar contenido
             for i, (dia, hora) in enumerate(zip(dias, horas), start=1):
                 if not dia.strip():
                     raise ValidationError(f"El día número {i} está vacío.")
                 if not hora.strip():
                     raise ValidationError(f"El horario para el día {dia} está vacío.")
-            
+
             self.dias_lista = [dia.strip() for dia in dias]
             self.horas_lista = [hora.strip() for hora in horas]
-            
+
             turnos_combinados = list(zip(self.dias_lista, self.horas_lista))
             if len(turnos_combinados) != len(set(turnos_combinados)):
                 raise ValidationError("No puedes asignar el mismo día y hora más de una vez.")
+
+            from calendario.models import Turno 
+
+            dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
+            for i, (dia, hora) in enumerate(zip(self.dias_lista, self.horas_lista), start=1):
+                try:
+                    if not fecha_alta:
+                        raise ValidationError("La fecha de alta es requerida")
+
+                    dia_idx = dias_esp.index(dia.lower())
+                    delta_dias = (dia_idx - fecha_alta.weekday() + 7) % 7
+                    primera_fecha = fecha_alta + timedelta(days=delta_dias)
+
+
+                    if isinstance(hora, str):
+                        hora_dt = datetime.strptime(hora, "%H:%M").time()
+                    else:
+                        hora_dt = hora
+
+                    ocupados = Turno.objects.filter(
+                        hora=hora_dt,
+                        fecha__gte=primera_fecha
+                    ).filter(
+                        Q(cliente__fecha_alta__lte=F('fecha')) &
+                        (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=F('fecha')))
+                    ).count()
+
+                    if ocupados >= 6:
+                        raise ValidationError(
+                            f"El horario {hora} los {dia} estará completo a partir del {primera_fecha.strftime('%d/%m')}"
+                        )
+
+                except Exception as e:
+                    raise ValidationError(f"Error en validación de turnos: {str(e)}")

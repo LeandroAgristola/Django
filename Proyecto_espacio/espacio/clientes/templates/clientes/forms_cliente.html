@@ -188,15 +188,20 @@ document.addEventListener('DOMContentLoaded', () => {
           
               selectHora.innerHTML = '<option value="">Seleccione horario</option>';
               
-          
-              horarios.forEach(horario => {
-                  if (horario.disponibles > 0) {
-                      const option = document.createElement('option');
-                      option.value = horario.hora;
-                      option.textContent = `${horario.hora} (${horario.disponibles} cupo${horario.disponibles !== 1 ? 's' : ''})`;
-                      selectHora.appendChild(option);
-                  }
-              });
+          horarios.forEach(horario => {
+              const option = document.createElement('option');
+              option.value = horario.hora;
+
+              if (horario.completo) {
+                  option.textContent = `${horario.hora} - ${horario.texto}`;
+                  option.disabled = true;
+                  option.style.color = '#dc3545';
+              } else {
+                  option.textContent = `${horario.hora} - ${horario.texto}`;
+              }
+
+              selectHora.appendChild(option);
+          });
 
               selectHora.disabled = false;
               btnAgregar.disabled = selectHora.options.length <= 1;

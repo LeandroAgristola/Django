@@ -13,14 +13,12 @@ Pendientes
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
-        Cuando cargamos un turno, el numero de turnos disponibles los tiene que tomar a partir de la fecha de alta
-
+        Clientes: Colocar nuevamente el estado pendiente, cada 30 dias (para confirmar la cuota mensual)
+        Clientes: Al pasar 7 dias de estado pendiente agregar msj de (cliente caducado)
+       
 Nuevas funcionalidades:
 
     Correlacion entre empleados, clientes y turnos:
-
-        Clientes: Colocar nuevamente el estado pendiente, cada 30 dias (para confirmar la cuota mensual)
-        Clientes: Al pasar 7 dias de estado pendiente agregar msj de (cliente caducado)
         Agregar tipos de pilates estos tipos de pilates tienen correlacion con los profesores
         Agregar tipo de disiplina que dan a los profesores para tener correlacion con el tipo de pilates
         Agregar a empleados dias y horarios que trabajan
