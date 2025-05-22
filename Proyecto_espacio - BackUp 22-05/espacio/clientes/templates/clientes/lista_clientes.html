@@ -4,10 +4,6 @@
 <div class="container-fluid" id="listaClientes">
   <h2 class="mb-4">Lista de <strong>Cliente</strong></h2>
   <a href="{% url 'clientes:crear_cliente' %}" class="btn btn-success mb-3">Nuevo Cliente</a>
-  <a href="{% url 'clientes:reiniciar_mes' %}" class="btn btn-warning mb-3" 
-   onclick="return confirm('¿Estás seguro de reiniciar el mes?')">
-   Reiniciar Mes
-  </a>
   <!--Formulario de busqueda y filtro-->
 
   <form method="get" class="mb-4">
@@ -18,10 +14,10 @@
         <div class="input-group">
           <input type="text" name="busqueda" id="busqueda" value="{{ filtros.busqueda }}" class="form-control" placeholder="Buscar cliente...">
           <button class="btn btn-secondary" type="submit">
-            <i class="fa-solid fa-search"></i>
+            <i class="fa-solid fa-search"></i> <!-- Bootstrap icon -->
           </button>
           <button class="btn btn-primary" type="button" id="btnFiltroToggle" title="Mostrar/Ocultar filtros">
-            <i class="fa-solid fa-filter"></i> 
+            <i class="fa-solid fa-filter"></i> <!-- icono de filtro -->
           </button>
         </div>
       </div>

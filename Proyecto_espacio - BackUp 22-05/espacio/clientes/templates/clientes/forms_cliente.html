@@ -1,0 +1,307 @@
+{% extends 'management/layout_management.html' %}
+
+{% block content %}
+<div class="container my-4" id="formsEventos">
+  <h2 class="mb-4">
+    {% if reactivando %}
+      Reactivar cliente
+    {% elif form.instance.pk %}
+      Editar cliente
+    {% else %}
+      Nuevo cliente
+    {% endif %}
+  </h2>
+
+  <form method="post" novalidate id="formCliente">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if messages %}
+      <div class="mt-2">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if form.instance.pk %}
+      <input type="hidden" name="cliente_id" value="{{ form.instance.pk }}">
+    {% endif %}
+
+    <div class="row mb-3">
+      <div class="col-md-6">{{ form.nombre.label_tag }}{{ form.nombre }}{% if form.nombre.errors %}<div class="text-danger small">{{ form.nombre.errors }}</div>{% endif %}</div>
+      <div class="col-md-6">{{ form.apellido.label_tag }}{{ form.apellido }}{% if form.apellido.errors %}<div class="text-danger small">{{ form.apellido.errors }}</div>{% endif %}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">{{ form.dni.label_tag }}{{ form.dni }}{% if form.dni.errors %}<div class="text-danger small">{{ form.dni.errors }}</div>{% endif %}</div>
+      <div class="col-md-6">{{ form.telefono.label_tag }}{{ form.telefono }}{% if form.telefono.errors %}<div class="text-danger small">{{ form.telefono.errors }}</div>{% endif %}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">{{ form.mail.label_tag }}{{ form.mail }}{% if form.mail.errors %}<div class="text-danger small">{{ form.mail.errors }}</div>{% endif %}</div>
+      <div class="col-md-6">{{ form.fecha_alta.label_tag }}{{ form.fecha_alta }}{% if form.fecha_alta.errors %}<div class="text-danger small">{{ form.fecha_alta.errors }}</div>{% endif %}</div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">{{ form.plan.label_tag }}{{ form.plan }}{% if form.plan.errors %}<div class="text-danger small">{{ form.plan.errors }}</div>{% endif %}</div>
+      <div class="col-md-6">{{ form.estado.label_tag }}{{ form.estado }}{% if form.estado.errors %}<div class="text-danger small">{{ form.estado.errors }}</div>{% endif %}</div>
+    </div>
+
+    <!-- Sección de asignación de turnos -->
+    <div id="seccionTurnos" class="mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Asignación de Turnos</h5>
+          <p id="mensajeDias" class="card-text"></p>
+          <div class="alert alert-info"><small>Seleccione primero un día y luego un horario disponible</small></div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label for="selectDia" class="form-label">Día de la semana</label>
+              <select class="form-select" id="selectDia">
+                <option value="">Seleccionar día...</option>
+                {% for dia in dias_semana %}
+                  <option value="{{ dia }}">{{ dia|title }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="selectHora" class="form-label">Horario</label>
+              <select class="form-select" id="selectHora" disabled>
+                <option value="">Primero seleccione un día</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" id="btnAgregar" class="btn btn-primary mt-2" disabled>Agregar Turno</button>
+
+          <div id="turnosSeleccionados" class="mt-4">
+            <h6>Turnos seleccionados: <span id="contadorTurnos">0</span>/<span id="maxTurnos">0</span></h6>
+            <ul class="list-group" id="listaTurnos"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="inputsOcultosTurnos"></div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button type="submit" class="btn btn-success">Guardar</button>
+      <a href="{% url 'clientes:lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script id="diasSemanaJSON" type="application/json">{{ dias_semana_json|safe }}</script>
+<script id="planesJSON" type="application/json">{{ planes_json|safe }}</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const planSelect = document.getElementById('id_plan');
+  const maxTurnosSpan = document.getElementById('maxTurnos');
+  const mensajeDias = document.getElementById('mensajeDias');
+  const selectDia = document.getElementById('selectDia');
+  const selectHora = document.getElementById('selectHora');
+  const btnAgregar = document.getElementById('btnAgregar');
+  const listaTurnos = document.getElementById('listaTurnos');
+  const contadorTurnos = document.getElementById('contadorTurnos');
+  const inputsOcultos = document.getElementById('inputsOcultosTurnos');
+
+  const seleccionados = new Set();
+  let maxDias = 0;
+
+  const planesData = JSON.parse(document.getElementById('planesJSON').textContent);
+
+  Array.from(planSelect.options).forEach(option => {
+    if (option.value && planesData[option.value]) {
+      option.setAttribute('data-dias', planesData[option.value].cantidad_dias);
+    }
+  });
+
+  function actualizarUIPlan() {
+    const selectedOption = planSelect.options[planSelect.selectedIndex];
+    maxDias = parseInt(selectedOption?.getAttribute('data-dias')) || 0;
+    maxTurnosSpan.textContent = maxDias;
+    mensajeDias.textContent = `Seleccioná ${maxDias} días de la semana y sus horarios.`;
+    listaTurnos.innerHTML = '';
+    inputsOcultos.innerHTML = '';
+    seleccionados.clear();
+    contadorTurnos.textContent = '0';
+  }
+
+  if (planSelect.value) {
+    actualizarUIPlan();
+  }
+
+ 
+  planSelect.addEventListener('change', actualizarUIPlan);
+
+
+  selectDia.addEventListener('change', async () => {
+      const dia = selectDia.value;
+      selectHora.innerHTML = '';
+      
+      if (dia) {
+          try {
+              
+             const diasSemanaMap = {
+                'lunes':   0,
+                'martes':  1,
+                'miercoles': 2,
+                'jueves':  3,
+                'viernes': 4,
+                'sabado':  5,
+                'domingo': 6
+              };
+              
+              
+              const hoy = new Date();
+             
+              const hoyIndex = (hoy.getDay() + 6) % 7;
+              const diaNum = diasSemanaMap[dia];
+              const diffDias = (diaNum - hoyIndex + 7) % 7;
+              const fechaConsulta = new Date(hoy);
+              fechaConsulta.setDate(hoy.getDate() + diffDias);
+              
+              const fechaStr = fechaConsulta.toLocaleDateString('sv-SE');
+              
+             
+              const response = await fetch(`/management/calendario/horarios/?fecha=${fechaStr}`);
+              
+              if (!response.ok) {
+                  throw new Error(`Error HTTP: ${response.status}`);
+              }
+              
+              const horarios = await response.json();
+              
+              if (!Array.isArray(horarios)) {
+                  throw new Error('Formato de respuesta inválido');
+              }
+
+          
+              selectHora.innerHTML = '<option value="">Seleccione horario</option>';
+              
+          horarios.forEach(horario => {
+              const option = document.createElement('option');
+              option.value = horario.hora;
+
+              if (horario.completo) {
+                  option.textContent = `${horario.hora} - ${horario.texto}`;
+                  option.disabled = true;
+                  option.style.color = '#dc3545';
+              } else {
+                  option.textContent = `${horario.hora} - ${horario.texto}`;
+              }
+
+              selectHora.appendChild(option);
+          });
+
+              selectHora.disabled = false;
+              btnAgregar.disabled = selectHora.options.length <= 1;
+              
+          } catch (error) {
+              console.error('Error al obtener horarios:', error);
+              selectHora.innerHTML = '<option value="">Error al cargar horarios</option>';
+              selectHora.disabled = true;
+              btnAgregar.disabled = true;
+              
+              const errorAlert = document.createElement('div');
+              errorAlert.className = 'alert alert-danger mt-2';
+              errorAlert.innerHTML = `Error: ${error.message}`;
+              document.getElementById('seccionTurnos').appendChild(errorAlert);
+              setTimeout(() => errorAlert.remove(), 5000);
+          }
+      } else {
+          selectHora.innerHTML = '<option value="">Seleccione un día primero</option>';
+          selectHora.disabled = true;
+          btnAgregar.disabled = true;
+      }
+  });
+
+  btnAgregar.addEventListener('click', () => {
+    const dia = selectDia.value;
+    const hora = selectHora.value;
+    const key = `${dia}-${hora}`;
+
+    document.querySelectorAll('.alert-turno').forEach(e => e.remove());
+
+    if (!dia || !hora) return;
+
+    if (seleccionados.has(key)) {
+      const alerta = document.createElement('div');
+      alerta.className = 'alert alert-warning mt-2 alert-turno';
+      alerta.innerText = `Ya agregaste el turno ${dia} a las ${hora}.`;
+      btnAgregar.insertAdjacentElement('afterend', alerta);
+      return;
+    }
+
+    if (seleccionados.size >= maxDias) {
+      const alerta = document.createElement('div');
+      alerta.className = 'alert alert-warning mt-2 alert-turno';
+      alerta.innerText = `Ya seleccionaste el máximo de ${maxDias} turnos permitidos por el plan.`;
+      btnAgregar.insertAdjacentElement('afterend', alerta);
+      return;
+    }
+
+    seleccionados.add(key);
+    contadorTurnos.textContent = seleccionados.size;
+
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.innerHTML = `${dia} - ${hora} <button type="button" class="btn btn-sm btn-danger">Quitar</button>`;
+    li.querySelector('button').addEventListener('click', () => {
+      seleccionados.delete(key);
+      contadorTurnos.textContent = seleccionados.size;
+      li.remove();
+      document.querySelectorAll(`[data-key="${key}"]`).forEach(el => el.remove());
+    });
+    listaTurnos.appendChild(li);
+
+    const inputDia = document.createElement('input');
+    inputDia.type = 'hidden';
+    inputDia.name = 'dias[]';
+    inputDia.value = dia;
+    inputDia.setAttribute('data-key', key);
+
+    const inputHora = document.createElement('input');
+    inputHora.type = 'hidden';
+    inputHora.name = 'horas[]';
+    inputHora.value = hora;
+    inputHora.setAttribute('data-key', key);
+
+    inputsOcultos.appendChild(inputDia);
+    inputsOcultos.appendChild(inputHora);
+  });
+
+  const diasIniciales = Array.from(document.getElementsByName('dias[]')).map(i => i.value);
+  const horasIniciales = Array.from(document.getElementsByName('horas[]')).map(i => i.value);
+  if (diasIniciales.length && horasIniciales.length && diasIniciales.length === horasIniciales.length) {
+    diasIniciales.forEach((dia, i) => {
+      const hora = horasIniciales[i];
+      const key = `${dia}-${hora}`;
+      seleccionados.add(key);
+
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex justify-content-between align-items-center';
+      li.innerHTML = `${dia} - ${hora} <button type="button" class="btn btn-sm btn-danger">Quitar</button>`;
+      li.querySelector('button').addEventListener('click', () => {
+        seleccionados.delete(key);
+        contadorTurnos.textContent = seleccionados.size;
+        li.remove();
+        document.querySelectorAll(`[data-key="${key}"]`).forEach(el => el.remove());
+      });
+      listaTurnos.appendChild(li);
+    });
+    contadorTurnos.textContent = seleccionados.size;
+    maxTurnosSpan.textContent = maxDias;
+  }
+});
+</script>
+{% endblock %}

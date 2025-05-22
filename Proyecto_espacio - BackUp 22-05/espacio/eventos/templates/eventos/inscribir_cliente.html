@@ -1,0 +1,114 @@
+{% extends "management/layout_management.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-4" id="formsEventos">
+  <h2>Inscripción a evento: {{ evento.titulo }}</h2>
+
+  <form method="POST" class="modo-cliente-form mt-4">
+    {% csrf_token %}
+
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            {{ error }}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    <!-- Selección de tipo de cliente -->
+    <div class="mb-3">
+      <label for="id_tipo_cliente" class="form-label">Tipo de cliente</label>
+      {{ form.tipo_cliente }}
+    </div>
+
+    <!-- Cliente ya existente -->
+    <div class="mb-3" id="cliente-cargado" style="display: none;">
+      <label for="cliente_id" class="form-label">Seleccionar cliente</label>
+      <select class="form-select mt-2" name="cliente_id" id="cliente_id" required>
+        <option value="">-- Seleccionar cliente --</option>
+        {% for cliente in clientes %}
+          <option 
+            value="{{ cliente.mail }}"
+            data-nombre="{{ cliente.nombre }}"
+            data-apellido="{{ cliente.apellido }}"
+            data-telefono="{{ cliente.telefono|default:'' }}"
+          >
+            {{ cliente.nombre }} {{ cliente.apellido }} - {{ cliente.mail }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div class="mt-3">
+        {{ form.estado.label_tag }}
+        {{ form.estado }}
+      </div>
+    </div>
+
+    <!-- Cliente nuevo -->
+    <div id="cliente-nuevo" style="display: none;">
+      <div class="mb-3">
+        {{ form.nombre.label_tag }}
+        {{ form.nombre }}
+      </div>
+      <div class="mb-3">
+        {{ form.apellido.label_tag }}
+        {{ form.apellido }}
+      </div>
+      <div class="mb-3">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+      </div>
+      <div class="mb-3">
+        {{ form.telefono.label_tag }}
+        {{ form.telefono }}
+      </div>
+      <div class="mb-3">
+        {{ form.estado.label_tag }}
+        {{ form.estado }}
+      </div>
+    </div>
+
+    <!-- Botones -->
+    {% if evento.cupos <= 0 %}
+      <button type="submit" class="btn btn-success mt-3" disabled>No hay cupos disponibles</button>
+    {% else %}
+      <button type="submit" class="btn btn-success mt-3">Inscribir</button>
+    {% endif %}
+    <a href="{% url 'eventos_admin:detalle_eventos' evento.pk %}" class="btn btn-secondary mt-3">Cancelar</a>
+  </form>
+</div>
+
+<!-- JS -->
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#cliente_id').select2({ width: '100%' });
+
+    function toggleCampos() {
+      const tipo = $('#id_tipo_cliente').val();
+      $('#cliente-cargado').toggle(tipo === 'cargado');
+      $('#cliente-nuevo').toggle(tipo === 'nuevo');
+      $('#cliente-cargado select, #cliente-cargado input').prop('disabled', tipo !== 'cargado');
+      $('#cliente-nuevo input, #cliente-nuevo select').prop('disabled', tipo !== 'nuevo');
+    }
+
+    $('#id_tipo_cliente').on('change', toggleCampos);
+    $(window).on('load', toggleCampos);
+
+    $('#cliente_id').on('change', function () {
+      const selected = $(this).find(':selected');
+      $('#id_nombre').val(selected.data('nombre') || '');
+      $('#id_apellido').val(selected.data('apellido') || '');
+      $('#id_email').val(selected.val() || '');
+      $('#id_telefono').val(selected.data('telefono') || '');
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}
