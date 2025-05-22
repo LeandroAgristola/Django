@@ -3,6 +3,8 @@ from planes.models import Plan
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.utils import timezone
+from datetime import date, datetime
 
 class Cliente(models.Model):
     TIPO_CHOICES = [('regular', 'Regular'), ('eventual', 'Eventual')]
@@ -22,6 +24,7 @@ class Cliente(models.Model):
     fecha_alta = models.DateField(default=date.today, null=False)  # Asegúrate que sea DateField
     fecha_baja = models.DateField(null=True, blank=True)
     modificado = models.DateTimeField(auto_now=True)
+    ultima_confirmacion = models.DateField(null=True, blank=True) 
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.dni})"
@@ -39,7 +42,55 @@ class Cliente(models.Model):
             
             if dias_asignados != horas_asignadas:
                 raise ValidationError("Debe asignar un horario para cada día seleccionado")
-
-    def save(self, *args, **kwargs):
-        self.clean()
-        super().save(*args, **kwargs)
+    @property
+    def cuota_vencida(self):
+        hoy = timezone.now().date()
+        if not self.ultima_confirmacion:
+            return hoy.day > 7 and self.estado == 'pendiente'
+        
+        return (hoy.day > 7 and 
+                self.estado == 'pendiente' and
+                (self.ultima_confirmacion.month < hoy.month or 
+                self.ultima_confirmacion.year < hoy.year))
+        
+    @property
+    def mes_pagado(self):
+        """Verifica si el cliente ha pagado el mes actual"""
+        if not self.ultima_confirmacion:
+            return False
+            
+        hoy = timezone.now().date()
+        return (self.estado == 'confirmado' and 
+                self.ultima_confirmacion.month == hoy.month and 
+                self.ultima_confirmacion.year == hoy.year)
+    
+    @property
+    def mostrar_estado_pago(self):
+        if self.tipo == 'eventual':
+            return None 
+        hoy = timezone.now().date()
+        
+        if not self.ultima_confirmacion:
+            return {
+                'texto': 'Nunca pagó',
+                'clase': 'bg-warning'
+            }
+        
+        if self.estado == 'confirmado' and \
+        self.ultima_confirmacion.month == hoy.month and \
+        self.ultima_confirmacion.year == hoy.year:
+            return {
+                'texto': 'Pagado',
+                'clase': 'bg-success'
+            }
+        
+        if hoy.day > 7 and self.estado == 'pendiente':
+            return {
+                'texto': 'Vencido',
+                'clase': 'bg-danger'
+            }
+        
+        return {
+            'texto': 'Pendiente',
+            'clase': 'bg-secondary'
+        }

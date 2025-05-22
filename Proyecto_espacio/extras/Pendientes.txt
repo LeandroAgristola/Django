@@ -13,8 +13,7 @@ Pendientes
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
-        Clientes: Colocar nuevamente el estado pendiente, cada 30 dias (para confirmar la cuota mensual)
-        Clientes: Al pasar 7 dias de estado pendiente agregar msj de (cliente caducado)
+        El grafico de clientes no carga los clientes "eliminados" completamente
        
 Nuevas funcionalidades:
 

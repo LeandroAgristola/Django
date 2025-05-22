@@ -74,6 +74,7 @@
           <th>Tipo</th>
           <th>Plan</th>
           <th>Fecha Alta</th>
+          <th>Estado Pago</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -83,12 +84,19 @@
         <tr class="{% if cliente.tipo == 'regular' %} 
                       {% if cliente.estado == 'pendiente' %}resaltado-rojo
                       {% endif %}
-                        {% endif %}"><!-- Esta condicion consulta si el cliente es regular y si su estado es pendiente para sombrear -->
+                        {% endif %}">
           <td>{{ cliente.nombre }} {{ cliente.apellido }}</td>
           <td>{{ cliente.dni }}</td>
           <td>{{ cliente.get_tipo_display }}</td>
           <td>{{ cliente.plan }}</td>
-          <td>{{ cliente.fecha_alta|date:"d/m/Y" }}</td> <!-- formateamos el campo a fecha_alta -->
+          <td>{{ cliente.fecha_alta|date:"d/m/Y" }}</td> 
+          <td>
+            {% with estado_pago=cliente.mostrar_estado_pago %}
+              {% if estado_pago %}
+                <span class="badge {{ estado_pago.clase }}">{{ estado_pago.texto }}</span>
+              {% endif %}
+            {% endwith %}
+          </td>
           <td>
             <a href="{% url 'clientes:detalle_cliente' cliente.id %}" class="btn btn-outline-info btn-sm">Detalle</a>
             <a href="{% url 'clientes:editar_cliente' cliente.id %}" class="btn btn-outline-primary btn-sm ">Editar</a>
@@ -129,7 +137,7 @@
         </div>
 
         {% empty %}
-        <tr><td colspan="6">No hay clientes cargados.</td></tr>
+        <tr><td colspan="7">No hay clientes cargados.</td></tr>
         {% endfor %}
       </tbody>
     </table>
