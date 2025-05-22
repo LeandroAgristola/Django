@@ -21,7 +21,7 @@ class Cliente(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='regular')
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     activo = models.BooleanField(default=True)
-    fecha_alta = models.DateField(default=date.today, null=False)  # Asegúrate que sea DateField
+    fecha_alta = models.DateField(default=date.today, null=False) 
     fecha_baja = models.DateField(null=True, blank=True)
     modificado = models.DateTimeField(auto_now=True)
     ultima_confirmacion = models.DateField(null=True, blank=True) 
