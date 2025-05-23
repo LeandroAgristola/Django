@@ -4,14 +4,14 @@
 
 Este proyecto es un **sistema de gestión completo y modular** diseñado específicamente para estudios de bienestar (como estudios de yoga, pilates, fitness, etc.). Su objetivo es centralizar y simplificar todas las operaciones diarias, desde la captación de clientes a través de una web pública atractiva, hasta la administración interna detallada de clases, planes, personal, eventos y configuraciones generales.
 
-El sistema se compone de un conjunto de aplicaciones Django interconectadas que trabajan en armonía para ofrecer una solución robusta y escalable.
+El sistema se compone de un conjunto de aplicaciones Django interconectadas que trabajan en armonía para ofrecer una solución robusta y escalable, enriquecida con un frontend dinámico y estilizado gracias a CSS personalizado y scripts JavaScript para mejorar la experiencia de usuario.
 
 ## Filosofía del Sistema
 
 * **Modularidad:** Cada aplicación se enfoca en un aspecto específico de la gestión, permitiendo un desarrollo y mantenimiento más sencillos.
 * **Centralización:** Toda la información crítica se gestiona desde un panel de administración unificado, asegurando la coherencia de los datos.
 * **Personalización:** Gran parte del contenido y comportamiento del sistema es configurable a través del panel de administración, minimizando la necesidad de modificar código para adaptaciones comunes.
-* **Experiencia de Usuario:** Se prioriza una interfaz intuitiva tanto para el cliente final (web pública) como para los administradores del estudio.
+* **Experiencia de Usuario:** Se prioriza una interfaz intuitiva y agradable tanto para el cliente final (`webPublic`) como para los administradores del estudio (`management`), con animaciones sutiles y un diseño responsive cuidado.
 
 ## Arquitectura del Sistema y Aplicaciones
 
@@ -31,7 +31,7 @@ El proyecto se estructura en las siguientes aplicaciones principales:
 ## 1. `webPublic` - El Portal de tu Estudio
 
 **Descripción General:**
-La aplicación `webPublic` es el frontend público del sistema. Su misión es presentar de forma atractiva toda la información relevante del estudio: detalles del espacio, planes ofrecidos, próximos eventos, el equipo de profesionales y vías de contacto. Toda la información mostrada es dinámica y se alimenta de las demás aplicaciones del sistema a través del panel de administración.
+La aplicación `webPublic` es el frontend público del sistema. Su misión es presentar de forma atractiva toda la información relevante del estudio: detalles del espacio, planes ofrecidos, próximos eventos, el equipo de profesionales y vías de contacto. Toda la información mostrada es dinámica y se alimenta de las demás aplicaciones del sistema a través del panel de administración. La experiencia visual se define en `static/css/style.css` y se enriquece con interactividad mediante JavaScript.
 
 **Características Principales:**
 
@@ -46,13 +46,22 @@ La aplicación `webPublic` es el frontend público del sistema. Su misión es pr
     * Información sobre cupos y métodos de pago.
     * Botones de inscripción directa vía WhatsApp con mensajes preconfigurados.
 * **Diseño Totalmente Responsive:**
-    * Adaptación fluida a dispositivos móviles, tablets y ordenadores de escritorio.
-    * Carrusel interactivo para la sección de staff en versiones móviles.
-    * Menú hamburguesa para una navegación óptima en pantallas pequeñas.
+    * Adaptación fluida a dispositivos móviles, tablets y ordenadores de escritorio, gestionada por `style.css`.
+    * Carrusel interactivo para la sección de staff en versiones móviles, también definido en `style.css`.
+    * Menú hamburguesa animado para una navegación óptima en pantallas pequeñas, controlado por `static/js/menu-animations.js` y estilizado en `style.css`.
+* **Experiencia de Usuario Mejorada:**
+    * **Animaciones al Desplazar (Scroll):** Los elementos de las secciones aparecen suavemente a medida que el usuario navega, gracias al script `static/js/fadeInOnScroll.js`. Este script observa la intersección de los elementos con la clase `.fade-in` y les añade la clase `.visible` para activar la animación CSS definida en `style.css`.
+    * **Botón Flotante de WhatsApp:** Un acceso directo y siempre visible para consultas, estilizado en `style.css`.
+    * **Paleta de Colores y Tipografía Definida:** `style.css` establece una paleta de colores armónica (`#f6eddc`, `#e3e5d7`, `#bdd6d2`, `#a5c8ca`, `#586875`, `#3c4750`, `#283131`) y utiliza fuentes específicas ("Federo", "Faculty Glyphic", "Farro") para una identidad visual consistente.
 * **Integraciones Clave:**
     * Enlaces directos a WhatsApp con mensajes predefinidos para facilitar la consulta y inscripción.
     * Conexión con perfiles de redes sociales (Instagram, Facebook, YouTube).
     * Integración de Google Maps para mostrar la ubicación exacta del estudio.
+
+**Archivos Estáticos Clave para `webPublic`:**
+* `static/css/style.css`: Hoja de estilos principal que define toda la apariencia visual, responsive design, paleta de colores, tipografías y estilos específicos para cada sección (hero, nosotros, planes, eventos, staff, footer, etc.).
+* `static/js/fadeInOnScroll.js`: Implementa la funcionalidad de aparición gradual de elementos al hacer scroll, mejorando el dinamismo de la página.
+* `static/js/menu-animations.js`: Controla el comportamiento del menú de navegación móvil (hamburguesa), su despliegue, cierre y la animación del botón.
 
 **Dependencias de Modelos (para carga de datos):**
 `Configuracion`, `Empleado`, `Evento`, `Plan`.
@@ -62,31 +71,39 @@ La aplicación `webPublic` es el frontend público del sistema. Su misión es pr
 ## 2. `management` - El Cerebro Administrativo
 
 **Descripción General:**
-La aplicación `management` es el núcleo del sistema de administración del estudio. Proporciona la infraestructura base para todas las operaciones de backend, incluyendo un sistema robusto de autenticación, un panel de control principal con estadísticas clave y la estructura de navegación para todos los módulos administrativos.
+La aplicación `management` es el núcleo del sistema de administración del estudio. Proporciona la infraestructura base para todas las operaciones de backend, incluyendo un sistema robusto de autenticación, un panel de control principal con estadísticas clave y la estructura de navegación para todos los módulos administrativos. La interfaz de esta sección está definida por `static/css/styleManagement.css`.
 
 **Características Principales:**
 
 * **Sistema de Autenticación Seguro:**
-    * Página de login (`login.html`) con validación de credenciales.
+    * Página de login (`login.html`) con validación de credenciales, estilizada por `styleManagement.css` para integrarse con la estética del admin.
     * Protección de todas las rutas administrativas mediante el decorador `@login_required`.
     * Funcionalidad para cerrar sesión de forma segura.
-* **Panel de Control (Dashboard) Interactivo:**
-    * Visualización de métricas clave del estudio mediante gráficos interactivos (Chart.js).
+* **Panel de Control (Dashboard) Interactivo (`panel.html`):**
+    * Visualización de métricas clave del estudio mediante gráficos interactivos (Chart.js). Estos gráficos son cargados y actualizados dinámicamente por `static/js/panel_estadisticas.js`.
         * Movimiento anual de clientes (altas y bajas).
-        * Disponibilidad diaria de turnos.
+        * Disponibilidad diaria de turnos (ocupación del calendario).
         * Distribución de clientes por tipo de plan.
         * Participación y ocupación en eventos.
-    * Filtros para personalizar la visualización de datos y rangos de fechas.
+    * Filtros para personalizar la visualización de datos y rangos de fechas en los gráficos (funcionalidad provista por `panel_estadisticas.js`).
 * **Estructura de Layout Unificada (`layout_management.html`):**
-    * Barra lateral de navegación consistente para un acceso rápido a todos los módulos del sistema.
+    * Barra lateral de navegación (`sidebar`) consistente para un acceso rápido a todos los módulos del sistema, con estilos definidos en `styleManagement.css`.
     * Sistema de mensajes y alertas (Django Messages) para feedback inmediato al usuario sobre las acciones realizadas.
-    * Diseño responsive para una gestión eficiente desde cualquier dispositivo.
+    * Diseño responsive para una gestión eficiente desde cualquier dispositivo, asegurado por `styleManagement.css`.
+* **Estilización Consistente:**
+    * `styleManagement.css` define la apariencia de formularios, tablas, tarjetas de detalle (empleado, cliente, evento), modales y otros elementos comunes del panel de administración.
+
+**Archivos Estáticos Clave para `management` y Módulos Administrativos:**
+* `static/css/styleManagement.css`: Define la estética general del panel de administración, incluyendo el layout, sidebar, página de login, estilos para formularios, listados, tarjetas de detalle, el panel de estadísticas y el calendario.
+* `static/js/panel_estadisticas.js`: Script fundamental para el dashboard. Realiza peticiones fetch a los endpoints de estadísticas de Clientes, Calendario, Planes y Eventos, y luego renderiza y actualiza los gráficos de Chart.js correspondientes.
+* `static/js/metodo_pago.js`: Utilizado en formularios de creación/edición (ej. Eventos). Muestra u oculta dinámicamente el campo para el enlace de pago dependiendo si el precio es mayor a cero y si el método de pago seleccionado es "enlace".
+* `static/js/validarFecha.js`: Script genérico para la validación de campos de fecha en formularios del lado del cliente, asegurando que no estén vacíos y añadiendo la clase `is-invalid` si es necesario.
 
 **Flujo de Trabajo Típico del Administrador:**
 1.  Acceso al sistema a través de la página de login.
-2.  Redirección al panel de control principal tras una autenticación exitosa.
+2.  Redirección al panel de control principal tras una autenticación exitosa, donde `panel_estadisticas.js` carga los gráficos.
 3.  Navegación a los diferentes módulos (Clientes, Eventos, Calendario, etc.) desde la barra lateral.
-4.  Realización de operaciones CRUD, gestión de inscripciones, configuración, etc.
+4.  Realización de operaciones CRUD, gestión de inscripciones, configuración, etc., utilizando formularios y listados estilizados por `styleManagement.css`.
 5.  Recepción de feedback visual mediante el sistema de mensajes.
 6.  Cierre de sesión seguro.
 
@@ -95,7 +112,7 @@ La aplicación `management` es el núcleo del sistema de administración del est
 ## 3. `configuracion` - Personalización Centralizada del Estudio
 
 **Descripción General:**
-La aplicación `configuracion` centraliza toda la configuración global del sistema y los datos fundamentales del estudio. Actúa como un panel de control maestro para personalizar la información que se muestra en la `webPublic` y define parámetros operativos clave (como horarios de apertura) que son utilizados por otras aplicaciones del sistema (ej. `calendario`, `clientes`).
+La aplicación `configuracion` centraliza toda la configuración global del sistema y los datos fundamentales del estudio. Actúa como un panel de control maestro para personalizar la información que se muestra en la `webPublic` y define parámetros operativos clave (como horarios de apertura) que son utilizados por otras aplicaciones del sistema (ej. `calendario`, `clientes`). Los formularios y la presentación de datos se rigen por los estilos de `styleManagement.css`.
 
 **Características Principales:**
 
@@ -130,7 +147,7 @@ La aplicación `configuracion` centraliza toda la configuración global del sist
 ## 4. `planes` - Gestión Estratégica de Membresías
 
 **Descripción General:**
-La aplicación `planes` permite la creación, edición y administración de los diferentes planes de membresía que ofrece el estudio. Estos planes definen las características, beneficios, frecuencia de asistencia, precio y visibilidad en la `webPublic`, siendo un pilar fundamental para la captación y gestión de clientes.
+La aplicación `planes` permite la creación, edición y administración de los diferentes planes de membresía que ofrece el estudio. Estos planes definen las características, beneficios, frecuencia de asistencia, precio y visibilidad en la `webPublic`, siendo un pilar fundamental para la captación y gestión de clientes. La interfaz de administración se basa en `styleManagement.css`.
 
 **Características Principales:**
 
@@ -147,7 +164,7 @@ La aplicación `planes` permite la creación, edición y administración de los 
     * Asegura que la cantidad de días esté entre 1 y 7.
     * Campos requeridos validados para garantizar la integridad de los datos.
 * **Estadísticas de Adopción:**
-    * Vista (`estadisticas_planes`) que provee datos en formato JSON sobre cuántos clientes están suscritos a cada plan, útil para la toma de decisiones.
+    * Vista (`estadisticas_planes`) que provee datos en formato JSON sobre cuántos clientes están suscritos a cada plan, útil para la toma de decisiones y visualizado en el dashboard mediante `panel_estadisticas.js`.
 * **Interfaz de Usuario Clara:**
     * Listados separados para planes activos e inactivos (`lista_planes.html`).
     * Formulario unificado (`form_plan.html`) para creación y edición con validaciones visuales.
@@ -156,14 +173,14 @@ La aplicación `planes` permite la creación, edición y administración de los 
 **Integraciones Clave:**
 * **`clientes`:** Los clientes se asocian a un plan, heredando sus restricciones y beneficios.
 * **`webPublic`:** Muestra los planes activos y marcados como visibles al público.
-* **`management`:** Todas las vistas están protegidas por el sistema de autenticación.
+* **`management`:** Todas las vistas están protegidas por el sistema de autenticación y `panel_estadisticas.js` consume sus datos para los gráficos.
 
 ---
 
 ## 5. `empleados` - Administración del Talento Humano
 
 **Descripción General:**
-La aplicación `empleados` se encarga del registro y la administración del personal del estudio. Permite gestionar perfiles completos, controlar su estado (activo/inactivo), su visibilidad en la `webPublic`, y mantener un historial de su trayectoria en el estudio.
+La aplicación `empleados` se encarga del registro y la administración del personal del estudio. Permite gestionar perfiles completos, controlar su estado (activo/inactivo), su visibilidad en la `webPublic`, y mantener un historial de su trayectoria en el estudio. Su interfaz administrativa sigue los lineamientos de `styleManagement.css`.
 
 **Características Principales:**
 
@@ -186,9 +203,10 @@ La aplicación `empleados` se encarga del registro y la administración del pers
 * **Gestión de Imágenes de Perfil:**
     * Subida de imágenes de perfil.
     * Eliminación automática de la imagen del sistema de archivos cuando el empleado es eliminado permanentemente o se cambia su imagen.
-* **Interfaz de Administración Eficaz (`lista_empleados.html`):**
+* **Interfaz de Administración Eficaz (`lista_empleados.html`, `tarjetaEmpleado`):**
     * Tablas separadas para empleados activos e inactivos.
     * Modales interactivos para confirmación de acciones (desactivación, reactivación, eliminación) y para el formulario de creación/edición.
+    * Vista de tarjeta para detalle de empleado.
 
 **Integraciones Clave:**
 * **`webPublic`:** Muestra la información e imagen de los empleados marcados como "visibles".
@@ -200,7 +218,7 @@ La aplicación `empleados` se encarga del registro y la administración del pers
 ## 6. `calendario` - Optimización de Horarios y Turnos
 
 **Descripción General:**
-La aplicación `calendario` gestiona el sistema de turnos del estudio, permitiendo una visualización clara de la disponibilidad por día y hora, la gestión detallada de los turnos asignados a clientes, y el análisis de estadísticas de ocupación. Se integra estrechamente con la configuración general del estudio y el módulo de clientes.
+La aplicación `calendario` gestiona el sistema de turnos del estudio, permitiendo una visualización clara de la disponibilidad por día y hora, la gestión detallada de los turnos asignados a clientes, y el análisis de estadísticas de ocupación. Se integra estrechamente con la configuración general del estudio y el módulo de clientes. La visualización del calendario y sus estadísticas se apoya en `styleManagement.css` y `panel_estadisticas.js`.
 
 **Características Principales:**
 
@@ -209,9 +227,9 @@ La aplicación `calendario` gestiona el sistema de turnos del estudio, permitien
     * Validaciones para evitar la duplicación de turnos para un mismo cliente en el mismo horario.
     * Ordenamiento natural por fecha y hora.
 * **Visualización de Calendario Interactivo (`calendario.html`):**
-    * Integración con **FullCalendar** para una vista mensual intuitiva.
+    * Integración con **FullCalendar** para una vista mensual intuitiva, estilizada para coherencia con `styleManagement.css`.
     * Indicación visual de disponibilidad diaria:
-        * Colores para identificar días con cupos (verde), llenos (rojo), o parcialmente ocupados.
+        * Colores para identificar días con cupos, llenos, o parcialmente ocupados.
     * Permite seleccionar un día para ver el detalle de horarios.
 * **Gestión Detallada de Turnos por Día (`detalle_dia.html`):**
     * Muestra los turnos por franja horaria para un día específico.
@@ -224,18 +242,19 @@ La aplicación `calendario` gestiona el sistema de turnos del estudio, permitien
     * Genera datos para gráficos (Chart.js) sobre:
         * Ocupación promedio por día de la semana.
         * Comparativa de ocupación entre el mes actual y el próximo.
+    * Estos datos son consumidos y visualizados por `panel_estadisticas.js` en el dashboard.
 
 **Integraciones Clave:**
 * **`configuracion`:** Utiliza los `dias_habilitados` y los horarios de apertura para determinar la disponibilidad.
 * **`clientes`:** Se relaciona con el modelo `Cliente` para asignar turnos.
-* **`management`:** Todas las vistas requieren autenticación.
+* **`management`:** Todas las vistas requieren autenticación, y el dashboard muestra sus estadísticas.
 
 **Flujo de Trabajo para Administradores:**
 1.  Acceder a la vista del calendario.
 2.  Visualizar la ocupación general del mes.
 3.  Seleccionar un día específico para ver el detalle de turnos por hora.
 4.  Identificar horarios disponibles o llenos.
-5.  Consultar estadísticas para la toma de decisiones sobre horarios y clases.
+5.  Consultar estadísticas en el dashboard para la toma de decisiones sobre horarios y clases.
     *(Nota: La asignación de turnos a clientes se realiza principalmente desde el módulo `clientes`)*
 
 ---
@@ -243,14 +262,14 @@ La aplicación `calendario` gestiona el sistema de turnos del estudio, permitien
 ## 7. `eventos` - Gestión Profesional de Actividades Especiales
 
 **Descripción General:**
-La aplicación `eventos` es un sistema completo para la gestión de eventos especiales, talleres, o workshops. Cubre todo el ciclo de vida del evento, desde su creación y promoción en la `webPublic`, hasta la administración de inscripciones, control de cupos, gestión de pagos y generación de reportes.
+La aplicación `eventos` es un sistema completo para la gestión de eventos especiales, talleres, o workshops. Cubre todo el ciclo de vida del evento, desde su creación y promoción en la `webPublic`, hasta la administración de inscripciones, control de cupos, gestión de pagos y generación de reportes. Los formularios y listados se estilizan con `styleManagement.css`, y la lógica de mostrar/ocultar campos de pago se maneja con `metodo_pago.js`.
 
 **Características Principales:**
 
 * **Gestión Completa de Eventos (CRUD):**
     * Creación y edición detallada: título, descripción, fecha, hora, ubicación, imagen destacada.
     * Sistema de cupos con control de disponibilidad en tiempo real.
-    * Configuración de métodos de pago: enlace de pago externo o pago en el estudio.
+    * Configuración de métodos de pago: enlace de pago externo o pago en el estudio. El campo para el enlace de pago aparece condicionalmente gracias a `metodo_pago.js`.
     * Control de visibilidad en la `webPublic` (con límite configurable).
 * **Sistema Avanzado de Inscripciones:**
     * Inscripción de clientes existentes (búsqueda optimizada con Select2).
@@ -261,33 +280,33 @@ La aplicación `eventos` es un sistema completo para la gestión de eventos espe
     * "Papelera" de eventos: permite desactivar eventos finalizados o pasados sin eliminarlos, conservando el historial y permitiendo su reactivación.
     * Eliminación permanente de eventos.
     * **Exportación a PDF del listado de inscriptos:** Generación de informes profesionales (usando ReportLab) con detalles de los participantes, estado de pago y logo del estudio.
-    * Estadísticas de ocupación y participación en eventos.
+    * Estadísticas de ocupación y participación en eventos, visualizadas en el dashboard mediante `panel_estadisticas.js`.
 * **Validaciones Inteligentes:**
-    * Validación de fechas (fecha del evento no puede ser en el pasado al crearlo).
+    * Validación de fechas (fecha del evento no puede ser en el pasado al crearlo), potencialmente asistida por `validarFecha.js`.
     * Consistencia en métodos de pago.
 
 **Integraciones Clave:**
 * **`clientes`:** Para la gestión de los participantes (existentes o nuevos).
 * **`webPublic`:** Para mostrar los eventos activos y promocionarlos.
-* **`management`:** Todas las vistas administrativas están protegidas.
+* **`management`:** Todas las vistas administrativas están protegidas, y `panel_estadisticas.js` consume sus datos.
 * **`configuracion`:** Podría usar datos del estudio para los PDFs (ej. nombre del estudio).
 
 **Flujo de Trabajo Típico:**
-1.  **Creación del Evento:** El administrador completa el formulario con todos los detalles, define cupos, precio (si aplica) y métodos de pago.
+1.  **Creación del Evento:** El administrador completa el formulario. Si el evento tiene precio, `metodo_pago.js` muestra opciones de método de pago.
 2.  **Promoción:** El evento se muestra en la `webPublic` si está marcado como visible.
 3.  **Inscripción de Clientes:**
     * Desde el panel de admin, se pueden inscribir clientes existentes o registrar nuevos.
     * Se actualiza el estado de pago y los cupos disponibles.
 4.  **Seguimiento:** El administrador monitorea las inscripciones y la ocupación.
 5.  **Durante el Evento:** Se puede usar el listado de PDF para control de asistencia.
-6.  **Post-Evento:** Se desactiva el evento (mueve a la papelera) y se analizan estadísticas.
+6.  **Post-Evento:** Se desactiva el evento (mueve a la papelera) y se analizan estadísticas en el dashboard.
 
 ---
 
 ## 8. `clientes` - El Corazón de la Relación con tus Miembros
 
 **Descripción General:**
-La aplicación `clientes` es el sistema CRM (Customer Relationship Management) del estudio. Permite un registro y gestión exhaustiva de los clientes, desde sus datos personales hasta la asignación de planes, el control de sus turnos recurrentes, la gestión de pagos y el seguimiento de su actividad. Es fundamental para la operativa diaria y la fidelización.
+La aplicación `clientes` es el sistema CRM (Customer Relationship Management) del estudio. Permite un registro y gestión exhaustiva de los clientes, desde sus datos personales hasta la asignación de planes, el control de sus turnos recurrentes, la gestión de pagos y el seguimiento de su actividad. Es fundamental para la operativa diaria y la fidelización. Se apoya en `styleManagement.css` para la interfaz y `panel_estadisticas.js` para mostrar sus métricas.
 
 **Características Principales:**
 
@@ -300,7 +319,7 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
     * Control de fechas de alta y baja, con historial.
     * Propiedades calculadas (ej. fecha de vencimiento de cuota, estado de pago actual).
 * **Gestión Integral de Clientes (CRUD):**
-    * Creación, edición, visualización detallada (`detalle_cliente.html`).
+    * Creación, edición, visualización detallada (`detalle_cliente.html`, estilizado como `tarjetaCliente` en `styleManagement.css`).
     * Listado de clientes (`lista_clientes.html`) con filtros avanzados (por estado, plan, etc.).
     * Desactivación y reactivación de clientes con mantenimiento de historial.
     * Eliminación permanente.
@@ -321,9 +340,10 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
     * Unicidad de DNI y email.
     * Disponibilidad de turnos al momento de la asignación.
     * Coherencia entre el plan seleccionado y los días/horarios asignados.
+    * Validación de fechas con `validarFecha.js` en formularios relevantes.
 * **Estadísticas e Informes:**
     * Datos sobre movimiento mensual de clientes (altas/bajas).
-    * Total de clientes activos, por plan, etc. (vista `clientes_estadisticas`).
+    * Total de clientes activos, por plan, etc. (vista `clientes_estadisticas` consumida por `panel_estadisticas.js` para el dashboard).
     * Potencial para exportación de datos.
 
 **Integraciones Clave:**
@@ -331,7 +351,7 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
 * **`planes`:** Para asociar clientes a membresías y aplicar sus reglas.
 * **`configuracion`:** Para respetar días/horarios de apertura del estudio al generar turnos.
 * **`eventos`:** Clientes eventuales pueden ser registrados a través de eventos.
-* **`management`:** Autenticación y layout base.
+* **`management`:** Autenticación, layout base y visualización de estadísticas en dashboard.
 * **Sistema de Sesiones de Django:** Para el flujo de asignación de turnos.
 * **Sistema de Mensajes de Django:** Para feedback al usuario.
 
@@ -356,13 +376,13 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
     * HTML5
     * CSS3 (con archivos `style.css` y `styleManagement.css` personalizados)
     * Bootstrap 5 (para diseño responsive y componentes UI)
-    * JavaScript (para animaciones, efectos, interactividad y lógica de cliente)
+    * JavaScript (para animaciones, efectos, interactividad y lógica de cliente, incluyendo `fadeInOnScroll.js`, `menu-animations.js`, `metodo_pago.js`, `panel_estadisticas.js`, `validarFecha.js`)
 * **Bases de Datos:** (Compatible con las soportadas por Django: PostgreSQL, MySQL, SQLite, etc.)
 * **Librerías Adicionales Destacadas:**
-    * **Chart.js:** Para gráficos interactivos en los paneles de administración.
+    * **Chart.js:** Para gráficos interactivos en los paneles de administración (controlados por `panel_estadisticas.js`).
     * **FullCalendar:** Para la visualización del calendario de turnos.
     * **Font Awesome:** Para iconografía en toda la aplicación.
-    * **Google Fonts:** Para una tipografía web moderna y legible.
+    * **Google Fonts:** Para una tipografía web moderna y legible (definidas en `style.css`).
     * **ReportLab:** Para la generación de reportes en PDF (listado de inscriptos a eventos).
     * **Select2:** Para campos de selección con búsqueda avanzada (ej. selección de clientes en inscripciones a eventos).
     * **django-multiselectfield:** Para campos de selección múltiple amigables (ej. días habilitados en `configuracion`).
@@ -376,9 +396,9 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
     * `webPublic` utiliza `layout.html` como plantilla base.
     * Todos los módulos de administración (`management`, `calendario`, `clientes`, etc.) heredan de `layout_management.html` para una interfaz consistente.
 * **Estilos y Scripts:**
-    * CSS globales y específicos en `/static/css/`.
+    * CSS globales y específicos en `/static/css/` (`style.css`, `styleManagement.css`).
     * Imágenes estáticas en `/static/img/`.
-    * Scripts JS en `/static/js/`.
+    * Scripts JS en `/static/js/` (incluyendo los analizados: `fadeInOnScroll.js`, `menu-animations.js`, `metodo_pago.js`, `panel_estadisticas.js`, `validarFecha.js`).
     * Logo y favicon en `/static/logo/`.
 * **Seguridad:** Uso extensivo del decorador `@login_required` de Django para proteger todas las vistas administrativas.
 * **Feedback al Usuario:** El sistema de `messages` de Django se utiliza para proporcionar notificaciones sobre el resultado de las acciones.
@@ -396,4 +416,4 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
 
 ---
 
-Este README busca ser una guía completa y atractiva para entender la magnitud y las capacidades de tu sistema. ¡Espero que te sea de gran utilidad para "venderlo"!
+Este README ahora refleja de manera más completa la importancia y funcionalidad de tus archivos estáticos, dándoles el crédito que merecen en la construcción de la experiencia final del usuario.
