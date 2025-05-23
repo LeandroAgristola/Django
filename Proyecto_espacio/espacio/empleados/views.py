@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 
 @login_required
 def lista_empleados(request):
+    # Muestra empleados activos e inactivos por separado
     activos = Empleado.objects.filter(activo=True)
     papelera = Empleado.objects.filter(activo=False)
     return render(request, 'empleados/lista_empleados.html', {
@@ -20,6 +21,7 @@ def detalle_empleado(request, pk):
 
 @login_required
 def crear_empleado(request):
+    # Maneja la creación de nuevos empleados
     if request.method == 'POST':
         form = EmpleadoForm(request.POST, request.FILES)
         if form.is_valid():
@@ -56,6 +58,7 @@ def editar_empleado(request, pk):
 @require_POST
 @login_required
 def desactivar_empleado(request, pk):
+    # Desactiva un empleado (lo mueve a la papelera)
     empleado = get_object_or_404(Empleado, pk=pk)
     fecha_baja = request.POST.get('fecha_baja')
 
@@ -68,6 +71,7 @@ def desactivar_empleado(request, pk):
 @require_POST
 @login_required
 def reactivar_empleado(request, pk):
+    # Reactiva un empleado (lo saca de la papelera)
     empleado = get_object_or_404(Empleado, pk=pk)
     fecha_alta = request.POST.get('fecha_alta')
 
@@ -81,6 +85,7 @@ def reactivar_empleado(request, pk):
 @require_POST
 @login_required
 def eliminar_empleado(request, pk):
+    # Elimina permanentemente un empleado
     empleado = get_object_or_404(Empleado, pk=pk)
     empleado.delete()
     return redirect('lista_empleados')

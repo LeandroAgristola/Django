@@ -6,6 +6,14 @@ from django.db.models import F, Q
 from datetime import datetime, timedelta
 
 class ClienteForm(forms.ModelForm):
+    """
+    Formulario para crear/editar clientes con validaciones personalizadas.
+    - Maneja asignación de turnos
+    - Valida unicidad de DNI y email
+    - Verifica disponibilidad de turnos
+    """
+    
+    # Campos ocultos para manejar días y horarios
     dias = forms.CharField(widget=forms.HiddenInput(), required=False)
     horas = forms.CharField(widget=forms.HiddenInput(), required=False)
     
@@ -26,10 +34,13 @@ class ClienteForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Inicialización que procesa días y horarios seleccionados"""
         self.dias_lista = []
         self.horas_lista = []
         super().__init__(*args, **kwargs)
 
+        
+        # Procesar datos de días/horarios del request
         data = args[0] if args else None
         if data:
             self.dias_lista = data.getlist('dias[]')
@@ -43,6 +54,7 @@ class ClienteForm(forms.ModelForm):
                 self.instance.hora = horas_str
 
     def clean_dni(self):
+        """Validación de DNI único"""
         dni = self.cleaned_data.get('dni')
         if dni is not None:
             qs = Cliente.objects.filter(dni=dni)
@@ -53,6 +65,7 @@ class ClienteForm(forms.ModelForm):
         return dni
 
     def clean_mail(self):
+        """Validación de email único"""
         mail = self.cleaned_data.get('mail')
         if mail:
             qs = Cliente.objects.filter(mail=mail)
@@ -63,12 +76,19 @@ class ClienteForm(forms.ModelForm):
         return mail
 
     def clean_fecha_alta(self):
+        """Validación de fecha de alta obligatoria"""
         fecha_alta = self.cleaned_data.get('fecha_alta')
         if not fecha_alta:
             raise ValidationError("La fecha de alta es obligatoria.")
         return fecha_alta
 
     def clean(self):
+        """
+        Validaciones complejas:
+        - Verifica asignación correcta de turnos según plan
+        - Valida disponibilidad de turnos seleccionados
+        - Evita duplicados en días/horarios
+        """
         cleaned_data = super().clean()
         plan = cleaned_data.get('plan')
         fecha_alta = cleaned_data.get('fecha_alta')
@@ -77,6 +97,7 @@ class ClienteForm(forms.ModelForm):
             self.add_error('fecha_alta', "Debes ingresar una fecha de alta válida.")
 
         if plan:
+            # Validación básica de días/horarios
             dias = self.data.getlist('dias[]')
             horas = self.data.getlist('horas[]')
 
@@ -95,6 +116,7 @@ class ClienteForm(forms.ModelForm):
                     f"Faltan horarios para {len(dias) - len(horas)} días."
                 )
             
+            # Validación de valores no vacíos
             for i, (dia, hora) in enumerate(zip(dias, horas), start=1):
                 if not dia.strip():
                     raise ValidationError(f"El día número {i} está vacío.")
@@ -104,10 +126,12 @@ class ClienteForm(forms.ModelForm):
             self.dias_lista = [dia.strip() for dia in dias]
             self.horas_lista = [hora.strip() for hora in horas]
 
+            # Validación de duplicados
             turnos_combinados = list(zip(self.dias_lista, self.horas_lista))
             if len(turnos_combinados) != len(set(turnos_combinados)):
                 raise ValidationError("No puedes asignar el mismo día y hora más de una vez.")
-
+            
+            # Validación de disponibilidad de turnos
             from calendario.models import Turno 
 
             dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
@@ -120,12 +144,13 @@ class ClienteForm(forms.ModelForm):
                     delta_dias = (dia_idx - fecha_alta.weekday() + 7) % 7
                     primera_fecha = fecha_alta + timedelta(days=delta_dias)
 
-
+                    # Convertir hora a objeto time
                     if isinstance(hora, str):
                         hora_dt = datetime.strptime(hora, "%H:%M").time()
                     else:
                         hora_dt = hora
-
+                        
+                    # Verificar disponibilidad
                     ocupados = Turno.objects.filter(
                         hora=hora_dt,
                         fecha__gte=primera_fecha

@@ -13,6 +13,8 @@ from .forms import ClienteForm
 from calendario.models import Turno
 from configuracion.models import Configuracion
 from planes.models import Plan
+from django.core.management import call_command
+
 
 @login_required
 def lista_clientes(request):
@@ -447,3 +449,13 @@ def clientes_estadisticas(request):
         'total_activos': Cliente.objects.filter(activo=True).count(),
         'año': año_actual
     })
+
+@login_required
+def resetear_estados_mensual_view(request):
+    try:
+        call_command('resetear_estados_mensual', force=True, silent=False)
+        messages.success(request, "Se reiniciaron los estados mensuales correctamente.")
+    except Exception as e:
+        messages.error(request, f"Ocurrió un error al reiniciar los estados: {str(e)}")
+    
+    return redirect('clientes:lista_clientes')

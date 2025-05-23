@@ -12,12 +12,19 @@ from django.db.models import Q
 
 @login_required
 def vista_calendario(request):
+    """Vista principal que renderiza el template del calendario"""
     return render(request, 'calendario/calendario.html')
 
 @login_required
 def disponibilidad_por_dia(request):
+    """
+    Vista que devuelve disponibilidad de turnos por día en formato JSON.
+    - Calcula disponibilidad para los próximos 60 días
+    - Considera días habilitados y horarios de configuración
+    - Marca días con/sin disponibilidad con colores
+    """
     hoy = date.today()
-    fin = hoy + timedelta(days=60)  # Mostrar 2 meses
+    fin = hoy + timedelta(days=60)   # Rango de 2 meses
 
     config = Configuracion.objects.first()
     if not config:
@@ -25,7 +32,7 @@ def disponibilidad_por_dia(request):
 
     eventos = []
     actual = hoy
-
+     # Mapeo de días en inglés a español
     traduccion_dias = {
         'monday': 'lunes',
         'tuesday': 'martes',
@@ -39,10 +46,12 @@ def disponibilidad_por_dia(request):
     while actual <= fin:
         dia_semana = traduccion_dias[actual.strftime('%A').lower()]
 
+        # Saltar días no habilitados
         if dia_semana not in config.dias_habilitados:
             actual += timedelta(days=1)
             continue
-
+        
+        # Determinar horario según día
         if dia_semana == 'sabado':
             inicio = config.horario_sabado_inicio
             fin_horario = config.horario_sabado_fin
@@ -53,10 +62,12 @@ def disponibilidad_por_dia(request):
             inicio = config.horario_semana_inicio
             fin_horario = config.horario_semana_fin
 
+        # Calcular turnos disponibles
         total_turnos_disponibles = 0
         hora_actual = inicio
 
         while hora_actual < fin_horario:
+            # Contar turnos ocupados (solo clientes activos)
             ocupados = Turno.objects.filter(
                 fecha=actual,
                 hora=hora_actual,
@@ -71,6 +82,7 @@ def disponibilidad_por_dia(request):
 
             hora_actual = (datetime.combine(actual, hora_actual) + timedelta(hours=1)).time()
 
+        # Determinar color según disponibilidad
         color = '#28a745' if total_turnos_disponibles > 0 else '#dc3545'
 
         eventos.append({
@@ -85,6 +97,12 @@ def disponibilidad_por_dia(request):
 
 @login_required
 def horarios_por_dia(request):
+    """
+    Vista que devuelve horarios disponibles para un día específico.
+    - Recibe fecha por GET
+    - Considera capacidad máxima por hora (6 turnos)
+    - Devuelve estado de disponibilidad por hora
+    """
     fecha_str = request.GET.get('fecha')
     cliente_id = request.GET.get('cliente_id')
 
@@ -99,15 +117,16 @@ def horarios_por_dia(request):
     config = Configuracion.objects.first()
     if not config:
         return JsonResponse({'error': 'Configuración no encontrada'}, status=400)
-
+    
+    # Determinar horario según día de semana
     dia = fecha.weekday()
-    if dia == 5:
+    if dia == 5: # Sábado
         inicio = config.horario_sabado_inicio
         fin = config.horario_sabado_fin
-    elif dia == 6:
+    elif dia == 6: # Domingo
         inicio = config.horario_domingo_inicio
         fin = config.horario_domingo_fin
-    else:
+    else: # Día de semana
         inicio = config.horario_semana_inicio
         fin = config.horario_semana_fin
 
@@ -117,9 +136,10 @@ def horarios_por_dia(request):
     horarios = []
     hora_actual = inicio
 
-    CAPACIDAD_MAXIMA = 6 
+    CAPACIDAD_MAXIMA = 6 # Turnos por hora
     
     while hora_actual < fin:
+        # Contar turnos ocupados (solo clientes activos)
         ocupados = Turno.objects.filter(
             fecha=fecha,
             hora=hora_actual
@@ -142,7 +162,12 @@ def horarios_por_dia(request):
     return JsonResponse(horarios, safe=False)
 
 @login_required
-def detalle_dia(request):
+def detalle_dia(request):  
+    """
+    Vista que muestra el detalle de turnos para un día específico.
+    - Organiza los turnos en una grilla por hora
+    - Muestra información de cliente para cada turno
+    """
     fecha_str = request.GET.get('fecha')
     if not fecha_str:
         return render(request, 'calendario/detalle_dia.html', {'error': 'Fecha no proporcionada'})
@@ -150,24 +175,26 @@ def detalle_dia(request):
     fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
     dia = fecha.weekday()
     config = Configuracion.objects.first()
-
-    if dia == 5:
+    
+    # Determinar horario según día de semana
+    if dia == 5:  # Sábado
         inicio = config.horario_sabado_inicio
         fin = config.horario_sabado_fin
-    elif dia == 6:
+    elif dia == 6:  # Domingo
         inicio = config.horario_domingo_inicio
         fin = config.horario_domingo_fin
-    else:
+    else: # Día de semana
         inicio = config.horario_semana_inicio
         fin = config.horario_semana_fin
 
+    # Construir grilla de turnos
     grilla = []
     hora_actual = inicio
 
     while hora_actual < fin:
         turnos = Turno.objects.filter(fecha=fecha, hora=hora_actual).select_related('cliente').order_by('id')
         fila = []
-        for i in range(6):
+        for i in range(6):  # 6 turnos por hora
             if i < len(turnos):
                 cliente = turnos[i].cliente
                 fila.append({
@@ -196,6 +223,12 @@ def detalle_dia(request):
 
 @login_required
 def estadisticas_turnos(request):
+    """
+    Vista que genera estadísticas de ocupación de turnos.
+    - Puede mostrar mes actual o próximo mes
+    - Calcula promedios por día de semana
+    - Considera días habilitados en configuración
+    """
     rango = request.GET.get('rango', 'actual')  # 'actual' o 'siguiente'
     hoy = date.today()
     

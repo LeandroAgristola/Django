@@ -18,14 +18,23 @@ from django.core.management import call_command
 
 @login_required
 def lista_clientes(request):
+    """
+    Vista principal que lista clientes con filtros:
+    - Filtros por tipo, plan, estado y búsqueda
+    - Separa clientes activos/inactivos
+    - Incluye datos para filtros en template
+    """
+    # Obtener parámetros de filtrado
     tipo_filtro = request.GET.get('tipo')
     plan_filtro = request.GET.get('plan')
     estado_filtro = request.GET.get('estado')
     busqueda = request.GET.get('busqueda')
 
+    # QuerySets base
     clientes_activos = Cliente.objects.filter(activo=True)
     clientes_inactivos = Cliente.objects.filter(activo=False)
 
+    # Aplicar filtros de búsqueda
     if busqueda:
         clientes_activos = clientes_activos.filter(
             Q(nombre__icontains=busqueda) |
@@ -40,6 +49,7 @@ def lista_clientes(request):
             Q(mail__icontains=busqueda)
         )
 
+    # Aplicar filtros adicionales
     if tipo_filtro:
         clientes_activos = clientes_activos.filter(tipo=tipo_filtro)
         clientes_inactivos = clientes_inactivos.filter(tipo=tipo_filtro)
@@ -52,6 +62,7 @@ def lista_clientes(request):
         clientes_activos = clientes_activos.filter(estado=estado_filtro)
         clientes_inactivos = clientes_inactivos.filter(estado=estado_filtro)
 
+    # Obtener planes para filtros
     planes = Plan.objects.filter(activo=True)
 
     return render(request, 'clientes/lista_clientes.html', {
@@ -68,6 +79,12 @@ def lista_clientes(request):
 
 @login_required
 def crear_cliente(request):
+    """
+    Vista para crear nuevo cliente:
+    - Maneja formulario con validaciones
+    - Asigna turnos según plan
+    - Genera turnos futuros automáticamente
+    """
     config = Configuracion.objects.first()
     dias_semana = config.dias_habilitados if config else []
     dias_semana_json = json.dumps(dias_semana) if config else '[]'
@@ -82,7 +99,8 @@ def crear_cliente(request):
             try:
                 cliente = form.save(commit=False)
                 cliente.save()
-                
+
+                # Eliminar turnos existentes y generar nuevos
                 cliente.turnos.all().delete()
                 generar_turnos_futuros(cliente)
                 
@@ -94,7 +112,8 @@ def crear_cliente(request):
                 messages.error(request, f"Error al guardar el cliente: {str(e)}")
         else:
             print(f"Errores de formulario: {form.errors}")
-            
+        
+        # Preparar datos para mostrar errores    
         turnos_preseleccionados = []
         dias = request.POST.getlist('dias[]', [])
         horas = request.POST.getlist('horas[]', [])
@@ -111,6 +130,7 @@ def crear_cliente(request):
             'turnos_preseleccionados': turnos_preseleccionados
         })
     
+    # GET: Mostrar formulario vacío
     form = ClienteForm()
     return render(request, 'clientes/forms_cliente.html', {
         'form': form,
@@ -121,6 +141,12 @@ def crear_cliente(request):
 
 @login_required
 def editar_cliente(request, cliente_id):
+    """
+    Vista para editar cliente existente:
+    - Maneja reactivación de clientes inactivos
+    - Actualiza turnos al guardar cambios
+    - Mantiene datos de días/horarios seleccionados
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
     config = Configuracion.objects.first()
     dias_semana = config.dias_habilitados if config else []
@@ -135,6 +161,7 @@ def editar_cliente(request, cliente_id):
         if form.is_valid():
             cliente = form.save(commit=False)
 
+            # Actualizar turnos si se modificaron días/horarios
             if 'dias[]' in request.POST:
                 dias = request.POST.getlist('dias[]')
                 horas = request.POST.getlist('horas[]')
@@ -143,6 +170,7 @@ def editar_cliente(request, cliente_id):
                 cliente.turnos.all().delete()
                 generar_turnos_futuros(cliente)
 
+            # Manejar reactivación
             if 'reactivar' in request.GET:
                 cliente.activo = True
                 cliente.estado = 'pendiente'
@@ -160,7 +188,8 @@ def editar_cliente(request, cliente_id):
             'dias_semana_json': dias_semana_json,
             'planes_json': planes_json,
         })
-
+    
+    # GET: Mostrar formulario con datos actuales
     if 'reactivar' in request.GET:
         fecha_alta_str = request.GET.get('fecha_alta', '')
         cliente.plan = None
@@ -177,6 +206,7 @@ def editar_cliente(request, cliente_id):
     initial_data = {'fecha_alta': fecha_alta_str}
     form = ClienteForm(instance=cliente, initial=initial_data)
 
+    # Preparar turnos preseleccionados para mostrar en UI
     turnos_preseleccionados = []
     if cliente.dias and cliente.hora:
         dias = [d.strip() for d in cliente.dias.split(',')]
@@ -195,19 +225,28 @@ def editar_cliente(request, cliente_id):
 
 @login_required
 def desactivar_cliente(request, cliente_id):
+    """
+    Vista para desactivar cliente:
+    - Establece fecha de baja
+    - Elimina turnos futuros
+    - Limpia datos de plan y turnos
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
     if request.method == 'POST':
         fecha_baja = request.POST.get('fecha_baja')
         
         try:
             fecha_baja_date = datetime.strptime(fecha_baja, "%Y-%m-%d").date()
-            
+
+            # Eliminar turnos futuros
             cliente.turnos.filter(fecha__gte=fecha_baja_date).delete()
-            
+
+            # Limpiar datos
             cliente.plan = None
             cliente.dias = ""
             cliente.hora = ""
-            
+
+            # Marcar como inactivo
             cliente.activo = False
             cliente.estado = 'pendiente'
             cliente.fecha_baja = fecha_baja_date
@@ -225,6 +264,11 @@ def desactivar_cliente(request, cliente_id):
 
 @login_required
 def reactivar_cliente(request, cliente_id):
+    """
+    Vista para redirigir a edición con opción de reactivación:
+    - Prepara datos para formulario de edición
+    - Permite establecer nueva fecha de alta
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
 
     fecha_alta_str = request.POST.get('fecha_alta') or timezone.now().date().strftime("%Y-%m-%d")
@@ -235,6 +279,9 @@ def reactivar_cliente(request, cliente_id):
 
 @login_required
 def eliminar_cliente(request, cliente_id):
+    """
+    Vista para eliminar cliente permanentemente
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
     cliente.delete()
     return redirect('clientes:lista_clientes')
@@ -242,6 +289,11 @@ def eliminar_cliente(request, cliente_id):
 @login_required
 @require_POST
 def confirmar_pago(request, cliente_id):
+    """
+    Vista para confirmar pago de cliente:
+    - Actualiza estado y fecha de confirmación
+    - Solo para clientes regulares
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
     cliente.estado = 'confirmado'
     cliente.ultima_confirmacion = timezone.now().date()
@@ -251,6 +303,11 @@ def confirmar_pago(request, cliente_id):
 
 @login_required
 def detalle_cliente(request, cliente_id):
+    """
+    Vista para mostrar detalles de cliente:
+    - Información básica
+    - Turnos asignados
+    """
     cliente = get_object_or_404(Cliente, id=cliente_id)
     
     dias = cliente.dias.split(',') if cliente.dias else []
@@ -265,12 +322,21 @@ def detalle_cliente(request, cliente_id):
 
 @login_required
 def asignar_turnos(request):
+    """
+    Vista especializada para asignación de turnos:
+    - Maneja un flujo de dos pasos: datos del cliente + asignación de turnos
+    - Valida datos del cliente y disponibilidad de turnos
+    - Genera turnos futuros automáticamente según plan
+    - Usa sesión para mantener datos temporales del cliente
+    """
+    # Obtener ID del plan desde GET o POST
     plan_id = request.GET.get('plan_id') or request.POST.get('plan_id')
     
     if not plan_id:
         messages.error(request, "No se especificó ningún plan")
         return redirect('clientes:crear_cliente')
-
+    
+    # Recopilar datos del cliente desde el request
     cliente_data = {
         'nombre': request.GET.get('nombre'),
         'apellido': request.GET.get('apellido'),
@@ -281,35 +347,42 @@ def asignar_turnos(request):
         'fecha_alta': request.GET.get('fecha_alta'),
         'plan': plan_id
     }
+    # Guardar datos en sesión para persistencia
     request.session['cliente_temporal'] = cliente_data
 
+    # Validar campos obligatorios
     required_fields = ['nombre', 'apellido', 'dni', 'mail']
     if not all(cliente_data[field] for field in required_fields):
         messages.error(request, "Faltan datos obligatorios del cliente")
         return redirect('clientes:crear_cliente')
 
     try:
+        # Obtener objetos relacionados
         plan = Plan.objects.get(id=plan_id)
         config = Configuracion.objects.first()
     except Plan.DoesNotExist:
         messages.error(request, "El plan seleccionado no existe")
         return redirect('clientes:crear_cliente')
-
+    
+    # Manejar POST (envío del formulario de turnos)
     if request.method == 'POST':
         dias = request.POST.getlist('dias[]')
         horas = request.POST.getlist('horas[]')
 
+        # Validar selección de días/horarios
         if not dias or not horas:
             messages.error(request, "Debés seleccionar días y horarios.")
             return redirect(request.path + f"?{request.GET.urlencode()}")
-
+        
+        # Procesar fecha de alta
         try:
             fecha_alta = datetime.strptime(cliente_data['fecha_alta'], "%Y-%m-%d") if cliente_data['fecha_alta'] else datetime.today()
         except ValueError:
             fecha_alta = datetime.today()
 
+        # Crear o actualizar cliente
         cliente, creado = Cliente.objects.get_or_create(
-            mail=cliente_data['mail'],
+            mail=cliente_data['mail'], # Usar email como identificador único
             defaults={
                 'nombre': cliente_data['nombre'],
                 'apellido': cliente_data['apellido'],
@@ -324,6 +397,7 @@ def asignar_turnos(request):
             }
         )
 
+        # Actualizar cliente existente si es necesario
         if not creado:
             cliente.nombre = cliente_data['nombre']
             cliente.apellido = cliente_data['apellido']
@@ -335,21 +409,29 @@ def asignar_turnos(request):
             cliente.estado = cliente_data['estado']
             cliente.fecha_alta = fecha_alta
             cliente.save()
-            cliente.turnos.all().delete()
+            cliente.turnos.all().delete()  # Eliminar turnos existentes para regenerarlos
         
+        # Generar turnos futuros según la configuración
         generar_turnos_futuros(cliente)
         messages.success(request, "Cliente y turnos asignados correctamente.")
         return redirect('clientes:lista_clientes')
-
+    
+    # GET: Mostrar formulario de asignación de turnos
     return render(request, 'clientes/asignar_turnos.html', {
         'plan': plan,
         'config': config,
-        'dias_semana': config.dias_habilitados if config else [],
-        'dias_semana_json': json.dumps(config.dias_habilitados) if config else '[]',
-        'initial_data': cliente_data
+        'dias_semana': config.dias_habilitados if config else [], # Días habilitados según configuración
+        'dias_semana_json': json.dumps(config.dias_habilitados) if config else '[]',# Datos para JS
+        'initial_data': cliente_data # Datos del cliente para prellenar
     })
 
 def generar_turnos_futuros(cliente):
+    """
+    Función auxiliar para generar turnos futuros:
+    - Crea turnos semanales según días/horarios asignados
+    - Considera disponibilidad (máx 6 turnos por hora)
+    - Genera turnos por 6 meses (180 días)
+    """
     if not cliente.dias or not cliente.hora:
         return
         
@@ -364,8 +446,10 @@ def generar_turnos_futuros(cliente):
 
     dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 
+    # Eliminar turnos futuros existentes
     cliente.turnos.filter(fecha__gte=fecha_actual).delete()
 
+    # Generar nuevos turnos
     for dia, hora in zip(dias_seleccionados, horas_seleccionadas):
         try:
             dia_idx = dias_esp.index(dia.lower())
@@ -375,6 +459,7 @@ def generar_turnos_futuros(cliente):
             delta_days = (dia_idx - current_date.weekday() + 7) % 7
             current_date += timedelta(days=delta_days)
 
+            # Generar turnos semanales hasta fecha límite
             while current_date <= fecha_limite:
                 ocupados = Turno.objects.filter(
                     fecha=current_date,
@@ -384,6 +469,7 @@ def generar_turnos_futuros(cliente):
                     (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=current_date))
                 ).count()
 
+                # Crear turno si hay disponibilidad
                 if ocupados < 6:
                     Turno.objects.get_or_create(
                         fecha=current_date,
@@ -399,6 +485,12 @@ def generar_turnos_futuros(cliente):
 
 @login_required
 def clientes_estadisticas(request):
+    """
+    Vista que genera estadísticas de clientes:
+    - Altas/bajas por mes
+    - Total de clientes activos
+    - Datos para gráficos
+    """
     hoy = timezone.now().date()
     año_actual = hoy.year  
     año_actual = hoy.year
@@ -415,12 +507,14 @@ def clientes_estadisticas(request):
     for mes in range(1, 13):
         mes_inicio = date(año_actual, mes, 1)
         mes_fin = date(año_actual, mes+1, 1) if mes < 12 else date(año_actual+1, 1, 1)
-        
+
+        # Contar altas nuevas
         altas_nuevos = Cliente.objects.filter(
             fecha_alta__gte=mes_inicio, 
             fecha_alta__lt=mes_fin
         ).count()
-        
+
+        # Contar reactivaciones
         reactivaciones = Cliente.objects.filter(
             activo=True,
             modificado__gte=mes_inicio,
@@ -429,7 +523,8 @@ def clientes_estadisticas(request):
         ).count()
         
         altas = altas_nuevos + reactivaciones
-        
+
+        # Contar bajas
         bajas = Cliente.objects.filter(
             activo=False,
             fecha_baja__gte=mes_inicio,
@@ -452,6 +547,11 @@ def clientes_estadisticas(request):
 
 @login_required
 def resetear_estados_mensual_view(request):
+    """
+    Vista que ejecuta el comando para resetear estados mensuales:
+    - Cambia estado a 'pendiente' el primer día de cada mes
+    - Para clientes regulares con pago confirmado del mes anterior
+    """
     try:
         call_command('resetear_estados_mensual', force=True, silent=False)
         messages.success(request, "Se reiniciaron los estados mensuales correctamente.")

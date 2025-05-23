@@ -1,7 +1,13 @@
+Bien me enorgullece decir que terminamos el proyecto del espacio! la idea ahora es armar el archivo readme 
+completo explicando que realiza cada parte de nuestro proyecto, y también aplicar comentarios a todo el código 
+para documentar y que en próximos desarrollos sepa que hace cada parte del código. La idea es aplicar comentario 
+simples y específicos en partes importante del codigo
 
-Bien continuando con mi proyecto de djnago del estudio de pilates en el cual tenemos las aplicaciones:
+Voy a cargarte cada archivo importante de todas las apps para que apliques los comentarios y me vayas armando 
+el readme descriptivo para próximamente venderlo y/o agregarlo a mi portafolios
+
 clientes: Maneja el alta y baja de clientes
-configuracion: Maneja la cargar y edicion de datos del espacio
+configuración: Maneja la cargar y edición de datos del espacio
 empleados: maneja el alta y baja de empleados
 eventos: maneja la carga y gestion de Eventos
 management: engloba toda las aplicacion de administracion
@@ -13,7 +19,6 @@ Pendientes
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
-        El grafico de clientes no carga los clientes "eliminados" completamente
        
 Nuevas funcionalidades:
 
@@ -32,3 +37,50 @@ Nuevas funcionalidades:
         Para subir a Google Drive: necesitas autenticar una cuenta (OAuth2) y usar pydrive o google-api-python-client.
         No tengo configurada una cuenta de Drive con credenciales para esto, ya que estamos en desarrollo y no tenemos datos del cliente.
 
+
+6. Configura los servicios systemd (para producción)
+Crea estos archivos de servicio:
+
+bash
+# /etc/systemd/system/celery.service
+[Unit]
+Description=Celery Service
+After=network.target
+
+[Service]
+User=tu_usuario
+Group=tu_grupo
+WorkingDirectory=/ruta/a/tu/proyecto
+ExecStart=/ruta/a/tu/entorno/virtual/bin/celery -A espacio worker --loglevel=info
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+bash
+# /etc/systemd/system/celerybeat.service
+[Unit]
+Description=Celery Beat Service
+After=network.target
+
+[Service]
+User=tu_usuario
+Group=tu_grupo
+WorkingDirectory=/ruta/a/tu/proyecto
+ExecStart=/ruta/a/tu/entorno/virtual/bin/celery -A espacio beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+7. Instala las dependencias necesarias
+bash
+pip install celery django-celery-beat redis
+8. Migraciones para Celery Beat
+bash
+python manage.py migrate django_celery_beat
+9. Inicia los servicios
+bash
+sudo systemctl daemon-reload
+sudo systemctl start celery
+sudo systemctl start celerybeat
+sudo systemctl enable celery
+sudo systemctl enable celerybeat

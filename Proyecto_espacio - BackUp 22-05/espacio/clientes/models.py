@@ -72,7 +72,7 @@ class Cliente(models.Model):
         
         if not self.ultima_confirmacion:
             return {
-                'texto': 'Nunca pagó',
+                'texto': 'Pendiente',
                 'clase': 'bg-warning'
             }
         

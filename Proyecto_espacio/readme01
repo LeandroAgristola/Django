@@ -1,0 +1,948 @@
+README para webPublic
+Descripción General
+La aplicación webPublic es el frontend público del sistema de gestión para estudios de bienestar. Muestra información sobre el estudio, sus planes, eventos, staff y datos de contacto, obteniendo toda la información de las demás aplicaciones del sistema.
+Características Principales
+Página de Inicio (Home)
+Sección hero con texto configurable y imagen
+Sección "Nosotros" con información sobre el espacio
+Muestra de planes activos con precios y botones de consulta
+Sección de eventos destacados
+Presentación del staff con fotos y enlaces a redes sociales
+Página de Eventos
+Listado completo de eventos activos
+Detalles de cada evento: fecha, hora, ubicación, descripción
+Sistema de cupos y métodos de pago
+Botones de inscripción vía WhatsApp
+Diseño Responsive
+Adaptación perfecta a móviles, tablets y desktop
+Carrusel para staff en versión móvil
+Menú hamburguesa en dispositivos pequeños
+Integraciones
+Enlaces directos a WhatsApp con mensajes predefinidos
+Conexión con redes sociales (Instagram, Facebook, YouTube)
+Google Maps para la ubicación
+Estructura del Código
+Views
+home: Vista principal que muestra la página de inicio
+eventos: Vista que muestra la página de eventos con todos los disponibles
+Templates
+layout.html: Plantilla base que contiene la estructura común (header, footer)
+home.html: Plantilla de la página principal
+eventos.html: Plantilla de la página de eventos
+Tecnologías Utilizadas
+Django Template Language (DTL) para la lógica de plantillas
+Bootstrap 5 para el diseño responsive
+Font Awesome para íconos
+Google Fonts para tipografía
+JavaScript para animaciones y efectos
+Configuración Requerida
+La aplicación espera que existan los siguientes modelos en otras apps:
+Configuracion (configuracion)
+Empleado (empleados)
+Evento (eventos)
+Plan (planes)
+Personalización
+Todos los textos, imágenes y configuraciones se cargan desde el panel de administración a través de los modelos mencionados, permitiendo modificar el contenido sin tocar el código.
+Notas para el Desarrollo
+Los estilos CSS están en /static/css/style.css
+Las imágenes estáticas están en /static/img/
+Los scripts JS están en /static/js/
+El logo y favicon están en /static/logo/
+
+README para la app management
+Descripción General
+La aplicación management es el núcleo del sistema de administración del estudio. Proporciona:
+Autenticación de usuarios
+Panel de control principal con estadísticas
+Estructura base para todas las páginas de administración
+Navegación entre módulos
+Características Principales
+Sistema de Autenticación
+Página de login con validación de credenciales
+Protección de rutas con @login_required
+Vista para cerrar sesión
+Panel de Control
+Gráficos interactivos con Chart.js
+Movimiento anual de clientes (altas/bajas)
+Disponibilidad diaria de turnos
+Distribución de clientes por plan
+Participación en eventos
+Filtros para personalizar la visualización de datos
+Estructura de Layout
+Barra lateral de navegación con acceso a todos los módulos
+Sistema de mensajes/alerts para feedback al usuario
+Diseño responsive que se adapta a diferentes dispositivos
+Estructura del Código
+Views
+login_view: Maneja el proceso de autenticación
+logout_view: Cierra la sesión del usuario
+panel: Vista principal del dashboard de administración
+Templates
+layout_management.html: Plantilla base para todas las páginas de admin
+login.html: Página de inicio de sesión
+panel.html: Panel de control con gráficos estadísticos
+Tecnologías Utilizadas
+Django Authentication System
+Bootstrap 5 para el diseño
+Font Awesome para íconos
+Chart.js para gráficos interactivos
+Google Fonts para tipografía
+Flujo de Trabajo
+El usuario accede al sistema mediante login.html
+Tras autenticarse, es redirigido al panel principal
+Desde la barra lateral puede navegar a cualquier módulo
+El sistema muestra mensajes de feedback cuando es necesario
+El usuario puede cerrar sesión desde el menú
+Personalización
+El logo y nombre del estudio se cargan desde archivos estáticos
+Los gráficos se pueden personalizar modificando panel_estadisticas.js
+Los estilos CSS están en /static/css/styleManagement.css
+Notas para el Desarrollo
+Todas las vistas de administración deben heredar de layout_management.html
+Las rutas protegidas deben usar el decorador @login_required
+Los mensajes al usuario se manejan con el sistema de messages de Django
+Los scripts JavaScript específicos están en /static/js/
+
+README para la app calendario
+Descripción General
+La aplicación calendario gestiona el sistema de turnos del estudio, permitiendo:
+Visualización de disponibilidad por día
+Gestión detallada de turnos por hora
+Estadísticas de ocupación
+Integración con el sistema de clientes
+Características Principales
+Modelo de Turnos
+Relación con clientes
+Validación para evitar duplicados
+Ordenamiento natural por fecha y hora
+Vistas Principales
+Calendario Visual:
+Muestra disponibilidad con colores (verde/disponible, rojo/lleno)
+Integración con FullCalendar
+Vista mensual con capacidad de seleccionar días
+Gestión de Turnos:
+Detalle de turnos por día y hora
+Capacidad máxima configurable (6 turnos/hora)
+Considera días y horarios de apertura desde configuración
+Estadísticas:
+Ocupación por día de semana
+Comparación mes actual vs próximo mes
+Gráficos de disponibilidad
+Integraciones
+Configuración de días/horarios de apertura
+
+Sistema de clientes (altas/bajas)
+
+Autenticación requerida para todas las vistas
+
+Estructura del Código
+Modelos
+Turno: Almacena fecha, hora y relación con cliente
+
+Vistas
+vista_calendario: Vista principal del calendario
+
+disponibilidad_por_dia: Disponibilidad para FullCalendar (JSON)
+
+horarios_por_dia: Horarios disponibles para un día (JSON)
+
+detalle_dia: Detalle de turnos para un día específico
+
+estadisticas_turnos: Genera datos para gráficos estadísticos
+
+Templates
+calendario.html: Vista principal con FullCalendar
+detalle_dia.html: Detalle de turnos para un día
+Configuración Requerida
+Modelo Configuracion con:
+dias_habilitados
+Horarios de apertura (semana, sábado, domingo)
+Modelo Cliente para relación con turnos
+Flujo de Trabajo
+Usuario accede al calendario
+Selecciona un día para ver disponibilidad
+Puede ver detalles de turnos existentes
+El sistema muestra estadísticas de ocupación
+Tecnologías Utilizadas
+FullCalendar para calendario interactivo
+Chart.js para gráficos estadísticos
+Bootstrap para diseño responsive
+Django ORM para consultas complejas
+
+README Completo para la App Clientes
+Descripción General
+La aplicación clientes es el núcleo del sistema de gestión de clientes del estudio, permitiendo:
+
+Registro y gestión completa de clientes
+
+Asignación de planes y turnos mediante flujo optimizado
+
+Control de pagos y estados
+
+Estadísticas de movimientos
+
+Gestión de turnos recurrentes
+
+Características Principales
+Modelo Avanzado de Clientes
+Tipos de clientes (Regular/Eventual)
+
+Estados de pago (Pendiente/Confirmado)
+
+Relación con Planes
+
+Gestión de turnos asignados (días/horarios específicos)
+
+Control de fechas de alta/baja
+
+Propiedades calculadas (vencimiento de cuotas, estado de pago)
+
+Gestión Completa de Clientes
+CRUD completo para clientes
+
+Flujo de dos pasos para asignación de turnos
+
+Generación automática de turnos futuros (6 meses)
+
+Desactivación/Reactivación con historial completo
+
+Confirmación de pagos mensuales
+
+Reset automático de estados el primer día de cada mes
+
+Sistema de Asignación de Turnos
+Interfaz especializada para selección de días/horarios
+
+Validación en tiempo real de disponibilidad
+
+Persistencia de datos entre pasos
+
+Visualización clara de turnos ocupados/disponibles
+
+Coherencia automática con restricciones del plan
+
+Validaciones Avanzadas
+Unicidad de DNI y email
+
+Disponibilidad de turnos
+
+Coherencia entre plan y días asignados
+
+Fechas válidas para alta/baja
+
+Cumplimiento de configuración del estudio
+
+Estadísticas e Informes
+Movimiento mensual de clientes (altas/bajas)
+
+Total de clientes activos
+
+Datos para gráficos y análisis
+
+Exportación a formatos estándar
+
+Estructura del Código
+Modelos
+Cliente: Modelo principal con todos los campos y métodos relacionados
+
+Formularios
+ClienteForm: Formulario con validaciones personalizadas para creación/edición
+
+Vistas Principales
+lista_clientes: Vista principal con filtros avanzados
+
+crear_cliente/editar_cliente: Gestión de datos de clientes
+
+asignar_turnos: Vista especializada para asignación de turnos (flujo de dos pasos)
+
+desactivar_cliente/reactivar_cliente: Control de estado activo/inactivo
+
+confirmar_pago: Gestión de estados de pago
+
+detalle_cliente: Vista detallada con información completa
+
+clientes_estadisticas: Generación de datos para gráficos
+
+Comandos de Gestión
+resetear_estados_mensual: Tarea programada para reiniciar estados el primer día de cada mes
+
+Flujo de Trabajo Completo
+Creación inicial:
+
+Ingreso de datos básicos del cliente (nombre, apellido, DNI, contacto)
+
+Selección de plan
+
+Asignación de turnos (flujo especializado):
+
+Selección de días de la semana según restricciones del plan
+
+Elección de horarios disponibles para cada día
+
+Validación en tiempo real de disponibilidad
+
+Confirmación y generación de turnos
+
+Generación automática:
+
+Creación de turnos recurrentes por 6 meses
+
+Respetando días/horarios asignados
+
+Considerando días habilitados en configuración
+
+Gestión mensual:
+
+Confirmación de pagos (cambia estado a "confirmado")
+
+Notificación de vencimientos (después del día 7)
+
+Reset automático de estados (primer día del mes)
+
+Baja/Reactivación:
+
+Desactivación con fecha específica (elimina turnos futuros)
+
+Reactivación posible con nueva configuración
+
+Eliminación permanente cuando sea necesario
+
+Integraciones Clave
+Con otras apps del sistema
+Calendario: Para gestión de turnos y disponibilidad
+
+Planes: Para asignación según tipo de cliente y restricciones
+
+Configuración: Para días/horarios habilitados del estudio
+
+Eventos: Para clientes eventuales que participan en eventos
+
+Con componentes del sistema
+Sistema de Sesiones: Para flujo de asignación de turnos en múltiples pasos
+
+Sistema de Mensajes: Para feedback al usuario
+
+Sistema de Autenticación: Para control de acceso
+
+API de Fechas/Horas: Para gestión precisa de turnos
+
+Tecnologías Utilizadas
+Django ORM para consultas complejas
+
+Ajax para validación de disponibilidad en tiempo real
+
+JSON para intercambio de datos con frontend
+
+Bootstrap para interfaz responsive
+
+FullCalendar para visualización de disponibilidad
+
+Chart.js para gráficos estadísticos
+
+Plantillas Principales
+lista_clientes.html: Vista principal con listado y filtros
+
+forms_cliente.html: Formulario para creación/edición
+
+asignar_turnos.html: Interfaz especializada para asignación de turnos
+
+detalle_cliente.html: Vista detallada de cliente
+
+Configuración Requerida
+Modelo Configuracion con días/horarios habilitados
+
+Modelo Plan con restricciones de cantidad de días
+
+App calendario para gestión de turnos
+
+Consideraciones Especiales
+Para Asignación de Turnos
+La vista asignar_turnos debe recibir los datos básicos del cliente
+
+Usa sesiones para mantener los datos entre pasos
+
+Requiere configuración previa de días/horarios habilitados
+
+Genera turnos recurrentes automáticamente
+
+Para Producción
+Programar tarea resetear_estados_mensual el primer día de cada mes
+
+Configurar adecuadamente los días/horarios habilitados
+
+Revisar capacidad según la cantidad de turnos por hora (configurable)
+
+Notas para Desarrolladores
+La generación de turnos futuros considera:
+
+Días habilitados en configuración
+
+Fechas de alta/baja del cliente
+
+Capacidad máxima por horario (6 clientes por hora)
+
+El estado de pagos se calcula automáticamente:
+
+"Pagado" si confirmado en el mes actual
+
+"Vencido" después del día 7 sin pago
+
+"Pendiente" estado por defecto
+
+Para testing:
+
+Verificar flujo completo de asignación de turnos
+
+Probar con diferentes configuraciones de planes
+
+Validar generación correcta de turnos recurrentes
+
+Para implementar:
+
+Todos los templates deben heredar de layout_management.html
+
+Las vistas protegidas deben usar @login_required
+
+Los mensajes al usuario usan el sistema de messages de Django
+
+README para la App Empleados
+Descripción General
+La aplicación empleados gestiona el registro y administración del personal del estudio, permitiendo:
+
+Creación y edición de perfiles de empleados
+
+Control de empleados activos/inactivos
+
+Gestión de visibilidad en la web pública
+
+Historial de fechas de alta/baja
+
+Administración de información de contacto y perfiles sociales
+
+Características Principales
+Modelo de Empleados
+Datos personales: nombre, apellido, email, teléfono, dirección
+
+Datos laborales: fecha de alta, fecha de baja, estado activo/inactivo
+
+Perfil público: imagen, Instagram, visibilidad en web
+
+Validaciones:
+
+Nombre/apellido solo letras
+
+Teléfono solo números
+
+Email válido
+
+Límite de 4 empleados visibles en web
+
+Gestión Completa de Empleados
+CRUD completo (Crear, Leer, Actualizar, Eliminar)
+
+Sistema de papelera:
+
+Desactivación con fecha de baja (no eliminación física)
+
+Posibilidad de reactivación con nueva fecha de alta
+
+Eliminación permanente cuando sea necesario
+
+Control de visibilidad en la web pública con límite configurable
+
+Integraciones
+Sistema de autenticación: Todas las vistas requieren login
+
+Web pública: Muestra empleados marcados como visibles
+
+Sistema de archivos: Gestión de imágenes de perfil con eliminación automática
+
+Flujo de Trabajo
+Listado de empleados:
+
+Vista principal que muestra empleados activos e inactivos en tablas separadas
+
+Acciones disponibles para cada empleado (editar, desactivar, reactivar, eliminar)
+
+Creación/Edición:
+
+Formulario con validaciones para datos personales
+
+Selección de visibilidad en web (con límite de 4 empleados)
+
+Carga de imagen de perfil
+
+Desactivación:
+
+Movimiento a "papelera" con fecha de baja
+
+No eliminación física para mantener historial
+
+Reactivación:
+
+Vuelta a estado activo con nueva fecha de alta
+
+Eliminación de fecha de baja
+
+Eliminación permanente:
+
+Borrado definitivo del registro
+
+Eliminación automática de la imagen asociada
+
+Plantillas
+lista_empleados.html
+Muestra dos tablas: empleados activos e inactivos
+
+Modal para confirmar desactivación con fecha de baja
+
+Modal para reactivación con fecha de alta
+
+Modal para eliminación permanente
+
+Modal para creación/edición de empleados
+
+detalle_empleado.html
+Vista detallada de un empleado específico
+
+Muestra todos los campos del modelo
+
+Incluye imagen de perfil si está cargada
+
+Tecnologías Utilizadas
+Django ORM: Para gestión de modelos y consultas
+
+Django Forms: Para validación y manejo de formularios
+
+Bootstrap: Para diseño responsive de las interfaces
+
+Sistema de archivos: Para gestión de imágenes de perfil
+
+Django Auth: Para protección de vistas con @login_required
+
+Configuración Requerida
+Sistema de autenticación configurado (app management)
+
+Configuración de MEDIA_ROOT para almacenar imágenes
+
+Migraciones aplicadas para el modelo Empleado
+
+Notas para Desarrolladores
+Todas las vistas están protegidas con @login_required
+
+La eliminación de imágenes se maneja automáticamente
+
+La validación de visibilidad en web evita exceder el límite
+
+Los templates heredan de layout_management.html para consistencia visual
+
+README para la App Eventos
+Descripción General
+La aplicación eventos gestiona la creación, administración y seguimiento de eventos especiales en el estudio, permitiendo:
+
+Creación y edición de eventos con todos sus detalles
+
+Gestión de inscripciones de clientes (existentes o nuevos)
+
+Control de cupos y métodos de pago
+
+Sistema de papelera para eventos finalizados
+
+Exportación de listados de inscriptos en PDF
+
+Estadísticas de participación
+
+README para la App Eventos
+Descripción General
+La aplicación eventos es un sistema completo para la gestión de eventos especiales en el estudio, permitiendo desde la creación hasta el seguimiento de participantes. Está integrada con el sistema de clientes y ofrece funcionalidades avanzadas para administrar cupos, pagos y asistencia.
+
+Características Principales
+Gestión Completa de Eventos
+Creación y edición de eventos con todos los detalles (título, descripción, fecha, hora, ubicación)
+
+Sistema de cupos con control de disponibilidad
+
+Métodos de pago configurables (enlace de pago o pago en estudio)
+
+Visibilidad en web pública con límite configurable
+
+Imagen destacada para cada evento
+
+Inscripciones de Clientes
+Inscripción de clientes existentes desde la base de datos
+
+Registro de nuevos clientes directamente desde el formulario de inscripción
+
+Estados de pago (pendiente/confirmado)
+
+Liberación de cupos al cancelar inscripciones
+
+Herramientas Avanzadas
+Papelera de eventos para desactivar/reactivar eventos sin eliminarlos permanentemente
+
+Exportación a PDF del listado de inscriptos con diseño profesional
+
+Estadísticas de ocupación y participación
+
+Validaciones inteligentes de fechas y métodos de pago
+
+Integraciones
+Sistema de clientes para gestión de participantes
+
+Web pública para mostrar eventos destacados
+
+Sistema de autenticación para proteger todas las vistas
+
+Flujo de Trabajo
+Creación de Evento:
+
+Completa el formulario con detalles del evento
+
+Configura métodos de pago si es evento pago
+
+Establece cupos disponibles y visibilidad en web
+
+Inscripción de Clientes:
+
+Selecciona entre clientes existentes o registra nuevos
+
+Confirma estado de pago (pendiente/confirmado)
+
+El sistema actualiza automáticamente los cupos disponibles
+
+Gestión Post-Evento:
+
+Desactiva eventos finalizados (van a papelera)
+
+Reactiva eventos con nuevas fechas si es necesario
+
+Elimina eventos permanentemente cuando corresponda
+
+Reportes:
+
+Exporta listado de inscriptos en PDF
+
+Consulta estadísticas de participación
+
+Requisitos del Sistema
+Django Authentication System para control de acceso
+
+Configuración de MEDIA_ROOT para almacenar imágenes
+
+App 'clientes' para gestión de participantes
+
+Biblioteca ReportLab para generación de PDFs
+
+Tecnologías Utilizadas
+Backend:
+
+Django ORM para modelos y consultas
+
+Validaciones personalizadas en formularios
+
+Sistema de mensajes para feedback al usuario
+
+Frontend:
+
+Bootstrap 5 para interfaces responsive
+
+Select2 para búsqueda avanzada de clientes
+
+JavaScript para interacciones dinámicas
+
+Reportes:
+
+ReportLab para generación de PDFs
+
+Tablas con estilos profesionales y logo del estudio
+
+Personalización
+Todos los textos y mensajes pueden modificarse desde los templates
+
+Los estilos CSS están en archivos estáticos separados
+
+El logo para PDFs se carga desde archivo estático
+
+Notas para Producción
+Configurar adecuadamente los permisos de archivos para imágenes
+
+Programar tareas periódicas para limpieza de eventos antiguos
+
+Revisar capacidad del servidor para generación de PDFs bajo demanda
+
+Capturas de Interfaz
+(Se recomienda agregar imágenes de las principales pantallas)
+
+Listado de eventos activos/inactivos
+
+Formulario de creación/edición de eventos
+
+Vista de inscripción de clientes
+
+Ejemplo de PDF generado
+
+Este sistema ofrece una solución completa para la gestión profesional de eventos en el estudio, con especial énfasis en la experiencia del administrador y la integración con el resto de las aplicaciones del ecosistema.
+
+README para la App Planes
+Descripción General
+La aplicación planes gestiona los diferentes planes de membresía que ofrece el estudio, permitiendo su creación, edición y administración. Los planes definen las características y beneficios que tendrán los clientes al suscribirse, incluyendo frecuencia de asistencia, precio y visibilidad en la web pública.
+
+Características Principales
+Gestión Completa de Planes
+Creación y edición de planes con nombre, descripción, precio y días de asistencia
+
+Control de visibilidad en la web pública
+
+Sistema de estado (activo/inactivo) para administración flexible
+
+Validación de datos para asegurar consistencia
+
+Funcionalidades Avanzadas
+Formateo automático de precios para visualización consistente
+
+Estadísticas de adopción por parte de los clientes
+
+Sistema de papelera para desactivar/reactivar planes sin eliminarlos
+
+Eliminación permanente cuando sea necesario
+
+Integraciones
+Relación con clientes para seguimiento de membresías
+
+Web pública para mostrar planes activos y visibles
+
+Sistema de autenticación para proteger todas las vistas
+
+Modelos Principales
+Plan
+nombre: Nombre identificatorio del plan
+
+detalle: Descripción completa de beneficios y características
+
+cantidad_dias: Días de asistencia por semana (1-7)
+
+precio: Costo del plan con decimales
+
+activo: Estado activo/inactivo del plan
+
+fecha_creacion: Registro automático de creación
+
+mostrar_en_web: Control de visibilidad pública
+
+precio_formateado: Propiedad para mostrar precio formateado
+
+Vistas Disponibles
+Operaciones CRUD
+listado_planes: Muestra planes activos e inactivos
+
+crear_plan: Formulario para creación de nuevos planes
+
+editar_plan: Formulario para modificación de planes existentes
+
+desactivar_plan: Mueve plan a estado inactivo (papelera)
+
+`reactivar_plan**: Restaura plan a estado activo
+
+eliminar_plan: Eliminación permanente del plan
+
+Reportes
+estadisticas_planes: Devuelve datos estadísticos en formato JSON sobre adopción de planes
+
+Formularios
+PlanForm
+Valida y procesa datos para creación/edición de planes
+
+Validaciones:
+
+Cantidad de días entre 1 y 7
+
+Campos requeridos adecuadamente completados
+
+Widgets personalizados para mejor experiencia de usuario
+
+Plantillas
+lista_planes.html
+Tabla de planes activos con opciones de edición/desactivación
+
+Tabla de planes inactivos con opciones de reactivación/eliminación
+
+Modales de confirmación para acciones críticas
+
+form_plan.html
+Formulario unificado para creación/edición
+
+Validaciones visuales y mensajes de error
+
+Diseño responsive con Bootstrap
+
+Tecnologías Utilizadas
+Backend:
+
+Django ORM para modelos y consultas
+
+Sistema de formularios con validaciones
+
+Vistas basadas en funciones protegidas por autenticación
+
+Frontend:
+
+Bootstrap 5 para diseño responsive
+
+Modales interactivos para confirmaciones
+
+Diseño limpio y consistente
+
+Configuración Requerida
+Django Authentication System para control de acceso
+
+App 'clientes' para relación con miembros
+
+Migraciones aplicadas para el modelo Plan
+
+Flujo de Trabajo Recomendado
+Crear nuevos planes con todos los detalles requeridos
+
+Gestionar visibilidad en web según estrategia comercial
+
+Desactivar planes temporariamente en lugar de eliminarlos
+
+Monitorear estadísticas de adopción para ajustar oferta
+
+Eliminar permanentemente solo cuando sea estrictamente necesario
+
+Este módulo proporciona las herramientas necesarias para administrar completamente la cartera de planes del estudio, integrando perfectamente con el sistema de clientes y la web pública para una gestión integral de membresías.
+
+README para la App Configuración
+Descripción General
+La aplicación configuración centraliza toda la configuración global del sistema y los datos fundamentales del estudio. Funciona como panel de control para personalizar la información que se muestra en la web pública y define parámetros operativos clave para todo el sistema.
+
+Características Principales
+Gestión Centralizada
+Datos del estudio: Nombre, dirección, contacto, redes sociales
+
+Configuración operativa: Horarios, días de apertura
+
+Contenido dinámico: Textos para la web y mensajes predefinidos
+
+Integraciones: Enlaces a mapas y redes sociales
+
+Validaciones Inteligentes
+Verificación de horarios coherentes (inicio < fin)
+
+Requerimiento de al menos un día habilitado
+
+Formatos adecuados para URLs y contactos
+
+Seguridad y Acceso
+Protección de todas las vistas con autenticación
+
+Sistema de singleton (solo una configuración activa)
+
+Confirmación modal para guardar cambios
+
+Modelo Principal
+Configuración
+Datos de contacto:
+
+nombre_estudio, telefono, whatsapp, email
+
+direccion, maps, cuit
+
+Redes sociales:
+
+instagram, facebook, youtube
+
+Configuración horaria:
+
+dias_habilitados (multiselect)
+
+horarios para semana/sábado/domingo
+
+Contenidos:
+
+texto_hero (para página principal)
+
+mensajes predefinidos para WhatsApp
+
+Vistas Disponibles
+panel_config
+Muestra todos los datos de configuración actuales
+
+Organiza la información en secciones lógicas
+
+Enlace a edición de datos
+
+editar_datos
+Formulario completo para modificar toda la configuración
+
+Crea automáticamente registro si no existe
+
+Validación integrada de horarios y días
+
+Formularios
+ConfiguraciónForm
+Campos personalizados:
+
+Checkboxes para días habilitados
+
+Inputs de tiempo para horarios
+
+URLs con placeholders descriptivos
+
+Validaciones:
+
+Horario fin > horario inicio
+
+Al menos un día seleccionado
+
+Formatos correctos para emails y URLs
+
+Plantillas
+panel_config.html
+Vista organizada en dos columnas
+
+Iconos descriptivos para cada campo
+
+Muestra condicional de horarios
+
+Sección especial para textos largos
+
+forms_config.html
+Formulario dividido en secciones
+
+Tratamiento especial para campos complejos (horarios, días)
+
+Modal de confirmación para guardar
+
+Validación visual de errores
+
+Integraciones Clave
+Web pública: Consume todos los datos mostrados
+
+Sistema de turnos: Usa días/horarios habilitados
+
+WhatsApp: Mensajes predefinidos para eventos/planes
+
+Google Maps: Integración con iframe
+
+Tecnologías Utilizadas
+MultiSelectField: Para días habilitados
+
+Bootstrap 5: Diseño responsive
+
+Font Awesome: Iconos descriptivos
+
+Validaciones Django: Para consistencia de datos
+
+Flujo de Configuración
+Acceder al panel de configuración
+
+Editar datos necesarios
+
+Verificar validaciones
+
+Confirmar cambios
+
+Ver reflejados los cambios en la web pública
+
+Este módulo es fundamental para la personalización del sistema y asegura que todos los datos críticos del estudio estén centralizados y sean fácilmente modificables desde una única interfaz administrativa.
