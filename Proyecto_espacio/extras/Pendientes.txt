@@ -1,15 +1,4 @@
 
-clientes: Maneja el alta y baja de clientes
-configuración: Maneja la cargar y edición de datos del espacio
-empleados: maneja el alta y baja de empleados
-eventos: maneja la carga y gestion de Eventos
-management: engloba toda las aplicacion de administracion
-planes: maneja la carga y edición de planes regulares 
-webPublic: muestra la información del espacio al publico 
-calendario: gestión de horarios de los clientes 
-
-
-
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
        
@@ -31,49 +20,94 @@ Nuevas funcionalidades:
         No tengo configurada una cuenta de Drive con credenciales para esto, ya que estamos en desarrollo y no tenemos datos del cliente.
 
 
-6. Configura los servicios systemd (para producción)
-Crea estos archivos de servicio:
+🔧 Aplicaciones recomendadas
+Aquí tienes un flujo de trabajo completo con herramientas gratuitas o freemium que puedes usar:
 
-bash
-# /etc/systemd/system/celery.service
-[Unit]
-Description=Celery Service
-After=network.target
+1. OBS Studio
+Usos: Grabar el recorrido del sitio.
 
-[Service]
-User=tu_usuario
-Group=tu_grupo
-WorkingDirectory=/ruta/a/tu/proyecto
-ExecStart=/ruta/a/tu/entorno/virtual/bin/celery -A espacio worker --loglevel=info
-Restart=always
+URL: https://obsproject.com
 
-[Install]
-WantedBy=multi-user.target
-bash
-# /etc/systemd/system/celerybeat.service
-[Unit]
-Description=Celery Beat Service
-After=network.target
+2. CapCut Desktop (recomendado por su facilidad y opciones de IA integradas)
+Usos: Editar video, agregar voz generada por IA, subtítulos automáticos y exportación final.
 
-[Service]
-User=tu_usuario
-Group=tu_grupo
-WorkingDirectory=/ruta/a/tu/proyecto
-ExecStart=/ruta/a/tu/entorno/virtual/bin/celery -A espacio beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-Restart=always
+URL: https://www.capcut.com
 
-[Install]
-WantedBy=multi-user.target
-7. Instala las dependencias necesarias
-bash
-pip install celery django-celery-beat redis
-8. Migraciones para Celery Beat
-bash
-python manage.py migrate django_celery_beat
-9. Inicia los servicios
-bash
-sudo systemctl daemon-reload
-sudo systemctl start celery
-sudo systemctl start celerybeat
-sudo systemctl enable celery
-sudo systemctl enable celerybeat
+Alternativas: DaVinci Resolve, Clipchamp, Descript (muy potente para voz + subtítulos), Adobe Premiere con plugins IA.
+
+3. ElevenLabs o Play.ht
+Usos: Generar voz en español con calidad natural.
+
+URL:
+
+https://www.elevenlabs.io
+
+https://play.ht
+
+📋 Paso a paso
+🔴 1. Grabar video con OBS
+Abre OBS y crea una fuente de captura de pantalla o navegador.
+
+Ajusta resolución (1080p o 720p) y tasa de cuadros (30fps o 60fps).
+
+Graba el recorrido navegando por el sitio.
+
+Exporta como archivo .mp4.
+
+🧠 2. Escribir el guion
+Describe paso a paso lo que ocurre en el video en español.
+
+Ejemplo:
+
+arduino
+Copiar
+Editar
+"En esta sección mostramos los desarrollos inmobiliarios disponibles..."
+🔊 3. Generar audio en español con IA
+Usa ElevenLabs o Play.ht.
+
+Carga el guion, elige una voz natural en español.
+
+Genera el audio y descárgalo en .mp3.
+
+✂️ 4. Editar en CapCut
+Abre CapCut Desktop y crea un nuevo proyecto.
+
+Importa el video grabado y el archivo de audio generado.
+
+Sincroniza el audio con el video.
+
+Usa la función "Subtítulos automáticos" (elige idioma "Inglés") para traducir el audio al inglés directamente (algunos programas como Descript o Kapwing pueden hacer esto también con IA).
+
+Si no puedes traducir directamente, puedes:
+
+Generar subtítulos en español.
+
+Traducirlos con DeepL.
+
+Importar los subtítulos en inglés como .srt.
+
+🎨 5. Ajustar diseño del video
+Cambia fuentes, estilos de subtítulos.
+
+Agrega transiciones si lo deseas.
+
+Asegúrate de que todo esté sincronizado.
+
+✅ 6. Exportar video
+Elige formato .mp4, calidad 1080p.
+
+Sube a YouTube o cualquier plataforma de tu elección.
+
+📝 Extra: ¿Todo en una sola herramienta?
+Descript (https://www.descript.com) puede:
+
+Grabar pantalla.
+
+Generar voz en español.
+
+Traducir y generar subtítulos.
+
+Editar video todo en uno.
+
+Ideal si querés una solución más profesional y automática, aunque es freemium.
