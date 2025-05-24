@@ -1,5 +1,6 @@
 from django import forms
 from .models import Cliente, Plan
+from calendario.models import Turno
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.db.models import F, Q
@@ -82,87 +83,83 @@ class ClienteForm(forms.ModelForm):
             raise ValidationError("La fecha de alta es obligatoria.")
         return fecha_alta
 
-    def clean(self):
-        """
-        Validaciones complejas:
-        - Verifica asignación correcta de turnos según plan
-        - Valida disponibilidad de turnos seleccionados
-        - Evita duplicados en días/horarios
-        """
-        cleaned_data = super().clean()
-        plan = cleaned_data.get('plan')
-        fecha_alta = cleaned_data.get('fecha_alta')
+def clean(self):
+    """
+    Validaciones complejas:
+    - Verifica asignación correcta de turnos según plan
+    - Valida disponibilidad de turnos seleccionados en el mes siguiente
+    - Evita duplicados en días/horarios
+    """
+    from calendario.models import Turno  # Asegurate de tener este import también al inicio del archivo
 
-        if not fecha_alta:
-            self.add_error('fecha_alta', "Debes ingresar una fecha de alta válida.")
+    cleaned_data = super().clean()
+    plan = cleaned_data.get('plan')
+    fecha_alta = cleaned_data.get('fecha_alta')
 
-        if plan:
-            # Validación básica de días/horarios
-            dias = self.data.getlist('dias[]')
-            horas = self.data.getlist('horas[]')
+    if not fecha_alta:
+        self.add_error('fecha_alta', "Debes ingresar una fecha de alta válida.")
+        return
 
-            if not dias or not horas:
-                raise ValidationError("Debes asignar los turnos requeridos por el plan.")
-            
-            if len(dias) != plan.cantidad_dias:
-                raise ValidationError(
-                    f"El plan seleccionado requiere exactamente {plan.cantidad_dias} día(s). "
-                    f"Has seleccionado {len(dias)} días."
-                )
-            
-            if len(horas) != plan.cantidad_dias:
-                raise ValidationError(
-                    f"Debes asignar un horario para cada día. "
-                    f"Faltan horarios para {len(dias) - len(horas)} días."
-                )
-            
-            # Validación de valores no vacíos
-            for i, (dia, hora) in enumerate(zip(dias, horas), start=1):
-                if not dia.strip():
-                    raise ValidationError(f"El día número {i} está vacío.")
-                if not hora.strip():
-                    raise ValidationError(f"El horario para el día {dia} está vacío.")
+    if plan:
+        dias = self.data.getlist('dias[]')
+        horas = self.data.getlist('horas[]')
 
-            self.dias_lista = [dia.strip() for dia in dias]
-            self.horas_lista = [hora.strip() for hora in horas]
+        if not dias or not horas:
+            raise ValidationError("Debes asignar los turnos requeridos por el plan.")
 
-            # Validación de duplicados
-            turnos_combinados = list(zip(self.dias_lista, self.horas_lista))
-            if len(turnos_combinados) != len(set(turnos_combinados)):
-                raise ValidationError("No puedes asignar el mismo día y hora más de una vez.")
-            
-            # Validación de disponibilidad de turnos
-            from calendario.models import Turno 
+        if len(dias) != plan.cantidad_dias:
+            raise ValidationError(
+                f"El plan seleccionado requiere exactamente {plan.cantidad_dias} día(s). "
+                f"Has seleccionado {len(dias)} días."
+            )
 
-            dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
-            for i, (dia, hora) in enumerate(zip(self.dias_lista, self.horas_lista), start=1):
-                try:
-                    if not fecha_alta:
-                        raise ValidationError("La fecha de alta es requerida")
+        if len(horas) != plan.cantidad_dias:
+            raise ValidationError(
+                f"Debes asignar un horario para cada día. "
+                f"Faltan horarios para {len(dias) - len(horas)} días."
+            )
 
-                    dia_idx = dias_esp.index(dia.lower())
-                    delta_dias = (dia_idx - fecha_alta.weekday() + 7) % 7
-                    primera_fecha = fecha_alta + timedelta(days=delta_dias)
+        for i, (dia, hora) in enumerate(zip(dias, horas), start=1):
+            if not dia.strip():
+                raise ValidationError(f"El día número {i} está vacío.")
+            if not hora.strip():
+                raise ValidationError(f"El horario para el día {dia} está vacío.")
 
-                    # Convertir hora a objeto time
-                    if isinstance(hora, str):
-                        hora_dt = datetime.strptime(hora, "%H:%M").time()
-                    else:
-                        hora_dt = hora
-                        
-                    # Verificar disponibilidad
-                    ocupados = Turno.objects.filter(
-                        hora=hora_dt,
-                        fecha__gte=primera_fecha
-                    ).filter(
-                        Q(cliente__fecha_alta__lte=F('fecha')) &
-                        (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=F('fecha')))
-                    ).count()
+        self.dias_lista = [dia.strip() for dia in dias]
+        self.horas_lista = [hora.strip() for hora in horas]
 
-                    if ocupados >= 6:
-                        raise ValidationError(
-                            f"El horario {hora} los {dia} estará completo a partir del {primera_fecha.strftime('%d/%m')}"
-                        )
+        turnos_combinados = list(zip(self.dias_lista, self.horas_lista))
+        if len(turnos_combinados) != len(set(turnos_combinados)):
+            raise ValidationError("No puedes asignar el mismo día y hora más de una vez.")
 
-                except Exception as e:
-                    raise ValidationError(f"Error en validación de turnos: {str(e)}")
+        # Validar turnos futuros en el mes siguiente
+        dias_esp = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
+
+        for dia, hora in zip(self.dias_lista, self.horas_lista):
+            try:
+                dia_idx = dias_esp.index(dia.lower())
+                hora_dt = datetime.strptime(hora, "%H:%M").time()
+
+                # Calcular rango del próximo mes
+                proximo_mes = (fecha_alta.replace(day=28) + timedelta(days=4)).replace(day=1)
+                fin_proximo_mes = (proximo_mes.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+
+                fecha_actual = proximo_mes
+                while fecha_actual <= fin_proximo_mes:
+                    if fecha_actual.weekday() == dia_idx:
+                        ocupados = Turno.objects.filter(
+                            fecha=fecha_actual,
+                            hora=hora_dt
+                        ).filter(
+                            Q(cliente__fecha_alta__lte=F('fecha')) &
+                            (Q(cliente__fecha_baja__isnull=True) | Q(cliente__fecha_baja__gte=F('fecha')))
+                        ).count()
+
+                        if ocupados >= 6:
+                            raise ValidationError(
+                                f"El horario {hora} los {dia} estará completo a partir del {fecha_actual.strftime('%d/%m')}"
+                            )
+                    fecha_actual += timedelta(days=1)
+
+            except Exception as e:
+                raise ValidationError(f"Error en validación de turnos: {str(e)}")
