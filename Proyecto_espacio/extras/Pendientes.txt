@@ -1,10 +1,3 @@
-Bien me enorgullece decir que terminamos el proyecto del espacio! la idea ahora es armar el archivo readme 
-completo explicando que realiza cada parte de nuestro proyecto, y también aplicar comentarios a todo el código 
-para documentar y que en próximos desarrollos sepa que hace cada parte del código. La idea es aplicar comentario 
-simples y específicos en partes importante del codigo
-
-Voy a cargarte cada archivo importante de todas las apps para que apliques los comentarios y me vayas armando 
-el readme descriptivo para próximamente venderlo y/o agregarlo a mi portafolios
 
 clientes: Maneja el alta y baja de clientes
 configuración: Maneja la cargar y edición de datos del espacio
@@ -15,8 +8,7 @@ planes: maneja la carga y edición de planes regulares
 webPublic: muestra la información del espacio al publico 
 calendario: gestión de horarios de los clientes 
 
-No comentes lo templates solo utilizalos para el readme
-Pendientes 
+
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente

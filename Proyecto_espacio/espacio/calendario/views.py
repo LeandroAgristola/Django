@@ -209,11 +209,14 @@ def detalle_dia(request):
                     'nombre': None
                 })
 
+        completo = all(slot['nombre'] for slot in fila)  # True si todos los slots tienen nombre
+
         grilla.append({
             'hora': hora_actual.strftime('%H:%M'),
-            'turnos': fila
+            'turnos': fila,
+            'completo': completo  # <-- esta clave la usás en el template
         })
-
+        
         hora_actual = (datetime.combine(fecha, hora_actual) + timedelta(hours=1)).time()
 
     return render(request, 'calendario/detalle_dia.html', {

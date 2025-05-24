@@ -188,6 +188,11 @@ label {
     background-color: rgb(255, 240, 240) !important;
   }
 
+.card-header.resaltado-rojo {
+  background-color: rgb(255, 240, 240) !important;
+  border-color: #ffcccc;
+}
+
 /*Estilo para emplados y clientes*/
 
 #tarjetaEmpleado,

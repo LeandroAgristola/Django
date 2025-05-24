@@ -4,7 +4,9 @@
 
   {% for bloque in grilla %}
     <div class="card my-3">
-      <div class="card-header bg-light fw-bold">{{ bloque.hora }}</div>
+      <div class="card-header fw-bold {% if bloque.completo %}resaltado-rojo{% else %}bg-light{% endif %}">
+        {{ bloque.hora }} hs
+      </div>
       <ul class="list-group list-group-flush">
         {% for turno in bloque.turnos %}
           {% if turno.nombre %}
