@@ -1,0 +1,26 @@
+{% block content %}
+<div class="container">
+  <h3>Turnos para el día {{ fecha }}</h3>
+
+  {% for bloque in grilla %}
+    <div class="card my-3">
+      <div class="card-header fw-bold {% if bloque.completo %}resaltado-rojo{% else %}bg-light{% endif %}">
+        {{ bloque.hora }} hs
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for turno in bloque.turnos %}
+          {% if turno.nombre %}
+            <li class="list-group-item">
+              Turno {{ turno.numero }} — {{ turno.nombre }} {{ turno.apellido }} ({{ turno.telefono }})
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted">
+              Turno {{ turno.numero }} — <em>Vacío</em>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

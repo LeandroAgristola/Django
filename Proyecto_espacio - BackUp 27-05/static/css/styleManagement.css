@@ -1,0 +1,344 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.form-control:focus { 
+    border-color: #bdd6d2 !important;
+    box-shadow: 0 0 0 .2rem #bdd6d2!important;
+}
+
+label {
+    font-weight: 500;
+    color: #3c4750;
+}
+
+.btn {
+    border-radius: 10px;
+}
+
+.admin-wrapper {
+    display: flex; /* Usamos flexbox para el layout */
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1; /* Ocupa el espacio restante */
+    padding: 40px;
+}
+
+.sidebar {
+    display: flex;
+    width: 250px;
+    background-color: #f6eddc;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+    text-align: center;
+}
+
+.logo-container {
+    color: #283131;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.logo-title {
+    font-family: "Federo", sans-serif;
+    font-size: 1.5rem;
+}
+
+.subtitle {
+    font-family: "Faculty Glyphic", sans-serif;
+    font-size: 0.9rem;
+    color: #283131;
+    margin: 0;
+}
+
+.nav-menu {
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-link {
+    font-family: "Farro", sans-serif;
+    width: 90%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    text-decoration: none;
+    background-color: #3c4750;
+    color: #f6eddc;
+    border-radius: 8px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-link:hover {
+    background-color: #586875;
+    width: 95%;
+    margin-left: 10px;
+}
+
+.nav-link.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+    background-color: #e74c3c;
+}
+
+
+/*Estilo para login*/
+
+.login-page {
+    background-image: linear-gradient(0deg, #f5ecdbc4, #f5ecdbc4), url('/static/img/img_espacio02.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-page .btn-custom {
+    font-weight: 500;
+    width: 50%;
+    background-color: #586875;
+    color: #f6eddc;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.login-page .btn-custom:hover {
+    background-color: #3c4750;
+}
+
+
+.login-page .logo-img {
+    height: 50px;
+    width: auto;
+    margin-bottom: 5px;
+}
+
+.login-page .logo-title {
+    font-family: "Federo", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#development-form {
+    background-color: #e3e5d7;
+    width: 350px;
+    max-height: 450px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    margin: auto;
+}
+
+/*Estilos para listados y formularios*/
+
+#formsEmplados,
+#formsEventos,
+#formPlanes,
+#formscliente,
+#formConfig {
+    background-color: #e3e5d7;
+    width: 800px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#listaEmpleados,
+#listaEventos,
+#listaPlanes,
+#listaClientes,
+#listaDatos {  
+    background-color: #e3e5d7;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+.resaltado-rojo td {
+    background-color: rgb(255, 240, 240) !important;
+  }
+
+.card-header.resaltado-rojo {
+  background-color: rgb(255, 240, 240) !important;
+  border-color: #ffcccc;
+}
+
+/*Estilo para emplados y clientes*/
+
+#tarjetaEmpleado,
+#tarjetaCliente{
+    background-color: #e3e5d7;
+    width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#tarjetaEmpleado .btn,
+#tarjetaCliente .btn{
+    border: none;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#tarjetaEmpleado img {
+    border-color: #e3e5d7;;
+    border-radius: 50%;
+    border-style: solid;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#tarjetaEmpleado .TextoEmpleado,
+#tarjetaCliente .TextoCliente {
+    font-size: 1rem;
+    color: #3c4750;
+    margin-bottom: 10px;
+    background-color: #e3e5d7;
+    border-radius: 20px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/*Estilo para eventos*/
+
+#detalleEvento{
+    background-color: #e3e5d7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#detalleEvento .col-md-6{
+    width: 50%;
+}
+
+#detalleEvento .col-md-6 img{
+    width: 400px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/*Estilo para el calendario*/
+
+#calendar {
+    background-color: #f6eddc;
+    padding: 20px;
+}
+
+/*Estilo para el panel de estadisticas*/
+
+.chart-panel {
+    background-color: #e3e5d7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    height: 100%; /* Asegura misma altura en row */
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 250px; /* Aumentamos ligeramente la altura */
+    min-height: 250px;
+}
+
+.bg-white {
+    background-color: #e3e5d7 !important;
+}
+
+.rounded {
+    border-radius: 10px !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+canvas {
+    width: 100% !important;
+    height: 250px !important;
+    display: block;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pie-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+/* Mejora la legibilidad del texto en gráficos */
+.chartjs-render-monitor {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos para botones de rango */
+.btn-range {
+    padding: 5px 12px;
+    background-color: #e2e8f0;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-range:hover {
+    background-color: #cbd5e0;
+    transform: translateY(-1px);
+}
+
+.btn-range.active {
+    background-color: #586875;
+    color: white;
+    font-weight: 500;
+}
+
+/* Indicadores */
+.badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+}

@@ -1,0 +1,119 @@
+
+    Clientes:
+        Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
+    Eventos:
+        Al cargar un cliente en un evento y luego querer cargarlo en otro evento nos informa error UNIQUE constraint failed: eventos_inscripcionevento.email
+    Empleados:
+        Al editar un empleado y tildar que no se muestre su perfil en la pagina se borra la fecha de alta y al querer configurarnos nos informa el error de "solo 4 personas se pueden mostrar en la pagina"
+    Eventos: 
+        Cuendo editarmos se borra la fecha de evento  
+       
+Nuevas funcionalidades:
+
+    Correlacion entre empleados, clientes y turnos:
+        Agregar tipos de pilates estos tipos de pilates tienen correlacion con los profesores
+        Agregar tipo de disiplina que dan a los profesores para tener correlacion con el tipo de pilates
+        Agregar a empleados dias y horarios que trabajan
+        Funcionalidad integrada empleados:
+            El empleado tiene un tipo de pilates asignado y dias y horarios en los que presta servicio, al asignar un cliente le cargamos un tipo de pilates ademas del plan,
+            esto genera una correlacion entre los clientes y los empleados lo que generar que podramos filtrar los turnos asignados a cada empleado. Ademas podemos filtrar 
+            tambien por tipo de pilates 
+
+    Exportación a Excel:
+        Exportar todos los turnos del mes o semana a un Excel y subir a Drive.
+        Usamos pandas o openpyxl para generar Excel.
+        Para subir a Google Drive: necesitas autenticar una cuenta (OAuth2) y usar pydrive o google-api-python-client.
+        No tengo configurada una cuenta de Drive con credenciales para esto, ya que estamos en desarrollo y no tenemos datos del cliente.
+
+
+🔧 Aplicaciones recomendadas
+Aquí tienes un flujo de trabajo completo con herramientas gratuitas o freemium que puedes usar:
+
+1. OBS Studio
+Usos: Grabar el recorrido del sitio.
+
+URL: https://obsproject.com
+
+2. CapCut Desktop (recomendado por su facilidad y opciones de IA integradas)
+Usos: Editar video, agregar voz generada por IA, subtítulos automáticos y exportación final.
+
+URL: https://www.capcut.com
+
+Alternativas: DaVinci Resolve, Clipchamp, Descript (muy potente para voz + subtítulos), Adobe Premiere con plugins IA.
+
+3. ElevenLabs o Play.ht
+Usos: Generar voz en español con calidad natural.
+
+URL:
+
+https://www.elevenlabs.io
+
+https://play.ht
+
+📋 Paso a paso
+🔴 1. Grabar video con OBS
+Abre OBS y crea una fuente de captura de pantalla o navegador.
+
+Ajusta resolución (1080p o 720p) y tasa de cuadros (30fps o 60fps).
+
+Graba el recorrido navegando por el sitio.
+
+Exporta como archivo .mp4.
+
+🧠 2. Escribir el guion
+Describe paso a paso lo que ocurre en el video en español.
+
+Ejemplo:
+
+arduino
+Copiar
+Editar
+"En esta sección mostramos los desarrollos inmobiliarios disponibles..."
+🔊 3. Generar audio en español con IA
+Usa ElevenLabs o Play.ht.
+
+Carga el guion, elige una voz natural en español.
+
+Genera el audio y descárgalo en .mp3.
+
+✂️ 4. Editar en CapCut
+Abre CapCut Desktop y crea un nuevo proyecto.
+
+Importa el video grabado y el archivo de audio generado.
+
+Sincroniza el audio con el video.
+
+Usa la función "Subtítulos automáticos" (elige idioma "Inglés") para traducir el audio al inglés directamente (algunos programas como Descript o Kapwing pueden hacer esto también con IA).
+
+Si no puedes traducir directamente, puedes:
+
+Generar subtítulos en español.
+
+Traducirlos con DeepL.
+
+Importar los subtítulos en inglés como .srt.
+
+🎨 5. Ajustar diseño del video
+Cambia fuentes, estilos de subtítulos.
+
+Agrega transiciones si lo deseas.
+
+Asegúrate de que todo esté sincronizado.
+
+✅ 6. Exportar video
+Elige formato .mp4, calidad 1080p.
+
+Sube a YouTube o cualquier plataforma de tu elección.
+
+📝 Extra: ¿Todo en una sola herramienta?
+Descript (https://www.descript.com) puede:
+
+Grabar pantalla.
+
+Generar voz en español.
+
+Traducir y generar subtítulos.
+
+Editar video todo en uno.
+
+Ideal si querés una solución más profesional y automática, aunque es freemium.

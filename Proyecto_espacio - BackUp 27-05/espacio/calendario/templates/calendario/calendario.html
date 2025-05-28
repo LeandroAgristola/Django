@@ -1,0 +1,67 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="listaClientes">
+  <div class="row">
+    <!-- Calendario -->
+    <div class="col-7">
+      <div id="calendar"></div>
+    </div>
+
+    <!-- Detalle del día (grilla dinámica) -->
+    <div class="col-5" id="detalle-dia">
+      <p class="text-muted">Seleccioná un día para ver los turnos.</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.min.css" rel="stylesheet">
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.min.css" rel="stylesheet">
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+
+    if (!calendarEl) {
+      console.error('No se encontró el contenedor #calendar');
+      return;
+    }
+    // Configuración de FullCalendar
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth', // Vista inicial: mes
+      locale: 'es',  // Español
+      events: '/management/calendario/disponibilidad/', // Endpoint para disponibilidad
+      eventColor: '#28a745', // Color base para eventos
+      // Manejador de clic en eventos/días
+      eventClick: function(info) {
+        const fecha = info.event.startStr;
+
+        // Cargar detalle del día seleccionado
+        fetch(`/management/calendario/detalle/?fecha=${fecha}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Error al cargar el detalle del día');
+            }
+            return response.text();
+          })
+          .then(html => {
+            const contenedor = document.getElementById('detalle-dia');
+            if (contenedor) {
+              contenedor.innerHTML = html;
+              window.scrollTo({ top: contenedor.offsetTop, behavior: 'smooth' });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    });
+
+    calendar.render();
+  });
+</script>
+{% endblock %}

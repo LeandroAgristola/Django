@@ -1,0 +1,94 @@
+{% extends "management/layout_management.html" %}
+
+{% block content %}
+<div class="container-fluid" id="detalleEvento" >
+  <h2 class="mb-4">Detalles del evento <strong>{{ evento.titulo }}</strong></h2>
+  <div class="row">
+      <div class="col-md-6">
+        <p><strong>Fecha y hora: </strong> {{ evento.fecha }} - {{ evento.hora }} hs</p>
+        <p><strong>Ubicacion:</strong> {{ evento.ubicacion }} </p>
+        <p><strong>Cupos:</strong> {{ evento.cupos }}</p>
+        <p><strong>Precio:</strong> {% if evento.precio == 0 %}Gratis{% else %} $ {{evento.precio}}{% endif %} </p>
+        <p><strong>Estado:</strong> {% if evento.estado == False %}Finalizado{% else %}Activo{% endif %} </p>
+        <p><strong>Descripcion:</strong> {{ evento.descripcion }} </p>
+        <!-- más campos -->
+      </div>
+      <div class="col-md-6">
+        {% if evento.imagen %}
+          <img src="{{ evento.imagen.url }}" alt="Imagen del evento" class="img-fluid">
+        {% endif %}
+      </div>
+  </div>
+  <hr>
+  <div class="d-flex align-items-center mb-3">
+    <h3 class="p-2">Clientes inscriptos</h3>
+    {% if evento.cupos > 0 %}
+    <a href="{% url 'eventos_admin:inscribir_cliente' evento.pk %}" class="btn btn-success"> <strong>+</strong> cliente</a>
+    {% else %}
+    <button class="btn btn-outline-secondary " disabled>Completo</button>
+    {% endif %}
+    <a href="{% url 'eventos_admin:exportar_inscriptos_pdf' evento.pk %}" class="btn btn-secondary ms-2">📄 Exportar PDF</a>
+  </div>
+  <table class="table table-bordered table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Nombre y Apellido</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for inscripcion in evento.inscripcionevento_set.all %}
+      <tr class="{% if inscripcion.estado == 'pendiente' %}resaltado-rojo{% endif %}">
+        <td>{{ inscripcion.nombre }} {{ inscripcion.apellido }}</td>
+        <td>{{ inscripcion.email }}</td>
+        <td>{{ inscripcion.telefono }} </td>
+        <td>{{ inscripcion.get_estado_display }}</td>
+        <td>   
+          <!-- Botón Eliminar -->
+          <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarInscripcion{{ inscripcion.id }}">X</button>
+  
+          <!-- Botón confirma pago-->
+          {% if inscripcion.estado == 'pendiente' %}
+          <form method="post" action="{% url 'eventos_admin:confirmar_pago_evento' inscripcion.id %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-success btn-sm">Confirmar</button>
+          </form>
+          {% endif %}
+
+        </td>
+      </tr>
+Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempora odit esse recusandae velit fugiat nulla illum, hic, aspernatur incidunt sunt, sed qui quibusdam porro praesentium maxime veniam vero facere. Quas.
+      
+      <!-- Modal Eliminar Permanente -->
+      <div class="modal fade" id="modalEliminarInscripcion{{ inscripcion.id }}"  tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Inscripcion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro que deseas eliminar a <strong>{{ inscripcion.nombre }} {{ inscripcion.apellido }}</strong><br>
+                    <small class="text-danger">Esta acción no se puede revertir.</small>
+                </div>
+                <div class="modal-footer">
+                    <form method="post" action="{% url 'eventos_admin:eliminar_inscripcion' inscripcion.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% empty %}
+    <tr><td colspan="5">No hay clientes cargados.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
