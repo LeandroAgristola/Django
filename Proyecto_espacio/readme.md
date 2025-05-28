@@ -414,6 +414,3 @@ La aplicación `clientes` es el sistema CRM (Customer Relationship Management) d
 * **Seguridad:** Revisar la configuración de `DEBUG` (debe ser `False` en producción), `ALLOWED_HOSTS`, y otras directivas de seguridad de Django.
 * **Capacidad del Servidor:** Considerar la carga para generación de PDFs y el manejo de múltiples usuarios concurrentes.
 
----
-
-Este README ahora refleja de manera más completa la importancia y funcionalidad de tus archivos estáticos, dándoles el crédito que merecen en la construcción de la experiencia final del usuario.
