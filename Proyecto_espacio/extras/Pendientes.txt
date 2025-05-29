@@ -1,9 +1,6 @@
 
     Clientes:
         Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
-    Eventos:
-        Al cargar un cliente en un evento y luego querer cargarlo en otro evento nos informa error UNIQUE constraint failed: eventos_inscripcionevento.email
-        Cuado editarmos se borra la fecha de evento  
     Empleados:
         Al editar un empleado y tildar que no se muestre su perfil en la pagina se borra la fecha de alta y al querer configurarnos nos informa el error de "solo 4 personas se pueden mostrar en la pagina"
 
