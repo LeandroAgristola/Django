@@ -6,7 +6,7 @@ from datetime import datetime
 import re
 from clientes.models import Cliente
 from eventos.models import InscripcionEvento
-
+from django.forms import DateInput
 
 # Validaciones generales
 def validar_solo_letras(valor):
@@ -38,7 +38,7 @@ class EventoForm(forms.ModelForm):
             'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título'}),
             'mostrar_en_web': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción', 'rows': 3}),
-            'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'fecha': DateInput(format='%Y-%m-%d', attrs={'class': 'form-control','type': 'date'}),
             'hora': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'ubicacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ubicación'}),
             'cupos': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Cupos'}),
@@ -53,8 +53,11 @@ class EventoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EventoForm, self).__init__(*args, **kwargs)
-        # Si estamos en edición, pre-cargamos el método de pago
+        
         if self.instance and self.instance.pk:
+            self.fields['fecha'].initial = self.instance.fecha.strftime('%Y-%m-%d')
+            self.fields['hora'].initial = self.instance.hora.strftime('%H:%M')
+            
             if self.instance.pago_en_estudio:
                 self.fields['metodo_pago'].initial = 'estudio'
             elif self.instance.pago_enlace:
@@ -92,7 +95,9 @@ class EventoForm(forms.ModelForm):
         if fecha and hora:
             new_datetime = timezone.make_aware(datetime.combine(fecha, hora))
             now = timezone.now()
-            if new_datetime < now:
+            
+            # solo validar en creación
+            if not self.instance.pk and new_datetime < now:
                 self.add_error('fecha', "La fecha y hora deben ser posteriores a la actual.")
                 self.add_error('hora', "La fecha y hora deben ser posteriores a la actual.")
                 raise ValidationError("La fecha y hora no pueden ser en el pasado.")

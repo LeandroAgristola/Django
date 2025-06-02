@@ -1,0 +1,24 @@
+
+    Clientes:
+        Al editar un cliente nos muestra el plan actual, no nos muestra los turnos ya asignados a ese cliente
+    Empleados:
+        Al editar un empleado y tildar que no se muestre su perfil en la pagina se borra la fecha de alta y al querer configurarnos nos informa el error de "solo 4 personas se pueden mostrar en la pagina"
+
+       
+Nuevas funcionalidades:
+
+    Correlacion entre empleados, clientes y turnos:
+        Agregar tipos de pilates estos tipos de pilates tienen correlacion con los profesores
+        Agregar tipo de disiplina que dan a los profesores para tener correlacion con el tipo de pilates
+        Agregar a empleados dias y horarios que trabajan
+        Funcionalidad integrada empleados:
+            El empleado tiene un tipo de pilates asignado y dias y horarios en los que presta servicio, al asignar un cliente le cargamos un tipo de pilates ademas del plan,
+            esto genera una correlacion entre los clientes y los empleados lo que generar que podramos filtrar los turnos asignados a cada empleado. Ademas podemos filtrar 
+            tambien por tipo de pilates 
+
+    Exportación a Excel:
+        Exportar todos los turnos del mes o semana a un Excel y subir a Drive.
+        Usamos pandas o openpyxl para generar Excel.
+        Para subir a Google Drive: necesitas autenticar una cuenta (OAuth2) y usar pydrive o google-api-python-client.
+        No tengo configurada una cuenta de Drive con credenciales para esto, ya que estamos en desarrollo y no tenemos datos del cliente.
+
