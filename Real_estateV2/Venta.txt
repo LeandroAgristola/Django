@@ -1,0 +1,19 @@
+📢 Potenciá la imagen de tu empresa inmobiliaria con una plataforma web profesional
+Hola! Desarrollé una solución digital pensada especialmente para estudios inmobiliarios y desarrolladores: un sistema web que te permite mostrar y gestionar todos tus proyectos desde un solo lugar, de forma clara, atractiva y adaptable a tu marca.
+
+✨ Incluye:
+
+Catálogo de desarrollos con imágenes, descripciones y brochures en PDF.
+
+Formulario de contacto integrado.
+
+Panel de administración simple y seguro.
+
+Diseño adaptable a celular, tablet y PC.
+
+Opción de mostrar un video institucional en tu página principal.
+
+⚙️ Todo el contenido es editable por vos mismo y se puede personalizar o ampliar según lo que necesites.
+
+🎥 Acá podés ver una demo en funcionamiento:
+🔗 

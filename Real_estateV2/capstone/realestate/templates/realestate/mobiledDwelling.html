@@ -1,0 +1,43 @@
+{% extends "realestate/layout.html" %} 
+<!-- Extends the base template "layout.html" from the 'realestate' app -->
+
+{% load static %} 
+<!-- Loads the static files tag to access static resources such as images, CSS, or JavaScript -->
+
+{% block content %} 
+<!-- Begins the content block to insert page-specific content into the base layout -->
+
+<section id="serieMobile" style="background-image:url('/static/img/dwelling.jpg');">
+    <!-- Section with a custom ID 'serieMobile' and an inline background image for styling -->
+    
+    <div class="container text-center py-5" id="containerMobile">
+        <!-- Bootstrap container centered with padding applied (py-5) and a custom ID 'containerMobile' -->
+        
+        <div class="card text-center text-white" id=cardMobile>
+            <!-- Bootstrap card component with white text, centered alignment, and custom ID 'cardMobile' -->
+            
+            <div class="card-body d-flex flex-column text-center" id=card-bodyMobile>
+                <!-- Card body with a flexbox layout for column alignment and a custom ID 'card-bodyMobile' -->
+                
+                <h3 class="card-title" id=card-titleMobile>Dwelling</h3>
+                <!-- Card title 'Dwelling' with a custom ID 'card-titleMobile' -->
+                
+                <p class="card-text" id=card-textMobile>
+                    <!-- Card text with a custom ID 'card-textMobile' -->
+                    A unique product that seeks to create a different experience in an environment of enjoyment, support, and tranquility,
+                    immersed in nature. <br> <!-- Line break for better text formatting -->
+                    With units that are delivered fully decorated and equipped, with the most complete amenities and services,
+                    and in environments that invite you to breathe nature, enjoyment is the only possible result.
+                </p>
+                
+                <a href="{% url 'home' %}#serie" class="btn btn-light mt-3">
+                    <!-- Button styled as a Bootstrap light button, linking back to the 'serie' section of the 'home' page -->
+                    Return
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %} 
+<!-- Ends the content block -->

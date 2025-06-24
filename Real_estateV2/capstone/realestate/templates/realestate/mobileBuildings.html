@@ -1,0 +1,41 @@
+{% extends "realestate/layout.html" %} 
+<!-- Extends the base template "layout.html" from the 'realestate' app -->
+
+{% load static %} 
+<!-- Loads the static files tag to access static assets like images or CSS -->
+
+{% block content %} 
+<!-- Defines the content block where the page-specific content will be inserted -->
+
+<section id="serieMobile" style="background-image:url('/static/img/building.jpg');">
+    <!-- Section with a custom ID 'serieMobile' and an inline background image applied -->
+    <div class="container text-center py-5" id="containerMobile">
+        <!-- Container centered with padding for spacing and custom ID 'containerMobile' -->
+        
+        <div class="card text-center text-white" id=cardMobile>
+            <!-- Bootstrap card component with centered white text and a custom ID 'cardMobile' -->
+            
+            <div class="card-body d-flex flex-column text-center" id=card-bodyMobile>
+                <!-- Card body with flexbox properties for column alignment and custom ID 'card-bodyMobile' -->
+                
+                <h3 class="card-title" id=card-titleMobile>Building</h3>
+                <!-- Card title with a custom ID 'card-titleMobile' -->
+                
+                <p class="card-text" id=card-textMobile>
+                    <!-- Card text with a custom ID 'card-textMobile' -->
+                    We develop exclusive Premium residential buildings. We offer the possibility of accessing units in zero list (at cost):
+                    at a fixed price, without CAC adjustments, without real estate commissions. Work with low construction and financial risk,
+                    with short construction times due to having an already approved project.
+                </p>
+                
+                <a href="{% url 'home' %}#serie" class="btn btn-light mt-3">
+                    <!-- Link styled as a light Bootstrap button that redirects to the "serie" section on the 'home' page -->
+                    Return
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %} 
+<!-- End of the content block -->
