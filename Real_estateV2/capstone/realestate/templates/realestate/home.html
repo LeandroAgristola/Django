@@ -4,194 +4,193 @@
 
 {% block content %}
 
-		<!-- Hero Section: Displays the title and carousel of developments -->
-		<section id="hero">
-			<div class="container">
-				<h1>Developments</h1>
-				<div class="container" id="containerCarusel">
-					<div class="carousel slide" id="carousel1" data-bs-ride="carousel">
-						
-						<!-- Carousel Indicators: Dynamically generated based on developments -->
-						<ul class="carousel-indicators" style="list-style-type:none;">
-							{% for development in developments %}
-								<li data-bs-target="#carousel1" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
-							{% endfor %}
-						</ul>
-		
-						<!-- Carousel Inner: Contains all the items with development information -->
-						<div class="carousel-inner">
-							{% for development in developments %}
-								<div class="carousel-item {% if forloop.first %}active{% endif %}">
-									<div class="card">
-										<img class="card-img-top" src="{{ development.image.url }}" alt="image {{ development.title }}">
-										<div class="card-body">
-											<h4 class="card-title">{{ development.title }}</h4>
-											<p class="card-text">{{ development.content }}</p>
-										</div>
-										<div class="card-footer">
-											<a href="{{ development.brochurePaper.url }}" target="_blank" class="btn btn-primary">Brochure Paper</a>
-										</div>
-									</div>
-								</div>
-							{% endfor %}
-						</div>
-		
-						<!-- Carousel Controls for navigating through items -->
-						<a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="sr-only"></span>
-						</a>
-		
-						<a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="sr-only"></span>
-						</a>
-					</div>
-				</div>
-			</div>
-		</section>
-	
-		<!-- Company Section: Video and description about the company -->
-		<section id="company"> 
-			<div id="companyContainer" class="container bg-white d-flex align-items-center justify-content-center">
-				<div class="row w-100">
-					
-					<!-- Video section -->
-					<div class="col-md-6 d-flex justify-content-center align-items-center">
-						<video id="myVideo" class="w-100" autoplay loop muted>
-							<source src="{% static 'img/video.mp4' %}" type="video/mp4">
-							Your browser does not support the video tag.
-						</video>
-					</div>
-					
-					<!-- Text section: Description about the company -->
-					<div class="col-md-6 d-flex justify-content-center align-items-center">
-						<div class="textCompany p-4">
-							<h2>About <br> <span class="accent_color">Realestate</span></h2> 
-							<p>
-								Through the creation, investment and management of these companies, we seek to provide added value and continue to transform the industries to which we belong,
-								improving the customer experience, giving them a differential service and generating returns for our investors. <br><br>
-								We promote a culture of ethics, without egos, synergistic and professional; open-door, creative and
-								different thoughts; with full confidence and delegation in our people; establishing true and long-term relationships.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Series Section: Contains information about different types of properties -->
-		<section id="serie">
-			<div class="contenedor">
-				<h2>Serie <span class="accent_color">Realestate</span></h2> 
+<!-- Hero Section: Displays the title and carousel of developments -->
+<section id="hero">
+	<div class="container">
+		<h1>Developments</h1>
+		<div class="container" id="containerCarusel">
+			<div class="carousel slide" id="carousel1" data-bs-ride="carousel">
 				
-				<!-- Different property types (e.g., Dwelling, Buildings, Industries) -->
-				<div class="company_data"> 
-					<div class="submenu">
-						<h3>Dwelling</h3> 
-						<p>A unique product that seeks to create a different experience in an environment of enjoyment, support and tranquility,
-							immersed in nature. <br>
-							With units that are delivered fully decorated and equipped, with the most complete amenities and services,
-							and in environments that invite you to breathe nature, enjoyment is the only possible result.
-						</p>
-						<a href="{% url 'mobiledDwelling' %}" class="btn btn-light mt-3">+ info</a>
-					</div>
-					<div class="submenu">
-						<h3>Buildings</h3>
-						<p>We develop exclusive Premium residential buildings. We offer the possibility of accessing units in zero list (at cost):
-							at a fixed price, without CAC adjustments, without real estate commissions. Work with low construction and financial risk, with short construction times due to
-							having an already approved project.
-						</p>
-						<a href="{% url 'mobileBuildings' %}" class="btn btn-light mt-3">+ info</a>
-					</div>
-					<div class="submenu">
-						<h3>Industries</h3>
-						<p>We are specialists in industrial properties and we have a team of professionals in the development and planning of industrial locations.
-							We apply cutting-edge technologies to meet the highest standards in safety and environmental care.
-						</p>
-						<a href="{% url 'mobileIndustries' %}" class="btn btn-light mt-3">+ info</a>
-					</div>
-				</div>
-			</div>
-		</section>
+				<!-- Carousel Indicators: Dynamically generated based on developments -->
+				<ul class="carousel-indicators" style="list-style-type:none;">
+					{% for development in developments %}
+						<li data-bs-target="#carousel1" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+					{% endfor %}
+				</ul>
 
-		<!-- Contact Section: Form for user inquiries -->
-		<section id="contact" class="py-5">
-			<div class="container">
-				<div class="row">
-
-					<!-- Contact form for users to send messages -->
-					<div class="col-md-6">
-						<form id="contactForm" method="post" utocomplete="off">
-							<h2>Contact</h2>
-							{% csrf_token %}
-							{{ myform.non_field_errors }}
-							
-							<!-- Loop through form fields dynamically -->
-							{% for field in myform %}
-								<div class="mb-3">
-									<label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-									{{ field }}
-									{% if field.errors %}
-										<div class="alert alert-danger">
-											{{ field.errors }}
-										</div>
-									{% endif %}
+				<!-- Carousel Inner: Contains all the items with development information -->
+				<div class="carousel-inner">
+					{% for development in developments %}
+						<div class="carousel-item {% if forloop.first %}active{% endif %}">
+							<div class="card">
+								<img class="card-img-top" src="{{ development.image.url }}" alt="image {{ development.title }}">
+								<div class="card-body">
+									<h4 class="card-title">{{ development.title }}</h4>
+									<p class="card-text">{{ development.content }}</p>
 								</div>
-							{% endfor %}
-
-							<!-- Submit and Cancel buttons -->
-							<div class="d-flex align-items-center">
-								<button id="btn-send" type="submit" class="btn btn-primary">Send</button>
-								<button id="btn-cancel" type="reset" class="btn btn-secondary ms-2">Cancel</button>
-							</div>
-						</form>
-					</div>
-
-					<!-- Image section -->
-					<div class="col-md-6 d-flex justify-content-center align-items-center">
-						<img src="static/img/contact.jpg" alt="Image contact" class="img-fluid">
-					</div>
-				</div>
-			</div>
-
-			<!-- Modal for showing loading spinner during submission -->
-			<div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content" style="background-color: transparent; border: none;">
-						<div class="modal-body d-flex justify-content-center align-items-center" style="height: 100px;">
-							<div class="spinner-border" role="status"> 
+								<div class="card-footer">
+									<a href="{{ development.brochurePaper.url }}" target="_blank" class="btn btn-primary">Brochure Paper</a>
+								</div>
 							</div>
 						</div>
+					{% endfor %}
+				</div>
+
+				<!-- Carousel Controls for navigating through items -->
+				<a class="carousel-control-prev" href="#carousel1" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only"></span>
+				</a>
+
+				<a class="carousel-control-next" href="#carousel1" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Company Section: Video and description about the company -->
+<section id="company"> 
+	<div class="container">
+		<div class="row">
+			
+			<!-- Video section -->
+			<div class="col-md-6 d-flex justify-content-center align-items-center">
+				<video id="myVideo" class="w-100" autoplay loop muted>
+					<source src="{% static 'img/video.mp4' %}" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+			</div>
+			
+			<!-- Text section: Description about the company -->
+			<div class="col-md-6 d-flex justify-content-center align-items-center">
+				<div class="textCompany p-4">
+					<h2>About <br> <span class="accent_color">Realestate</span></h2> 
+					<p>
+						Through the creation, investment and management of these companies, we seek to provide added value and continue to transform the industries to which we belong,
+						improving the customer experience, giving them a differential service and generating returns for our investors. <br><br>
+						We promote a culture of ethics, without egos, synergistic and professional; open-door, creative and
+						different thoughts; with full confidence and delegation in our people; establishing true and long-term relationships.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Series Section: Contains information about different types of properties -->
+<section id="serie">
+	<div class="container">
+		<h2>Serie <span class="accent_color">Realestate</span></h2> 
+		
+		<!-- Different property types (e.g., Dwelling, Buildings, Industries) -->
+		<div class="company_data"> 
+			<div class="submenu">
+				<h3>Dwelling</h3> 
+				<p>A unique product that seeks to create a different experience in an environment of enjoyment, support and tranquility,
+					immersed in nature. <br>
+					With units that are delivered fully decorated and equipped, with the most complete amenities and services,
+					and in environments that invite you to breathe nature, enjoyment is the only possible result.
+				</p>
+				<a href="{% url 'mobiledDwelling' %}" class="btn btn-light mt-3">+ info</a>
+			</div>
+			<div class="submenu">
+				<h3>Buildings</h3>
+				<p>We develop exclusive Premium residential buildings. We offer the possibility of accessing units in zero list (at cost):
+					at a fixed price, without CAC adjustments, without real estate commissions. Work with low construction and financial risk, with short construction times due to
+					having an already approved project.
+				</p>
+				<a href="{% url 'mobileBuildings' %}" class="btn btn-light mt-3">+ info</a>
+			</div>
+			<div class="submenu">
+				<h3>Industries</h3>
+				<p>We are specialists in industrial properties and we have a team of professionals in the development and planning of industrial locations.
+					We apply cutting-edge technologies to meet the highest standards in safety and environmental care.
+				</p>
+				<a href="{% url 'mobileIndustries' %}" class="btn btn-light mt-3">+ info</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Contact Section: Form for user inquiries -->
+<section id="contact">
+	<div class="container">
+		<div class="row">
+			<!-- Contact form for users to send messages -->
+			<div class="col-md-6">
+				<form id="contactForm" method="post" utocomplete="off">
+					<h2>Contact</h2>
+					{% csrf_token %}
+					{{ myform.non_field_errors }}
+					
+					<!-- Loop through form fields dynamically -->
+					{% for field in myform %}
+						<div class="mb-3">
+							<label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+							{{ field }}
+							{% if field.errors %}
+								<div class="alert alert-danger">
+									{{ field.errors }}
+								</div>
+							{% endif %}
+						</div>
+					{% endfor %}
+
+					<!-- Submit and Cancel buttons -->
+					<div class="d-flex align-items-center">
+						<button id="btn-send" type="submit" class="btn btn-primary">Send</button>
+						<button id="btn-cancel" type="reset" class="btn btn-secondary ms-2">Cancel</button>
+					</div>
+				</form>
+			</div>
+
+			<!-- Image section -->
+			<div class="col-md-6 d-flex justify-content-center align-items-center">
+				<img src="static/img/contact.jpg" alt="Image contact" class="img-fluid">
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for showing loading spinner during submission -->
+	<div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content" style="background-color: transparent; border: none;">
+				<div class="modal-body d-flex justify-content-center align-items-center" style="height: 100px;">
+					<div class="spinner-border" role="status"> 
 					</div>
 				</div>
 			</div>
-	
-			<!-- Modal for displaying success message after sending the form -->
-			<div class="modal fade" id="msjModal" tabindex="-1" aria-labelledby="msjModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered"> 
-					<div class="modal-content">
-						<div class="modal-header d-flex justify-content-center">
-							<h5 class="modal-title" id="mensajeModalLabel">Message Sent</h5>
-						</div>
-						<div class="modal-body d-flex justify-content-center">
-							Your message has been sent successfully.
-						</div>
-						<div class="modal-footer d-flex justify-content-center">
-							<button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Ok</button>
-						</div>
-					</div>
+		</div>
+	</div>
+
+	<!-- Modal for displaying success message after sending the form -->
+	<div class="modal fade" id="msjModal" tabindex="-1" aria-labelledby="msjModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered"> 
+			<div class="modal-content">
+				<div class="modal-header d-flex justify-content-center">
+					<h5 class="modal-title" id="mensajeModalLabel">Message Sent</h5>
+				</div>
+				<div class="modal-body d-flex justify-content-center">
+					Your message has been sent successfully.
+				</div>
+				<div class="modal-footer d-flex justify-content-center">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Ok</button>
 				</div>
 			</div>
+		</div>
+	</div>
 
-		</section>
+</section>
 
-		<!-- Location Section: Displays the company location on a Google Map -->
-		<section id="location">
-			<div class="container">
-				<h2>Location</h2> 
-				<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d817.8500541816977!2d-57.953874576704685!3d-34.921498429018776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e62e3fc93575%3A0x6ffaec3bf616e000!2sPlaza%20Moreno!5e0!3m2!1ses-419!2spy!4v1635395163842!5m2!1ses-419!2spy" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-			</div>
-		</section>
+<!-- Location Section: Displays the company location on a Google Map -->
+<section id="location">
+	<div class="container">
+		<h2>Location</h2> 
+		<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d817.8500541816977!2d-57.953874576704685!3d-34.921498429018776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a2e62e3fc93575%3A0x6ffaec3bf616e000!2sPlaza%20Moreno!5e0!3m2!1ses-419!2spy!4v1635395163842!5m2!1ses-419!2spy" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+	</div>
+</section>
 
 {% endblock %}
